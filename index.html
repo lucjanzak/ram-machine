@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Maszyna RAM</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -11,21 +12,37 @@
     Hello world
   </div>
   listing:
-  <div id="program-listing"></div>
+  <table id="program-listing-table">
+    <tbody id="program-listing">
+
+    </tbody>
+  </table>
   <hr>
   <footer>
     Autor: Lucjan Żak
   </footer>
+  <template id="program-listing-header">
+    <tr>
+      <th>#</th>
+      <td>Label</td>
+      <td>Instruction</td>
+      <td>Comment</td>
+    </tr>
+  </template>
   <template id="instruction-tile">
-    <div>
-      tile :3
-      <span>labels:</span>
-      <span id="labels"></span>
-      <span>instruction:</span>
-      <span id="instruction"></span>
-      <span>comments:</span>
-      <span id="comment"></span>
-    </div>
+    <tr>
+      <td>#</td>
+      <td id="labels" class="tile-part-labels"></td>
+      <td id="instruction"></td>
+      <td id="comment" class="tile-part-comment"></td>
+    </tr>
+  </template>
+  <template id="comment-tile">
+    <tr>
+      <td></td>
+      <td></td>
+      <td id="comment" colspan="2" class="tile-part-comment present"></td>
+    </tr>
   </template>
   <script src="out/rammachine.js"></script>
 </body>

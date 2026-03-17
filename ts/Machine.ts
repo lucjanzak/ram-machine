@@ -3,8 +3,9 @@ class Machine {
   private inputTape = new InputTape();
   private outputTape = new OutputTape();
   private memory = new Memory();
-  private _program = Program.NormalExample;
   private programCounter: ProgramCounter = 0;
+
+  constructor(private _program: Program = Program.EMPTY) {}
 
   get program() {
     return this._program;

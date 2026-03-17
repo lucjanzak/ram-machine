@@ -18,7 +18,7 @@ type Tile =
 
 type ProgramCounter = number; // should always be a positive integer from 0(?) or from 1 to programlength
 class Program {
-  static readonly ParsingExample = Program.fromAssembly(`
+  static readonly PARSING_EXAMPLE = Program.fromAssembly(`
     ; comment only
     label_only:
     label: ; with comment
@@ -49,7 +49,7 @@ class Program {
     JUMP labels with spaces
     JUMP 13
 `);
-  static readonly ParsingErrorsExample = Program.fromAssembly(`
+  static readonly PARSING_ERROR_EXAMPLE = Program.fromAssembly(`
     a b c
 
     ; these should not work:
@@ -65,12 +65,13 @@ class Program {
     ; this should report an error:
     label_at_the_end:
 `, true);
-  static readonly NormalExample = Program.fromAssembly(`
+  static readonly NORMAL_EXAMPLE = Program.fromAssembly(`
 start:
 LOAD =0
 WRITE 0
 JUMP start
 `);
+  static readonly EMPTY = new Program();
 
   private instructions: Instruction[] = [];
   private labels = new Map<string, ProgramCounter>();
@@ -83,21 +84,29 @@ JUMP start
     return this.labels.get(label);
   }
 
-  createDOM(): HTMLDivElement {
-    const list = document.createElement("div");
+  createListingRows(): DocumentFragment {
+    const fragment = document.createDocumentFragment();
+    function makeLabelsText(labels: string[]): string {
+      return labels.map(x => x + ":").join("\n");
+    }
     for (const tile of this.tiles) {
       if (tile.type === "comment") {
-        // TODO
-        list.append(useTemplate(Nodes.instructionTile));
+        const t = useTemplate(Nodes.commentTile);
+        unwrap(t.querySelector("#comment")).textContent = tile.comment;
+        fragment.append(t);
       } else if (tile.type === "instruction") {
         const t = useTemplate(Nodes.instructionTile);
-        unwrap(t.querySelector("#labels")).textContent = tile.labels.join();
-        unwrap(t.querySelector("#instruction")).textContent = tile.instruction.operation;
-        unwrap(t.querySelector("#comment")).textContent = tile.comment;
-        list.append();
+        unwrap(t.querySelector("#labels")).textContent = makeLabelsText(tile.labels);
+        unwrap(t.querySelector("#instruction")).textContent = instructionToString(tile.instruction);
+        if (tile.comment !== null) {
+          const comment = unwrap(t.querySelector("#comment"));
+          comment.textContent = tile.comment;
+          comment.classList.add("present");
+        }
+        fragment.append(t);
       }
     }
-    return list;
+    return fragment;
   }
 
   static fromAssembly(assemblyText: string, hideErrors = false): Program {
@@ -107,7 +116,7 @@ JUMP start
     return new Program(tiles);
   }
 
-  constructor(tiles: Tile[]) {
+  constructor(tiles: Tile[] = []) {
     this.tiles = tiles;
     for (const tile of tiles) {
       if (tile.type === "instruction") {
