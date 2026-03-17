@@ -1,25 +1,27 @@
-namespace Parser {
-  function parseBigInt(operand: string): bigint {
+class Parser {
+  constructor(private hideErrors = false, private unknownMnemonics: "actAsHalt" | "actAsNoInstruction" | "forbid" = "forbid") {}
+
+  parseBigInt(operand: string): bigint {
     return BigInt(operand);
   }
 
-  function parseAnyOperand(operand: string): ReadableOperand {
+  parseAnyOperand(operand: string): ReadableOperand {
     if (operand.startsWith("=")) {
-      const value = parseBigInt(operand.slice(1));
+      const value = this.parseBigInt(operand.slice(1));
       // if (value < 0) throw new Error("immediate value cannot be negative"); // TODO
       return {
         type: "immediate",
         value,
       };
     } else if (operand.startsWith("*")) {
-      const value = parseBigInt(operand.slice(1));
+      const value = this.parseBigInt(operand.slice(1));
       if (value < 0) throw new Error("register number cannot be negative");
       return {
         type: "indirect",
         value,
       };
     } else {
-      const value = parseBigInt(operand);
+      const value = this.parseBigInt(operand);
       if (value < 0) throw new Error("register number cannot be negative");
       return {
         type: "register",
@@ -28,8 +30,8 @@ namespace Parser {
     }
   }
 
-  function parseWriteableOperand(operand: string): WriteableOperand {
-    const parsed = parseAnyOperand(operand);
+  parseWriteableOperand(operand: string): WriteableOperand {
+    const parsed = this.parseAnyOperand(operand);
     const parsedType = parsed.type;
     if (parsedType === "immediate") {
       throw new Error("immediate operand is not allowed in this instruction");
@@ -41,16 +43,16 @@ namespace Parser {
     return converted;
   }
 
-  function parseInstruction(mnemonic: string, operand: string): Instruction {
+  parseInstruction(mnemonic: string, operand: string): Instruction | null {
     if (isPartOfArray(mnemonic, READABLE_OPERAND_INSTRUCTIONS)) {
       return {
         operation: mnemonic,
-        operand: parseAnyOperand(operand),
+        operand: this.parseAnyOperand(operand),
       };
     } else if (isPartOfArray(mnemonic, WRITEABLE_OPERAND_INSTRUCTIONS)) {
       return {
         operation: mnemonic,
-        operand: parseWriteableOperand(operand),
+        operand: this.parseWriteableOperand(operand),
       };
     } else if (isPartOfArray(mnemonic, JUMP_INSTRUCTIONS)) {
       return {
@@ -62,12 +64,19 @@ namespace Parser {
         operation: mnemonic,
       };
     } else {
+      if (this.unknownMnemonics === "forbid") {
+        throw new Error(`unrecognized mnemonic: '${mnemonic}'`);
+      } else if (this.unknownMnemonics === "actAsHalt") {
+        return { operation: "HALT" };
+      } else if (this.unknownMnemonics === "actAsNoInstruction") {
+        return null;
+      }
+      throw new Error("unreachable");
       // console.warn(`unrecognized mnemonic: '${mnemonic}'`);
-      throw new Error(`unrecognized mnemonic: '${mnemonic}'`);
     }
   }
 
-  export function parseAssemblyLine(line: string): ParsedLine {
+  parseAssemblyLine(line: string): ParsedLine {
     // const regex = /^\s*(([\w\d]+)\s*:\s*)?((\w+)\s+([\w\d]+)\s*)?(;(.*))?$/;
     // const results = regex.exec(line);
     // if (results === null) {
@@ -86,11 +95,82 @@ namespace Parser {
     const [mnemonicSegment, ...operandSegments] = lineWithoutLabel.trim().split(/\s+/);
     const mnemonic = mnemonicSegment.trim().toUpperCase();
     const operand = operandSegments.join(" ").trim(); // TODO: this doesn't preserve the operand exactly; the original operand could've been separated by tabs for example
-    const instruction = mnemonic.length > 0 ? parseInstruction(mnemonic, operand) : null;
+    const instruction = mnemonic.length > 0 ? this.parseInstruction(mnemonic, operand) : null;
     return {
       labels,
       instruction,
       comment,
     };
+  }
+
+  parseAssemblyProgram(assemblyText: string): Tile[] {
+    const lines = assemblyText.split("\n");
+    const tiles: Tile[] = [];
+
+    const definedLabels = new Map<string, number>();
+    function defineNewLabel(label: string, sourceLineNumber: number) {
+      if (definedLabels.has(label)) {
+        const originalLine = definedLabels.get(label);
+        throw new Error(`label was already defined at line ${originalLine}: '${label}'`);
+      }
+      definedLabels.set(label, sourceLineNumber);
+    }
+
+    let leftoverCommentLines: string[] = [];
+    let leftoverLabels: string[] = [];
+
+    function processLine(line: string, lineIndex: number) {
+      // console.log(`Processing line #${lineIndex + 1}: '${line}'`);
+      const parser = new Parser();
+      const parsed = parser.parseAssemblyLine(line);
+      // console.log("Parsed line: ", parsed);
+
+      parsed.labels.forEach((label) => defineNewLabel(label, lineIndex + 1));
+      leftoverLabels = leftoverLabels.concat(parsed.labels);
+
+      if (parsed.instruction !== null) {
+        // push new comment tile if there were leftover comment lines
+        if (leftoverCommentLines.length > 0) {
+          tiles.push({
+            type: "comment",
+            comment: leftoverCommentLines.join("\n"),
+          });
+          leftoverCommentLines = [];
+        }
+
+        // push new instruction tile
+        tiles.push({
+          type: "instruction",
+          comment: parsed.comment,
+          instruction: parsed.instruction,
+          labels: leftoverLabels,
+        });
+        leftoverLabels = [];
+      } else {
+        if (parsed.comment !== null) {
+          leftoverCommentLines.push(parsed.comment);
+        }
+      }
+    }
+
+    lines.forEach((line, lineIndex) => {
+      try {
+        processLine(line, lineIndex);
+      } catch (e) {
+        if (!this.hideErrors) {
+          console.warn(`Error while parsing line #${lineIndex + 1}:`, e);
+        }
+      }
+    });
+
+    // push new comment tile if there were leftover comment lines
+    if (leftoverCommentLines.length > 0) {
+      tiles.push({
+        type: "comment",
+        comment: leftoverCommentLines.join("\n"),
+      });
+    }
+
+    return tiles;
   }
 }

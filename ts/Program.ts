@@ -18,7 +18,7 @@ type Tile =
 
 type ProgramCounter = number; // should always be a positive integer from 0(?) or from 1 to programlength
 class Program {
-  static readonly ParsingExample = Program.parseAssembly(`
+  static readonly ParsingExample = Program.fromAssembly(`
     ; comment only
     label_only:
     label: ; with comment
@@ -49,7 +49,7 @@ class Program {
     JUMP labels with spaces
     JUMP 13
 `);
-  static readonly ParsingErrorsExample = Program.parseAssembly(`
+  static readonly ParsingErrorsExample = Program.fromAssembly(`
     a b c
 
     ; these should not work:
@@ -64,8 +64,8 @@ class Program {
 
     ; this should report an error:
     label_at_the_end:
-`);
-  static readonly NormalExample = Program.parseAssembly(`
+`, true);
+  static readonly NormalExample = Program.fromAssembly(`
 start:
 LOAD =0
 WRITE 0
@@ -100,71 +100,9 @@ JUMP start
     return list;
   }
 
-  static parseAssembly(assemblyText: string): Program {
-    const lines = assemblyText.split("\n");
-    const tiles: Tile[] = [];
-
-    const definedLabels = new Map<string, number>();
-    function defineNewLabel(label: string, sourceLineNumber: number) {
-      if (definedLabels.has(label)) {
-        const originalLine = definedLabels.get(label);
-        throw new Error(`label was already defined at line ${originalLine}: '${label}'`);
-      }
-      definedLabels.set(label, sourceLineNumber);
-    }
-
-    let leftoverCommentLines: string[] = [];
-    let leftoverLabels: string[] = [];
-
-    function processLine(line: string, lineIndex: number) {
-      // console.log(`Processing line #${lineIndex + 1}: '${line}'`);
-      const parsed = Parser.parseAssemblyLine(line);
-      // console.log("Parsed line: ", parsed);
-
-      parsed.labels.forEach((label) => defineNewLabel(label, lineIndex + 1));
-      leftoverLabels = leftoverLabels.concat(parsed.labels);
-
-      if (parsed.instruction !== null) {
-        // push new comment tile if there were leftover comment lines
-        if (leftoverCommentLines.length > 0) {
-          tiles.push({
-            type: "comment",
-            comment: leftoverCommentLines.join("\n"),
-          });
-          leftoverCommentLines = [];
-        }
-
-        // push new instruction tile
-        tiles.push({
-          type: "instruction",
-          comment: parsed.comment,
-          instruction: parsed.instruction,
-          labels: leftoverLabels,
-        });
-        leftoverLabels = [];
-      } else {
-        if (parsed.comment !== null) {
-          leftoverCommentLines.push(parsed.comment);
-        }
-      }
-    }
-
-    lines.forEach((line, lineIndex) => {
-      try {
-        processLine(line, lineIndex);
-      } catch (e) {
-        console.warn(`Error while parsing line #${lineIndex + 1}:`, e);
-      }
-    });
-
-    // push new comment tile if there were leftover comment lines
-    if (leftoverCommentLines.length > 0) {
-      tiles.push({
-        type: "comment",
-        comment: leftoverCommentLines.join("\n"),
-      });
-    }
-
+  static fromAssembly(assemblyText: string, hideErrors = false): Program {
+    const parser = new Parser(hideErrors);
+    const tiles = parser.parseAssemblyProgram(assemblyText);
     console.log("Program tiles:", tiles);
     return new Program(tiles);
   }
