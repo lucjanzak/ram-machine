@@ -3,8 +3,13 @@ class Machine {
   private inputTape = new InputTape();
   private outputTape = new OutputTape();
   private memory = new Memory();
-  private program = Program.NormalExample;
-  private instructionPointer: bigint = 0n;
+  private _program = Program.NormalExample;
+  private programCounter: ProgramCounter = 0;
+
+  get program() {
+    return this._program;
+  }
+
   readFromOperand(operand: ReadableOperand): bigint {
     if (operand.type === "immediate") {
       return operand.value;
@@ -30,46 +35,46 @@ class Machine {
     }
   }
   jumpTo(label: string) {
-    const newInstructionPointer = this.program.getLabelLocation(label);
-    if (newInstructionPointer === undefined) {
+    const newProgramCounter = this._program.getLabelLocation(label);
+    if (newProgramCounter === undefined) {
       throw new Error(`undefined label: '${label}'`);
     }
-    this.instructionPointer = newInstructionPointer;
+    this.programCounter = newProgramCounter;
   }
   executeInstruction(instruction: Instruction) {
-    console.log("executing ", instruction, ` @ line ${this.instructionPointer}`);
+    console.log("executing ", instruction, ` @ line ${this.programCounter}`);
     if (instruction.operation === "LOAD") {
       const value = this.readFromOperand(instruction.operand);
       this.memory.setAccumulator(value);
-      this.instructionPointer++;
+      this.programCounter++;
     } else if (instruction.operation === "STORE") {
       const value = this.memory.getAccumulator();
       this.writeToOperand(instruction.operand, value);
-      this.instructionPointer++;
+      this.programCounter++;
     } else if (instruction.operation === "ADD") {
       const value = this.readFromOperand(instruction.operand);
       this.memory.setAccumulator(this.memory.getAccumulator() + value);
-      this.instructionPointer++;
+      this.programCounter++;
     } else if (instruction.operation === "SUB") {
       const value = this.readFromOperand(instruction.operand);
       this.memory.setAccumulator(this.memory.getAccumulator() - value);
-      this.instructionPointer++;
+      this.programCounter++;
     } else if (instruction.operation === "MUL") {
       const value = this.readFromOperand(instruction.operand);
       this.memory.setAccumulator(this.memory.getAccumulator() * value);
-      this.instructionPointer++;
+      this.programCounter++;
     } else if (instruction.operation === "DIV") {
       const value = this.readFromOperand(instruction.operand);
       this.memory.setAccumulator(this.memory.getAccumulator() / value);
-      this.instructionPointer++;
+      this.programCounter++;
     } else if (instruction.operation === "READ") {
       const value = this.inputTape.readOrDefault();
       this.writeToOperand(instruction.operand, value);
-      this.instructionPointer++;
+      this.programCounter++;
     } else if (instruction.operation === "WRITE") {
       const value = this.readFromOperand(instruction.operand);
       this.outputTape.write(value);
-      this.instructionPointer++;
+      this.programCounter++;
     } else if (instruction.operation === "JUMP") {
       this.jumpTo(instruction.label);
     } else if (instruction.operation === "JGTZ") {
@@ -77,14 +82,14 @@ class Machine {
       if (value > 0n) {
         this.jumpTo(instruction.label);
       } else {
-        this.instructionPointer++;
+        this.programCounter++;
       }
     } else if (instruction.operation === "JZERO") {
       const value = this.memory.getAccumulator();
       if (value === 0n) {
         this.jumpTo(instruction.label);
       } else {
-        this.instructionPointer++;
+        this.programCounter++;
       }
     } else if (instruction.operation === "HALT") {
       console.log("program finished");
@@ -92,9 +97,9 @@ class Machine {
     }
   }
   executeCurrentInstruction() {
-    const instruction = this.program.getInstruction(this.instructionPointer);
+    const instruction = this._program.getInstruction(this.programCounter);
     if (instruction === undefined) {
-      throw new Error("instruction pointer outside of program bounds");
+      throw new Error("program counter outside of program bounds"); // TODO
     } else {
       this.executeInstruction(instruction);
     }
