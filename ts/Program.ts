@@ -49,7 +49,8 @@ class Program {
     JUMP labels with spaces
     JUMP 13
 `);
-  static readonly PARSING_ERROR_EXAMPLE = Program.fromAssembly(`
+  static readonly PARSING_ERROR_EXAMPLE = Program.fromAssembly(
+    `
     a b c
 
     ; these should not work:
@@ -64,7 +65,9 @@ class Program {
 
     ; this should report an error:
     label_at_the_end:
-`, true);
+`,
+    true
+  );
   static readonly NORMAL_EXAMPLE = Program.fromAssembly(`
 start:
 LOAD =0
@@ -87,7 +90,7 @@ JUMP start
   createListingRows(): DocumentFragment {
     const fragment = document.createDocumentFragment();
     function makeLabelsText(labels: string[]): string {
-      return labels.map(x => x + ":").join("\n");
+      return labels.map((x) => x + ":").join("\n");
     }
     for (const tile of this.tiles) {
       if (tile.type === "comment") {
