@@ -1,4 +1,9 @@
-class Machine {
+import { Instruction, ReadableOperand, WriteableOperand } from "./Instruction.js";
+import { Memory } from "./Memory.js";
+import { Program, ProgramCounter } from "./Program.js";
+import { InputTape, OutputTape } from "./Tape.js";
+
+export class Machine {
   private running = false;
   private inputTape = new InputTape();
   private outputTape = new OutputTape();
@@ -9,6 +14,19 @@ class Machine {
 
   get program() {
     return this._program;
+  }
+
+  reset() {
+    this.running = false;
+    this.inputTape.reset();
+    this.outputTape.clearAndReset();
+    this.memory.clear();
+    this.programCounter = 0;
+  }
+
+  loadProgramAndReset(program: Program) {
+    this._program = program;
+    this.reset();
   }
 
   readFromOperand(operand: ReadableOperand): bigint {

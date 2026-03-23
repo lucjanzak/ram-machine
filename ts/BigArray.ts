@@ -1,5 +1,5 @@
 // No negative indeces allowed
-class BigArray<ValueType> {
+export class BigArray<ValueType> {
   private values;
   get(index: bigint): ValueType | undefined {
     if (index < 0) throw new Error("array index cannot be negative");
@@ -21,4 +21,4 @@ class BigArray<ValueType> {
     this.values = new Map<bigint, ValueType>();
   }
 }
-type BigIntArray = BigArray<bigint>;
+export type BigIntegerArray = BigArray<bigint>;

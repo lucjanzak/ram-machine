@@ -1,4 +1,17 @@
-class Parser {
+import {
+  Instruction,
+  isPartOfArray,
+  JUMP_INSTRUCTIONS,
+  NO_OPERAND_INSTRUCTIONS,
+  READABLE_OPERAND_INSTRUCTIONS,
+  ReadableOperand,
+  WRITEABLE_OPERAND_INSTRUCTIONS,
+  WriteableOperand,
+} from "./Instruction.js";
+import { assertNever } from "./Util.js";
+import { ParsedLine, Tile } from "./Program.js";
+
+export class Parser {
   constructor(private hideErrors = false, private unknownMnemonics: "actAsHalt" | "actAsNoInstruction" | "forbid" = "forbid") {}
 
   parseBigInt(operand: string): bigint {
@@ -71,8 +84,7 @@ class Parser {
       } else if (this.unknownMnemonics === "actAsNoInstruction") {
         return null;
       }
-      throw new Error("unreachable");
-      // console.warn(`unrecognized mnemonic: '${mnemonic}'`);
+      assertNever(this.unknownMnemonics);
     }
   }
 

@@ -1,10 +1,15 @@
-type ParsedLine = {
+import { Instruction, instructionToString } from "./Instruction.js";
+import { Nodes, useTemplate } from "./Nodes.js";
+import { Parser } from "./Parser.js";
+import { unwrap } from "./Util.js";
+
+export type ParsedLine = {
   labels: string[];
   instruction: Instruction | null;
   comment: string | null;
 };
 
-type Tile =
+export type Tile =
   | {
       type: "instruction";
       labels: string[];
@@ -16,69 +21,15 @@ type Tile =
       comment: string;
     };
 
-type ProgramCounter = number; // should always be a positive integer from 0(?) or from 1 to programlength
-class Program {
-  static readonly PARSING_EXAMPLE = Program.fromAssembly(`
-    ; comment only
-    label_only:
-    label: ; with comment
+export type TileDOM = Tile & { fragment: DocumentFragment };
 
-    HALT 
-    HALT ; with comment
-    label_with: HALT
-    label_with1: HALT ; comment
-
-    READ 2 
-    READ 2 ; with comment
-    label_with2: READ 2
-    label_with3: READ 2 ; and comment
-
-    JUMP abc 
-    JUMP abc ; with comment
-    label_with4: JUMP abc
-    label_with5: JUMP abc ; and comment
-
-    LOAD =123 
-    LOAD =123 ; with comment
-    label_with6: LOAD =123
-    label_with7: LOAD =123 ; and comment
-
-    mul: ti : ple  :la :bels:
-    labels with spaces:
-    13: ; numeric label
-    JUMP labels with spaces
-    JUMP 13
-`);
-  static readonly PARSING_ERROR_EXAMPLE = Program.fromAssembly(
-    `
-    a b c
-
-    ; these should not work:
-    HALT 1 ; halt with argument
-    LOAD abc ; load with label
-    STORE abc ; store to label
-    LOAD ; load with no operand
-    STORE; store with no operand
-    STORE =3 ; store to immediate operand
-
-    empty label:: ; this should report an error
-
-    ; this should report an error:
-    label_at_the_end:
-`,
-    true
-  );
-  static readonly NORMAL_EXAMPLE = Program.fromAssembly(`
-start:
-LOAD =0
-WRITE 0
-JUMP start
-`);
+export type ProgramCounter = number; // should always be a positive integer from 0(?) or from 1 to programlength
+export class Program {
   static readonly EMPTY = new Program();
 
   private instructions: Instruction[] = [];
   private labels = new Map<string, ProgramCounter>();
-  private tiles: Tile[] = [];
+  private tiles: Tile[] | TileDOM[] = [];
 
   getInstruction(index: ProgramCounter) {
     return this.instructions[index];
@@ -87,16 +38,17 @@ JUMP start
     return this.labels.get(label);
   }
 
-  createListingRows(): DocumentFragment {
-    const fragment = document.createDocumentFragment();
+  static createDOMTilesFromTiles(tiles: Tile[]): TileDOM[] {
+    const tilesDOM: TileDOM[] = [];
+
     function makeLabelsText(labels: string[]): string {
       return labels.map((x) => x + ":").join("\n");
     }
-    for (const tile of this.tiles) {
+    for (const tile of tiles) {
       if (tile.type === "comment") {
         const t = useTemplate(Nodes.commentTile);
         unwrap(t.querySelector("#comment")).textContent = tile.comment;
-        fragment.append(t);
+        tilesDOM.push(Object.assign(tile, { fragment: t }));
       } else if (tile.type === "instruction") {
         const t = useTemplate(Nodes.instructionTile);
         unwrap(t.querySelector("#labels")).textContent = makeLabelsText(tile.labels);
@@ -106,8 +58,17 @@ JUMP start
           comment.textContent = tile.comment;
           comment.classList.add("present");
         }
-        fragment.append(t);
+        tilesDOM.push(Object.assign(tile, { fragment: t }));
       }
+    }
+
+    return tilesDOM;
+  }
+
+  createListingRows(): DocumentFragment {
+    const fragment = document.createDocumentFragment();
+    for (const tile of Program.createDOMTilesFromTiles(this.tiles)) {
+      fragment.append(tile.fragment);
     }
     return fragment;
   }

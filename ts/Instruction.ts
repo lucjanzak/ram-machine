@@ -1,21 +1,52 @@
-const READABLE_OPERAND_INSTRUCTIONS = ["LOAD", "ADD", "SUB", "MUL", "DIV", "WRITE"] as const;
-const WRITEABLE_OPERAND_INSTRUCTIONS = ["STORE", "READ"] as const;
-const JUMP_INSTRUCTIONS = ["JUMP", "JGTZ", "JZERO"] as const;
-const NO_OPERAND_INSTRUCTIONS = ["HALT"] as const;
+import { assertNever } from "./Util.js";
 
-function isPartOfArray<T extends readonly string[]>(value: string, arr: T): value is (typeof arr)[number] {
+export const READABLE_OPERAND_INSTRUCTIONS = ["LOAD", "ADD", "SUB", "MUL", "DIV", "WRITE"] as const;
+export const WRITEABLE_OPERAND_INSTRUCTIONS = ["STORE", "READ"] as const;
+export const JUMP_INSTRUCTIONS = ["JUMP", "JGTZ", "JZERO"] as const;
+export const NO_OPERAND_INSTRUCTIONS = ["HALT"] as const;
+
+export function isPartOfArray<T extends readonly string[]>(value: string, arr: T): value is (typeof arr)[number] {
   return arr.includes(value as (typeof arr)[number]);
 }
 
-type ReadableOperand = { type: "immediate" | "register" | "indirect"; value: bigint };
-type WriteableOperand = { type: "register" | "indirect"; value: bigint };
-type ReadableOperandInstruction = { operation: (typeof READABLE_OPERAND_INSTRUCTIONS)[number]; operand: ReadableOperand };
-type WriteableOperandInstruction = { operation: (typeof WRITEABLE_OPERAND_INSTRUCTIONS)[number]; operand: WriteableOperand };
-type JumpInstruction = { operation: (typeof JUMP_INSTRUCTIONS)[number]; label: string };
-type NoOperandInstruction = { operation: (typeof NO_OPERAND_INSTRUCTIONS)[number] };
-type Instruction = ReadableOperandInstruction | WriteableOperandInstruction | JumpInstruction | NoOperandInstruction;
+export function checkInstructionType<T extends readonly string[]>(
+  instruction: Instruction,
+  arr: T
+): instruction is Instruction & { operation: (typeof arr)[number] } {
+  return arr.includes(instruction.operation as (typeof arr)[number]);
+}
 
-function instructionToString(instruction: Instruction): string {
-  // TODO
-  return instruction.operation as string;
+export type ReadableOperand = { type: "immediate" | "register" | "indirect"; value: bigint };
+export type WriteableOperand = { type: "register" | "indirect"; value: bigint };
+export type ReadableOperandInstruction = { operation: (typeof READABLE_OPERAND_INSTRUCTIONS)[number]; operand: ReadableOperand };
+export type WriteableOperandInstruction = { operation: (typeof WRITEABLE_OPERAND_INSTRUCTIONS)[number]; operand: WriteableOperand };
+export type JumpInstruction = { operation: (typeof JUMP_INSTRUCTIONS)[number]; label: string };
+export type NoOperandInstruction = { operation: (typeof NO_OPERAND_INSTRUCTIONS)[number] };
+export type Instruction = ReadableOperandInstruction | WriteableOperandInstruction | JumpInstruction | NoOperandInstruction;
+
+export function operandToString(operand: ReadableOperand): string {
+  if (operand.type === "immediate") {
+    return `=${operand.value}`;
+  } else if (operand.type === "indirect") {
+    return `*${operand.value}`;
+  } else if (operand.type === "register") {
+    return `${operand.value}`;
+  }
+  assertNever(operand.type);
+}
+
+export function instructionToString(instruction: Instruction): string {
+  if (checkInstructionType(instruction, READABLE_OPERAND_INSTRUCTIONS)) {
+    const op = operandToString(instruction.operand);
+    return `${instruction.operation} ${op}`;
+  } else if (checkInstructionType(instruction, WRITEABLE_OPERAND_INSTRUCTIONS)) {
+    const op = operandToString(instruction.operand);
+    return `${instruction.operation} ${op}`;
+  } else if (checkInstructionType(instruction, JUMP_INSTRUCTIONS)) {
+    return `${instruction.operation} ${instruction.label}`;
+  } else if (checkInstructionType(instruction, NO_OPERAND_INSTRUCTIONS)) {
+    return `${instruction.operation}`;
+  }
+  assertNever(instruction);
+  // return `${instruction.operand} - unknown instruction`;
 }

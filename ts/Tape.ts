@@ -1,6 +1,8 @@
+import { BigArray, BigIntegerArray } from "./BigArray.js";
+import { readUnsetRegisterValue } from "./Memory.js";
 
-class InputTape {
-  private values: BigIntArray = new BigArray();
+export class InputTape {
+  private values: BigIntegerArray = new BigArray();
   private currentIndex: bigint = 0n;
   read() {
     const value = this.values.get(this.currentIndex);
@@ -10,18 +12,25 @@ class InputTape {
   readOrDefault() {
     const value = this.read();
     if (value === undefined) {
-      return unsetRegisterValue();
+      return readUnsetRegisterValue();
     } else {
       return value;
     }
   }
+  reset() {
+    this.currentIndex = 0n;
+  }
 }
 
-class OutputTape {
-  private values: BigIntArray = new BigArray();
+export class OutputTape {
+  private values: BigIntegerArray = new BigArray();
   private currentIndex: bigint = 0n;
   write(value: bigint) {
-    this.values.set(this.currentIndex, value)
+    this.values.set(this.currentIndex, value);
     this.currentIndex++;
+  }
+  clearAndReset() {
+    this.values = new BigArray();
+    this.currentIndex = 0n;
   }
 }

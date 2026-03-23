@@ -13,6 +13,20 @@
   </div>
   listing:
   <table id="program-listing-table">
+    <colgroup>
+      <col style="width: 100px;">
+      <col style="width: 200px;">
+      <col style="width: 150px;">
+      <col style="width: 300px;">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Label</th>
+        <th>Instruction</th>
+        <th>Comment</th>
+      </tr>
+    </thead>
     <tbody id="program-listing">
 
     </tbody>
@@ -21,14 +35,6 @@
   <footer>
     Autor: Lucjan Żak
   </footer>
-  <template id="program-listing-header">
-    <tr>
-      <th>#</th>
-      <td>Label</td>
-      <td>Instruction</td>
-      <td>Comment</td>
-    </tr>
-  </template>
   <template id="instruction-tile">
     <tr>
       <td>#</td>
@@ -44,7 +50,7 @@
       <td id="comment" colspan="2" class="tile-part-comment present"></td>
     </tr>
   </template>
-  <script src="out/rammachine.js"></script>
+  <script src="out/app.js" type="module"></script>
 </body>
 
 </html>
