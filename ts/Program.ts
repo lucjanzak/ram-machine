@@ -9,6 +9,7 @@ export type ParsedLine = {
   comment: string | null;
 };
 
+// One parsed "line"/element of the source code
 export type Tile =
   | {
       type: "instruction";
@@ -21,9 +22,12 @@ export type Tile =
       comment: string;
     };
 
+// One parsed element of the source code, with a DOM element attached to it
 export type TileDOM = Tile & { fragment: DocumentFragment };
 
-export type ProgramCounter = number; // should always be a positive integer from 0(?) or from 1 to programlength
+// should always be a positive integer from 0(?) or from 1 to programlength // TODO: i think it should be from 0
+export type ProgramCounter = number;
+
 export class Program {
   static readonly EMPTY = new Program();
 
@@ -44,13 +48,16 @@ export class Program {
     function makeLabelsText(labels: string[]): string {
       return labels.map((x) => x + ":").join("\n");
     }
-    for (const tile of tiles) {
+    let lineNumber = 0;
+    tiles.forEach((tile, _index) => {
       if (tile.type === "comment") {
         const t = useTemplate(Nodes.commentTile);
         unwrap(t.querySelector("#comment")).textContent = tile.comment;
         tilesDOM.push(Object.assign(tile, { fragment: t }));
       } else if (tile.type === "instruction") {
+        lineNumber++;
         const t = useTemplate(Nodes.instructionTile);
+        unwrap(t.querySelector("#line-number")).textContent = `${lineNumber}`;
         unwrap(t.querySelector("#labels")).textContent = makeLabelsText(tile.labels);
         unwrap(t.querySelector("#instruction")).textContent = instructionToString(tile.instruction);
         if (tile.comment !== null) {
@@ -60,7 +67,7 @@ export class Program {
         }
         tilesDOM.push(Object.assign(tile, { fragment: t }));
       }
-    }
+    });
 
     return tilesDOM;
   }
@@ -86,7 +93,7 @@ export class Program {
       if (tile.type === "instruction") {
         for (const label of tile.labels) {
           if (this.labels.has(label)) {
-            // this is already checked earlier - this is just to double check
+            // this is already checked earlier, while parsing - this is just to double check
             throw new Error(`label was already defined: '${label}'`);
           }
           this.labels.set(label, this.instructions.length);

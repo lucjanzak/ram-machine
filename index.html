@@ -11,17 +11,28 @@
   <div>
     Hello world
   </div>
+  <nav>
+    <button onclick="RAMMachine.machine.loadProgramAndReset(RAMMachine.examplePrograms.PARSING_EXAMPLE)">
+      Load PARSING_EXAMPLE
+    </button>
+    <button onclick="RAMMachine.machine.loadProgramAndReset(RAMMachine.examplePrograms.NORMAL_EXAMPLE)">
+      Load NORMAL_EXAMPLE
+    </button>
+    <button onclick="RAMMachine.machine.loadProgramAndReset(RAMMachine.examplePrograms.PARSING_ERROR_EXAMPLE)">
+      Load PARSING_ERROR_EXAMPLE
+    </button>
+  </nav>
   listing:
   <table id="program-listing-table">
     <colgroup>
       <col style="width: 100px;">
-      <col style="width: 200px;">
-      <col style="width: 150px;">
-      <col style="width: 300px;">
+      <col style="width: 240px;">
+      <col style="width: 180px;">
+      <col style="width: 400px;">
     </colgroup>
     <thead>
       <tr>
-        <th>#</th>
+        <th>Line</th>
         <th>Label</th>
         <th>Instruction</th>
         <th>Comment</th>
@@ -37,7 +48,7 @@
   </footer>
   <template id="instruction-tile">
     <tr>
-      <td>#</td>
+      <td id="line-number" class="tile-part-line-number"></td>
       <td id="labels" class="tile-part-labels"></td>
       <td id="instruction"></td>
       <td id="comment" class="tile-part-comment"></td>

@@ -1,3 +1,4 @@
+import { updateDOM } from "./app.js";
 import { Instruction, ReadableOperand, WriteableOperand } from "./Instruction.js";
 import { Memory } from "./Memory.js";
 import { Program, ProgramCounter } from "./Program.js";
@@ -27,6 +28,7 @@ export class Machine {
   loadProgramAndReset(program: Program) {
     this._program = program;
     this.reset();
+    updateDOM();
   }
 
   readFromOperand(operand: ReadableOperand): bigint {
