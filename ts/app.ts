@@ -36,3 +36,4 @@ export function updateDOM() {
 }
 
 updateDOM();
+machine.stats.replaceStatisticsDOM();

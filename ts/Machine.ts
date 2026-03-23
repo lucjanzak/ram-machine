@@ -1,8 +1,11 @@
 import { updateDOM } from "./app.js";
-import { Instruction, ReadableOperand, WriteableOperand } from "./Instruction.js";
+import { ALL_INSTRUCTIONS, Instruction, ReadableOperand, WriteableOperand } from "./Instruction.js";
 import { Memory } from "./Memory.js";
+import { Nodes, useTemplate } from "./Nodes.js";
 import { Program, ProgramCounter } from "./Program.js";
+import { Statistics } from "./Statistics.js";
 import { InputTape, OutputTape } from "./Tape.js";
+import { assertNever, unwrap } from "./Util.js";
 
 export class Machine {
   private running = false;
@@ -10,6 +13,7 @@ export class Machine {
   private outputTape = new OutputTape();
   private memory = new Memory();
   private programCounter: ProgramCounter = 0;
+  public stats = new Statistics();
 
   constructor(private _program: Program = Program.EMPTY) {}
 
@@ -64,6 +68,7 @@ export class Machine {
   }
   executeInstruction(instruction: Instruction) {
     console.log("executing ", instruction, ` @ line ${this.programCounter}`);
+    this.stats.incrementAndUpdateDOM(instruction.operation);
     if (instruction.operation === "LOAD") {
       const value = this.readFromOperand(instruction.operand);
       this.memory.setAccumulator(value);
@@ -115,8 +120,11 @@ export class Machine {
     } else if (instruction.operation === "HALT") {
       console.log("program finished");
       this.running = false;
+    } else {
+      assertNever(instruction.operation);
     }
   }
+
   executeCurrentInstruction() {
     const instruction = this._program.getInstruction(this.programCounter);
     if (instruction === undefined) {
@@ -125,6 +133,7 @@ export class Machine {
       this.executeInstruction(instruction);
     }
   }
+
   run() {
     this.running = true;
     while (this.running) {
