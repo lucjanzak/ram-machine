@@ -14,6 +14,7 @@ export class Machine {
   private memory = new Memory();
   private programCounter: ProgramCounter = 0;
   public stats = new Statistics();
+  private debugBreakpoints: ProgramCounter[] = [5, 10, 15, 30]; // TODO
 
   constructor(private _program: Program = Program.EMPTY) {}
 
@@ -66,9 +67,14 @@ export class Machine {
     }
     this.programCounter = newProgramCounter;
   }
-  executeInstruction(instruction: Instruction) {
-    console.log("executing ", instruction, ` @ line ${this.programCounter}`);
-    this.stats.incrementAndUpdateDOM(instruction.operation);
+  executeInstruction(instruction: Instruction, silent: boolean) {
+    // console.log("executing ", instruction, ` @ line ${this.programCounter}`);
+    if (silent) {
+      this.stats.incrementSilently(instruction.operation);
+    } else {
+      this.stats.incrementAndUpdateDOM(instruction.operation);
+    }
+
     if (instruction.operation === "LOAD") {
       const value = this.readFromOperand(instruction.operand);
       this.memory.setAccumulator(value);
@@ -125,19 +131,49 @@ export class Machine {
     }
   }
 
-  executeCurrentInstruction() {
+  executeCurrentInstruction(silent: boolean) {
     const instruction = this._program.getInstruction(this.programCounter);
     if (instruction === undefined) {
       throw new Error("program counter outside of program bounds"); // TODO
     } else {
-      this.executeInstruction(instruction);
+      this.executeInstruction(instruction, silent);
     }
   }
 
-  run() {
+  runAsFastAsPossible(debug: boolean) {
     this.running = true;
+
+    const timeStarted = Date.now();
+    let stage: "normal" | "warning" | "alert" = "normal";
+
+    const cancelRunning = (currentTime: number) => {
+      this.running = false;
+      this.stats.timeEnd(currentTime);
+      this.stats.replaceStatisticsDOM();
+    };
+
+    this.stats.timeStart();
     while (this.running) {
-      this.executeCurrentInstruction();
+      if (debug && this.debugBreakpoints.includes(this.programCounter)) {
+        alert("breakpoint hit! @ line " + this.programCounter);
+      }
+
+      this.executeCurrentInstruction(true);
+
+      const currentTime = Date.now();
+      if (stage === "normal" && currentTime - timeStarted > 1000) {
+        stage = "warning";
+        console.warn("WARNING: Program running longer than 1000ms...");
+      } else if (stage === "warning" && currentTime - timeStarted > 5000) {
+        stage = "alert";
+        const answer = confirm("This is taking a while, do you want to cancel?");
+        if (answer) {
+          cancelRunning(currentTime);
+          break;
+        } else {
+          // TODO: idk let the user run it for a while...
+        }
+      }
     }
   }
 }

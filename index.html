@@ -18,7 +18,11 @@
   </header>
   <nav>
     <div class="nav-buttons">
-      <button class="nav-button nav-button-auto">Załaduj</button>
+      <button class="nav-button nav-button-auto">Load Program</button>
+      <button class="nav-button nav-button-auto"
+        onclick="setTimeout(() => RAMMachine.machine.runAsFastAsPossible(false), 0)">
+        Execute as fast as possible
+      </button>
     </div>
 
     <div class="nav-buttons">
