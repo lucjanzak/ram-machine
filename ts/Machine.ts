@@ -14,7 +14,7 @@ export class Machine {
   private memory = new Memory();
   private programCounter: ProgramCounter = 0;
   public stats = new Statistics();
-  private debugBreakpoints: ProgramCounter[] = [5, 10, 15, 30]; // TODO
+  private debugBreakpoints: ProgramCounter[] = []; //[5, 10, 15, 30]; // TODO
 
   constructor(private _program: Program = Program.EMPTY) {}
 
