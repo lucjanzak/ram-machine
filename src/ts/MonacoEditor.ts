@@ -64,7 +64,7 @@ ADD 1   ; Add the value from r1 to r0, and store the result to r0
 WRITE 0 ; Write the contents of r0 to the output tape
 HALT    ; End program execution
 HALT
-JUMP a ; <- this highlighting is bugged
+JUMP a ; <-- TODO this highlighting is bugged
 `;
 
 export function createEditor(): monaco.editor.IStandaloneCodeEditor {
@@ -197,78 +197,48 @@ export function createEditor(): monaco.editor.IStandaloneCodeEditor {
           insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
           range: range,
         },
-        {
-          label: "while r₀ <= 0",
-          detail: "while loop with JGTZ",
+        ...[
+          [
+            "while r₀ <= 0",
+            "while loop with JGTZ",
+            ["; while r₀ <= 0", "${1:loop}:", "JGTZ ${2:endloop}", "\t${0:; code ...}", "JUMP $1", "$2:", ""].join("\n"),
+          ],
+          [
+            "while r₀ != 0",
+            "while loop with JZERO",
+            ["; while r₀ != 0", "${1:loop}:", "JZERO ${2:endloop}", "\t${0:; code ...}", "JUMP $1", "$2:", ""].join("\n"),
+          ],
+          [
+            "while r₀ > 0",
+            "while loop with JGTZ",
+            ["; while r₀ > 0", "JUMP ${1:loopcheck}", "${2:loop}:", "\t${0:; code ...}", "$1:", "JGTZ $2", ""].join("\n"),
+          ],
+          [
+            "while r₀ == 0",
+            "while loop with JZERO",
+            ["; while r₀ == 0", "JUMP ${1:loopcheck}", "${2:loop}:", "\t${0:; code ...}", "$1:", "JZERO $2", ""].join("\n"),
+          ],
+          ["do-while r₀ > 0", "do-while loop with JGTZ", ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ > 0;", "JGTZ $1", ""].join("\n")],
+          ["do-while r₀ == 0", "do-while loop with JZERO", ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ == 0;", "JZERO $1", ""].join("\n")],
+          [
+            "do-while r₀ <= 0",
+            "do-while loop with JGTZ",
+            ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ <= 0;", "JGTZ ${2:endloop}", "JUMP $1", "$2:"].join("\n"),
+          ],
+          [
+            "do-while r₀ != 0",
+            "do-while loop with JZERO",
+            ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ != 0;", "JZERO ${2:endloop}", "JUMP $1", "$2:"].join("\n"),
+          ],
+          ["loop", "Endless loop", ["; endless loop", "${1:loop}:", "\t${0:; code ...}", "JUMP $1"].join("\n")],
+        ].map(([label, detail, insertText]) => ({
+          label,
+          detail,
           kind: monaco.languages.CompletionItemKind.Snippet,
-          insertText: ["; while r₀ <= 0", "${1:loop}:", "JGTZ ${2:endloop}", "\t${0:; code ...}", "JUMP $1", "$2:", ""].join("\n"),
+          insertText,
           insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
           range: range,
-        },
-        {
-          label: "while r₀ != 0",
-          detail: "while loop with JZERO",
-          kind: monaco.languages.CompletionItemKind.Snippet,
-          insertText: ["; while r₀ != 0", "${1:loop}:", "JZERO ${2:endloop}", "\t${0:; code ...}", "JUMP $1", "$2:", ""].join("\n"),
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-          range: range,
-        },
-        {
-          label: "while r₀ > 0",
-          detail: "while loop with JGTZ",
-          kind: monaco.languages.CompletionItemKind.Snippet,
-          insertText: ["; while r₀ > 0", "JUMP ${1:loopcheck}", "${2:loop}:", "\t${0:; code ...}", "$1:", "JGTZ $2", ""].join("\n"),
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-          range: range,
-        },
-        {
-          label: "while r₀ == 0",
-          detail: "while loop with JZERO",
-          kind: monaco.languages.CompletionItemKind.Snippet,
-          insertText: ["; while r₀ == 0", "JUMP ${1:loopcheck}", "${2:loop}:", "\t${0:; code ...}", "$1:", "JZERO $2", ""].join("\n"),
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-          range: range,
-        },
-        {
-          label: "do-while r₀ > 0",
-          detail: "do-while loop with JGTZ",
-          kind: monaco.languages.CompletionItemKind.Snippet,
-          insertText: ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ > 0;", "JGTZ $1", ""].join("\n"),
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-          range: range,
-        },
-        {
-          label: "do-while r₀ == 0",
-          detail: "do-while loop with JZERO",
-          kind: monaco.languages.CompletionItemKind.Snippet,
-          insertText: ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ == 0;", "JZERO $1", ""].join("\n"),
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-          range: range,
-        },
-        {
-          label: "do-while r₀ <= 0",
-          detail: "do-while loop with JGTZ",
-          kind: monaco.languages.CompletionItemKind.Snippet,
-          insertText: ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ <= 0;", "JGTZ ${2:endloop}", "JUMP $1", "$2:"].join("\n"),
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-          range: range,
-        },
-        {
-          label: "do-while r₀ != 0",
-          detail: "do-while loop with JZERO",
-          kind: monaco.languages.CompletionItemKind.Snippet,
-          insertText: ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ != 0;", "JZERO ${2:endloop}", "JUMP $1", "$2:"].join("\n"),
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-          range: range,
-        },
-        {
-          label: "loop",
-          detail: "Endless loop",
-          kind: monaco.languages.CompletionItemKind.Snippet,
-          insertText: ["; endless loop", "${1:loop}:", "\t${0:; code ...}", "JUMP $1"].join("\n"),
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-          range: range,
-        },
+        })),
       ];
       return { suggestions: suggestions };
     },

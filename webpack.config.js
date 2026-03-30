@@ -28,10 +28,16 @@ const config /*: webpack.Configuration*/ = {
           url: false,
         },
       },
-      {
-        test: /\.ttf$/,
-        use: ["file-loader"],
-      },
+      // TODO: properly fix .ttfs not loading
+      // {
+      //   test: /\.ttf$/,
+      //   use: ["file-loader"],
+      // },
+      // {
+      // test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+      // type: "asset/resource",
+      // use: "url-loader",
+      // },
       {
         test: /\.tsx?$/,
         use: "ts-loader",
