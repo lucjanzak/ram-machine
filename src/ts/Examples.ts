@@ -3,9 +3,10 @@ import { Program } from "./Program";
 // class Program;
 
 export const exampleProgramsAsm = {
-  PARSING_EXAMPLE: `; Parser test example
+  PARSING_EXAMPLE: `; Parser test example program
 ; =======================
-; This example program contains many various combinations of labels, instructions, and comments
+;
+; This example program contains many various combinations of labels, instructions, and comments.
 ;
 ;
 
@@ -44,7 +45,13 @@ JUMP 13
 HALT
 JUMP a ; <-- this highlighting was bugged, but is fixed now
 `,
-  PARSING_ERROR_EXAMPLE: `
+  PARSING_ERROR_EXAMPLE: `; Parser errors example program
+; =======================
+;
+; This example program contains many invalid combinations of labels, instructions, and comments.
+;
+;
+
     a b c
 
     ; these should not work:
@@ -60,21 +67,24 @@ JUMP a ; <-- this highlighting was bugged, but is fixed now
     ; this should report an error:
     label_at_the_end:
 `,
-  BENCHMARK_EXAMPLE: `
+  BENCHMARK_EXAMPLE: `; Benchmark program
+; =======================
+;
+; A tight loop that copies values from the input tape to the output tape.
 start:
-LOAD =0
+READ 0
 WRITE 0
 JUMP start
 `,
-  SIMPLE_EXAMPLE: `; EXAMPLE
-; ===========
+  SIMPLE_EXAMPLE: `; Simple example program
+; =======================
 ;
 ; This is an example program
-; that sums two numbers together
+; that sums two numbers together.
 ;
 ; You can compile it using the button below,
 ; and then use the "Run" button at the top of the page
-; to execute the program
+; to execute the program.
 READ 0  ; Load the first value from the input tape to r0
 READ 1  ; Load the second value from the input tape to r1
 ADD 1   ; Add the value from r1 to r0, and store the result to r0 
