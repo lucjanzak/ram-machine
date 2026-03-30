@@ -37,6 +37,11 @@ header > div {
   gap: 0.5em;
 }
 
+.version-header {
+  margin-left: 0.5rem;
+  font-weight: 400;
+}
+
 nav {
   background-color: var(--accent-color2);
   padding: 0.5em 1.5em;
