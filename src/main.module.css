@@ -127,6 +127,7 @@ nav {
 
 #program-listing-table {
   border-collapse: collapse;
+  transform-origin: center top;
 }
 
 #program-listing-table td {

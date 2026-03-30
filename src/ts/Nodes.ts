@@ -2,6 +2,7 @@ import { unwrap } from "./Util";
 
 export namespace Nodes {
   // Static elements
+  export const programListingTable = unwrap(document.querySelector("#program-listing-table"));
   export const programListing = unwrap(document.querySelector("#program-listing"));
   export const stats = unwrap(document.querySelector("#stats"));
   // export const programTextEditorBasic = unwrap(document.querySelector<HTMLTextAreaElement>("#program-text-editor-basic"));

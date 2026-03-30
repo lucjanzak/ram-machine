@@ -44,6 +44,13 @@ export function updateDOM() {
   console.log(machine, machine.program, listingRows);
   Nodes.programListing.textContent = "";
   Nodes.programListing.appendChild(listingRows);
+  Nodes.programListingTable.animate(
+    [
+      { opacity: 0, transform: "scale(0%) rotateX(90deg)" },
+      { opacity: 1, transform: "scale(100%) rotateX(0deg)" },
+    ],
+    { duration: 500, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
+  );
 }
 
 updateDOM();
