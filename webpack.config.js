@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import webpack from "webpack";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import CopyWebpackPlugin from "copy-webpack-plugin";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -54,6 +55,9 @@ const config /*: webpack.Configuration*/ = {
       template: "./src/index.html",
     }),
     new MonacoWebpackPlugin(),
+    new CopyWebpackPlugin({
+      patterns: [{ from: "src/404.html", to: "404.html" }],
+    }),
   ],
 };
 
