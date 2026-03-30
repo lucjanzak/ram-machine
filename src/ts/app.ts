@@ -1,16 +1,22 @@
-import { ExamplePrograms } from "./Examples.js";
-import { Machine } from "./Machine.js";
-import { Nodes } from "./Nodes.js";
-import { Program } from "./Program.js";
+import { ExamplePrograms } from "./Examples";
+import { Machine } from "./Machine";
+import { Nodes } from "./Nodes";
+import { Program } from "./Program";
+import { createEditor } from "./MonacoEditor";
+
+import * as monaco from "monaco-editor";
+
+import "../main.module.css";
 
 const machine = new Machine();
+const editor = createEditor();
 const examplePrograms = {
   NORMAL_EXAMPLE: ExamplePrograms.NORMAL_EXAMPLE,
   PARSING_ERROR_EXAMPLE: ExamplePrograms.PARSING_ERROR_EXAMPLE,
   PARSING_EXAMPLE: ExamplePrograms.PARSING_EXAMPLE,
 };
 function compileInput() {
-  const assembly = Nodes.programInput.value;
+  const assembly = editor.getValue();
   const program = Program.fromAssembly(assembly);
   machine.loadProgramAndReset(program);
 }
@@ -20,6 +26,7 @@ declare global {
   interface Window {
     RAMMachine: {
       machine: Machine;
+      editor: monaco.editor.IStandaloneCodeEditor;
       examplePrograms: { [K in keyof typeof examplePrograms]: Program };
       compileInput: () => void;
     };
@@ -27,6 +34,7 @@ declare global {
 }
 window.RAMMachine = {
   machine,
+  editor,
   examplePrograms,
   compileInput,
 };

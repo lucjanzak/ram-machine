@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>RAM machine emulator</title>
-  <link rel="stylesheet" href="style.css">
+  <!-- <link rel="stylesheet" href="main.module.css"> -->
 </head>
 
 <body>
@@ -76,8 +76,8 @@
     <section>
       program:
       <br>
-      <textarea id="program-input" rows="30" cols="160" resize="false">
-; This is an example program
+      <!-- <textarea id="program-text-editor-basic" rows="30" cols="160" resize="false">
+; This is an example program 1
 ; that sums two numbers together
 ;
 ; You can compile it using the button below,
@@ -89,7 +89,8 @@ ADD 1   ; Add the value from r1 to r0, and store the result to r0
 WRITE 0 ; Write the contents of r0 to the output tape
 HALT    ; End program execution
       
-      </textarea>
+      </textarea> -->
+      <div id="program-text-editor-container"></div>
       <nav>
         <button class="nav-button nav-button-auto" onclick="RAMMachine.compileInput()">Compile</button>
       </nav>
@@ -129,7 +130,6 @@ HALT    ; End program execution
       <td id="count"></td>
     </tr>
   </template>
-  <script src="out/app.js" type="module"></script>
 </body>
 
 </html>

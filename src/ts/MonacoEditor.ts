@@ -1,0 +1,136 @@
+import * as monaco from "monaco-editor";
+import { Nodes } from "./Nodes";
+
+function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage {
+  return {
+    ignoreCase: true,
+    defaultToken: "",
+    tokenPostfix: ".ram",
+
+    readop_keywords: ["load", "add", "sub", "mul", "div", "write"],
+    writeop_keywords: ["store", "read"],
+    jump_keywords: ["jump", "jgtz", "jzero"],
+    noop_keywords: ["halt"],
+
+    digits: /\d+/,
+
+    tokenizer: {
+      root: [
+        [/\s*\w*:/, "tag"], // "annotation"
+
+        // keywords
+        [
+          /[a-zA-Z_$][\w$]*/,
+          {
+            cases: {
+              "@readop_keywords": { token: "keyword.$0", next: "after_readop_keyword" },
+              "@writeop_keywords": { token: "keyword.$0", next: "after_writeop_keyword" },
+              "@jump_keywords": { token: "keyword.$0", next: "after_jump_keyword" },
+              "@noop_keywords": { token: "keyword.$0", next: "after_noop_keyword" },
+              "@default": "invalid",
+            },
+          },
+        ],
+        { include: "@whitespace" },
+        [/(@digits)/, "number"],
+      ],
+
+      whitespace: [
+        [/[ \t]+/, ""],
+        [/$/, "", "@popall"],
+        [/;.*$/, "comment", "@popall"],
+      ],
+
+      after_writeop_keyword: [{ include: "@whitespace" }, [/\d+/, "number", "root"], [/\*\d+/, "number", "root"], [/.*/, "invalid", "root"]],
+      after_readop_keyword: [[/=\d+/, "number", "root"], { include: "@after_writeop_keyword" }],
+      after_jump_keyword: [{ include: "@whitespace" }, [/\s*[a-zA-Z_]+/, "tag", "root"], [/.*/, "invalid", "root"]],
+      after_noop_keyword: [{ include: "@whitespace" }, [/.*/, "invalid", "root"]],
+    },
+  };
+}
+
+const exampleProgram = `; EXAMPLE
+; ===========
+;
+; This is an example program
+; that sums two numbers together
+;
+; You can compile it using the button below,
+; and then use the "Run" button at the top of the page
+; to execute the program
+READ 0  ; Load the first value from the input tape to r0
+READ 1  ; Load the second value from the input tape to r1
+ADD 1   ; Add the value from r1 to r0, and store the result to r0 
+WRITE 0 ; Write the contents of r0 to the output tape
+HALT    ; End program execution
+HALT
+JUMP a ; <- this highlighting is bugged
+`;
+
+export function createEditor(): monaco.editor.IStandaloneCodeEditor {
+  // Adapted from playground:
+  // https://microsoft.github.io/monaco-editor/playground.html?source=v0.55.1#example-extending-language-services-custom-languages
+
+  // Register a new language
+  monaco.languages.register({ id: "ramMachineAssembly" });
+
+  // Register a tokens provider for the language
+  monaco.languages.setMonarchTokensProvider("ramMachineAssembly", ramMachineAssemblyMonarchLanguage());
+
+  // Register a completion item provider for the new language
+  monaco.languages.registerCompletionItemProvider("ramMachineAssembly", {
+    provideCompletionItems: (model, position) => {
+      const word = model.getWordUntilPosition(position);
+      const range = {
+        startLineNumber: position.lineNumber,
+        endLineNumber: position.lineNumber,
+        startColumn: word.startColumn,
+        endColumn: word.endColumn,
+      };
+      const suggestions: monaco.languages.CompletionItem[] = [
+        {
+          label: "simpleText",
+          kind: monaco.languages.CompletionItemKind.Text,
+          insertText: "simpleText",
+          range: range,
+        },
+        ...["LOAD", "STORE", "ADD", "SUB", "MUL", "DIV", "READ", "WRITE"].map((x) => ({
+          label: x,
+          kind: monaco.languages.CompletionItemKind.Keyword,
+          insertText: x + " ${1:}",
+          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          range: range,
+        })),
+        ...["JUMP", "JGTZ", "JZERO"].map((x) => ({
+          label: x,
+          kind: monaco.languages.CompletionItemKind.Keyword,
+          insertText: x + " ${1:label}",
+          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          range: range,
+        })),
+        {
+          label: "HALT",
+          kind: monaco.languages.CompletionItemKind.Keyword,
+          insertText: "HALT",
+          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          range: range,
+        },
+        {
+          label: "ifelse",
+          kind: monaco.languages.CompletionItemKind.Snippet,
+          insertText: ["if (${1:condition}) {", "\t$0", "} else {", "\t", "}"].join("\n"),
+          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          documentation: "If-Else Statement",
+          range: range,
+        },
+      ];
+      return { suggestions: suggestions };
+    },
+  });
+
+  const editor = monaco.editor.create(Nodes.programTextEditorContainer, {
+    value: exampleProgram,
+    language: "ramMachineAssembly",
+  });
+  return editor;
+}

@@ -1,4 +1,4 @@
-import { BigArray, BigIntegerArray } from "./BigArray.js";
+import { BigArray, BigIntegerArray } from "./BigArray";
 
 export function readUnsetRegisterValue() {
   // return 0n;

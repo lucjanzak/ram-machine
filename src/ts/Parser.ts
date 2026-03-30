@@ -7,9 +7,9 @@ import {
   ReadableOperand,
   WRITEABLE_OPERAND_INSTRUCTIONS,
   WriteableOperand,
-} from "./Instruction.js";
-import { assertNever } from "./Util.js";
-import { ParsedLine, Tile } from "./Program.js";
+} from "./Instruction";
+import { assertNever } from "./Util";
+import { ParsedLine, Tile } from "./Program";
 
 export class Parser {
   constructor(private hideErrors = false, private unknownMnemonics: "actAsHalt" | "actAsNoInstruction" | "forbid" = "forbid") {}

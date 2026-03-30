@@ -1,7 +1,7 @@
-import { Instruction, instructionToString } from "./Instruction.js";
-import { Nodes, useTemplate } from "./Nodes.js";
-import { Parser } from "./Parser.js";
-import { unwrap } from "./Util.js";
+import { Instruction, instructionToString } from "./Instruction";
+import { Nodes, useTemplate } from "./Nodes";
+import { Parser } from "./Parser";
+import { unwrap } from "./Util";
 
 export type ParsedLine = {
   labels: string[];

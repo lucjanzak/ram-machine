@@ -1,5 +1,5 @@
-import { BigArray, BigIntegerArray } from "./BigArray.js";
-import { readUnsetRegisterValue } from "./Memory.js";
+import { BigArray, BigIntegerArray } from "./BigArray";
+import { readUnsetRegisterValue } from "./Memory";
 
 export class InputTape {
   private values: BigIntegerArray = new BigArray();

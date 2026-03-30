@@ -1,10 +1,11 @@
-import { unwrap } from "./Util.js";
+import { unwrap } from "./Util";
 
 export namespace Nodes {
   // Static elements
   export const programListing = unwrap(document.querySelector("#program-listing"));
   export const stats = unwrap(document.querySelector("#stats"));
-  export const programInput = unwrap(document.querySelector<HTMLTextAreaElement>("#program-input"));
+  // export const programTextEditorBasic = unwrap(document.querySelector<HTMLTextAreaElement>("#program-text-editor-basic"));
+  export const programTextEditorContainer = unwrap(document.querySelector<HTMLDivElement>("#program-text-editor-container"));
 
   // Templates
   export const commentTile = unwrap(document.querySelector<HTMLTemplateElement>("#comment-tile"));

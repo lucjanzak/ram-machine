@@ -1,4 +1,4 @@
-import { Program } from "./Program.js";
+import { Program } from "./Program";
 
 // class Program;
 export namespace ExamplePrograms {

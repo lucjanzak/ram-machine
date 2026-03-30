@@ -1,11 +1,11 @@
-import { updateDOM } from "./app.js";
-import { ALL_INSTRUCTIONS, Instruction, ReadableOperand, WriteableOperand } from "./Instruction.js";
-import { Memory } from "./Memory.js";
-import { Nodes, useTemplate } from "./Nodes.js";
-import { Program, ProgramCounter } from "./Program.js";
-import { Statistics } from "./Statistics.js";
-import { InputTape, OutputTape } from "./Tape.js";
-import { assertNever, unwrap } from "./Util.js";
+import { updateDOM } from "./app";
+import { ALL_INSTRUCTIONS, Instruction, ReadableOperand, WriteableOperand } from "./Instruction";
+import { Memory } from "./Memory";
+import { Nodes, useTemplate } from "./Nodes";
+import { Program, ProgramCounter } from "./Program";
+import { Statistics } from "./Statistics";
+import { InputTape, OutputTape } from "./Tape";
+import { assertNever, unwrap } from "./Util";
 
 export class Machine {
   private running = false;

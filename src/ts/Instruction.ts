@@ -1,14 +1,25 @@
-import { assertNever } from "./Util.js";
+import { assertNever } from "./Util";
 
 export const READABLE_OPERAND_INSTRUCTIONS = ["LOAD", "ADD", "SUB", "MUL", "DIV", "WRITE"] as const;
 export const WRITEABLE_OPERAND_INSTRUCTIONS = ["STORE", "READ"] as const;
 export const JUMP_INSTRUCTIONS = ["JUMP", "JGTZ", "JZERO"] as const;
 export const NO_OPERAND_INSTRUCTIONS = ["HALT"] as const;
 export const ALL_INSTRUCTIONS = [
-  ...READABLE_OPERAND_INSTRUCTIONS,
-  ...WRITEABLE_OPERAND_INSTRUCTIONS,
-  ...JUMP_INSTRUCTIONS,
-  ...NO_OPERAND_INSTRUCTIONS,
+  "LOAD",
+  "STORE",
+  "ADD",
+  "SUB",
+  "MUL",
+  "DIV",
+  "READ",
+  "WRITE",
+  "JUMP",
+  "JGTZ",
+  "JZERO",
+  "HALT",
+  // ...WRITEABLE_OPERAND_INSTRUCTIONS,
+  // ...JUMP_INSTRUCTIONS,
+  // ...NO_OPERAND_INSTRUCTIONS,
 ] as const;
 
 export function isPartOfArray<T extends readonly string[]>(value: string, arr: T): value is (typeof arr)[number] {

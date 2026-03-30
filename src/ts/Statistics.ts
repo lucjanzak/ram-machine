@@ -1,6 +1,6 @@
-import { ALL_INSTRUCTIONS } from "./Instruction.js";
-import { Nodes, useTemplate } from "./Nodes.js";
-import { unwrap } from "./Util.js";
+import { ALL_INSTRUCTIONS } from "./Instruction";
+import { Nodes, useTemplate } from "./Nodes";
+import { unwrap } from "./Util";
 
 export class Statistics {
   private counters = Statistics.createEmptyCounters();
