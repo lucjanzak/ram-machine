@@ -30,6 +30,12 @@ export class Machine {
     this.programCounter = 0;
   }
 
+  loadAssemblyAndReset(assembly: string) {
+    window.RAMMachine.editor.setValue(assembly);
+    const program = Program.fromAssembly(assembly);
+    this.loadProgramAndReset(program);
+  }
+
   loadProgramAndReset(program: Program) {
     this._program = program;
     this.reset();

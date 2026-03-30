@@ -1,4 +1,4 @@
-import { ExamplePrograms } from "./Examples";
+import { examplePrograms, exampleProgramsAsm } from "./Examples";
 import { Machine } from "./Machine";
 import { Nodes } from "./Nodes";
 import { Program } from "./Program";
@@ -10,11 +10,6 @@ import "../main.module.css";
 
 const machine = new Machine();
 const editor = createEditor();
-const examplePrograms = {
-  NORMAL_EXAMPLE: ExamplePrograms.NORMAL_EXAMPLE,
-  PARSING_ERROR_EXAMPLE: ExamplePrograms.PARSING_ERROR_EXAMPLE,
-  PARSING_EXAMPLE: ExamplePrograms.PARSING_EXAMPLE,
-};
 function compileInput() {
   const assembly = editor.getValue();
   const program = Program.fromAssembly(assembly);
@@ -28,6 +23,7 @@ declare global {
       machine: Machine;
       editor: monaco.editor.IStandaloneCodeEditor;
       examplePrograms: { [K in keyof typeof examplePrograms]: Program };
+      exampleProgramsAsm: { [K in keyof typeof exampleProgramsAsm]: string };
       compileInput: () => void;
     };
   }
@@ -36,12 +32,12 @@ window.RAMMachine = {
   machine,
   editor,
   examplePrograms,
+  exampleProgramsAsm,
   compileInput,
 };
 
 /// Initialization below:
-
-machine.loadProgramAndReset(ExamplePrograms.NORMAL_EXAMPLE);
+machine.loadAssemblyAndReset(exampleProgramsAsm.SIMPLE_EXAMPLE);
 
 export function updateDOM() {
   const listingRows = machine.program.createListingRows();

@@ -5,10 +5,18 @@
   --accent-color2: #317a7e;
 }
 
+html,
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  /* width: 100%;
+  height: 100%; */
   margin: 0;
   padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 
 header {
@@ -86,8 +94,30 @@ nav {
   color: #000;
 }
 
-main {
+#main-panes {
+  display: flex;
+  flex-direction: row;
+  height: 80vh;
+  justify-content: stretch;
+  align-items: stretch;
+}
+
+.main-pane {
+  width: 50%;
+
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.pane-scroll-h {
+  overflow-x: scroll;
+}
+
+#program-listing-pane > div {
   padding: 2em;
+  width: fit-content;
 }
 
 #program-listing-table {
@@ -112,7 +142,7 @@ main {
 #program-listing-table .tile-part-comment {
   font-family: monospace;
   color: #000000bf;
-  white-space: pre;
+  white-space: preserve-breaks;
   padding-left: 1rem;
 }
 
@@ -130,7 +160,7 @@ main {
 .tile-part-comment.big {
   /* text-align: center; */
   margin: auto;
-  width: min-content;
+  width: fit-content;
 }
 
 #program-input {
@@ -138,10 +168,10 @@ main {
 }
 
 #program-text-editor-container {
-  width: 100%;
+  /* flex-grow: 1;
   height: 600px;
-  min-width: 300px;
-  max-height: 100%;
+  min-height: 600px; */
+  height: 100%;
 }
 
 footer {

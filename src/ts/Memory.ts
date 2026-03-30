@@ -2,7 +2,8 @@ import { BigArray, BigIntegerArray } from "./BigArray";
 
 export function readUnsetRegisterValue() {
   // return 0n;
-  return BigInt(Math.random() * 100);
+  // TODO: option for this: either 0n, or error out, or random value
+  return BigInt(Math.floor(Math.random() * 10000));
 }
 
 export class Memory {

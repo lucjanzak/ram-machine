@@ -1,5 +1,6 @@
 import * as monaco from "monaco-editor";
 import { Nodes } from "./Nodes";
+import { exampleProgramsAsm } from "./Examples";
 
 function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage {
   return {
@@ -12,15 +13,27 @@ function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage 
     jump_keywords: ["jump", "jgtz", "jzero"],
     noop_keywords: ["halt"],
 
-    digits: /\d+/,
-
     tokenizer: {
       root: [
-        [/\s*[a-zA-Z_]\w*:/, "tag"], // "annotation"
+        [/\s*[a-zA-Z_][\w\s]*:/, "tag"], // "annotation"
 
-        // keywords
+        // keywords at the end of the line
         [
-          /[a-zA-Z_$][\w$]*/,
+          /[a-zA-Z_$][\w]*$/,
+          {
+            cases: {
+              "@readop_keywords": { token: "keyword.$0", next: "@popall" },
+              "@writeop_keywords": { token: "keyword.$0", next: "@popall" },
+              "@jump_keywords": { token: "keyword.$0", next: "@popall" },
+              "@noop_keywords": { token: "keyword.$0", next: "@popall" },
+              "@default": "invalid",
+            },
+          },
+        ],
+
+        // keywords with something after them
+        [
+          /[a-zA-Z_$][\w]*/,
           {
             cases: {
               "@readop_keywords": { token: "keyword.$0", next: "after_readop_keyword" },
@@ -31,41 +44,27 @@ function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage 
             },
           },
         ],
+
+        // whitespace
         { include: "@whitespace" },
-        [/(@digits)/, "number"],
+
+        // number
+        [/\d+/, "number"],
       ],
 
       whitespace: [
+        [/[ \t]*$/, "", "@popall"],
         [/[ \t]+/, ""],
-        [/$/, "", "@popall"],
         [/;.*$/, "comment", "@popall"],
       ],
 
       after_writeop_keyword: [{ include: "@whitespace" }, [/\d+/, "number", "root"], [/\*\d+/, "number", "root"], [/.*/, "invalid", "root"]],
       after_readop_keyword: [[/=\d+/, "number", "root"], { include: "@after_writeop_keyword" }],
-      after_jump_keyword: [{ include: "@whitespace" }, [/\s*[a-zA-Z_]\w*/, "tag", "root"], [/.*/, "invalid", "root"]],
+      after_jump_keyword: [{ include: "@whitespace" }, [/\s*[a-zA-Z_][\w\s]*/, "tag", "root"], [/.*/, "invalid", "root"]],
       after_noop_keyword: [{ include: "@whitespace" }, [/.*/, "invalid", "root"]],
     },
   };
 }
-
-const exampleProgram = `; EXAMPLE
-; ===========
-;
-; This is an example program
-; that sums two numbers together
-;
-; You can compile it using the button below,
-; and then use the "Run" button at the top of the page
-; to execute the program
-READ 0  ; Load the first value from the input tape to r0
-READ 1  ; Load the second value from the input tape to r1
-ADD 1   ; Add the value from r1 to r0, and store the result to r0 
-WRITE 0 ; Write the contents of r0 to the output tape
-HALT    ; End program execution
-HALT
-JUMP a ; <-- TODO this highlighting is bugged
-`;
 
 export function createEditor(): monaco.editor.IStandaloneCodeEditor {
   // Adapted from playground:
@@ -206,10 +205,25 @@ export function createEditor(): monaco.editor.IStandaloneCodeEditor {
       return { suggestions: suggestions };
     },
   });
+  //display: flex; flex-direction: column; align-items: stretch; width: 100%; height: 100%;
+  Nodes.programTextEditorContainer.style.display = "flex";
+  Nodes.programTextEditorContainer.style.flexDirection = "column";
+  Nodes.programTextEditorContainer.style.alignItems = "stretch";
+  Nodes.programTextEditorContainer.style.width = "100%";
+  Nodes.programTextEditorContainer.style.height = "100%";
 
   const editor = monaco.editor.create(Nodes.programTextEditorContainer, {
-    value: exampleProgram,
+    value: exampleProgramsAsm.SIMPLE_EXAMPLE,
     language: "ramMachineAssembly",
+  });
+  let timeout: NodeJS.Timeout | null = null;
+  window.addEventListener("resize", () => {
+    if (timeout !== null) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => {
+      editor.layout();
+    }, 200);
   });
   return editor;
 }

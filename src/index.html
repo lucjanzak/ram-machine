@@ -27,74 +27,83 @@
 
     <div class="nav-buttons">
       <button class="nav-button nav-button-auto"
-        onclick="RAMMachine.machine.loadProgramAndReset(RAMMachine.examplePrograms.PARSING_EXAMPLE)">
+        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.exampleProgramsAsm.SIMPLE_EXAMPLE)">
+        Load SIMPLE_EXAMPLE
+      </button>
+      <button class="nav-button nav-button-auto"
+        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.exampleProgramsAsm.BENCHMARK_EXAMPLE)">
+        Load BENCHMARK_EXAMPLE
+      </button>
+      <button class="nav-button nav-button-auto"
+        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.exampleProgramsAsm.PARSING_EXAMPLE)">
         Load PARSING_EXAMPLE
       </button>
       <button class="nav-button nav-button-auto"
-        onclick="RAMMachine.machine.loadProgramAndReset(RAMMachine.examplePrograms.NORMAL_EXAMPLE)">
-        Load NORMAL_EXAMPLE
-      </button>
-      <button class="nav-button nav-button-auto"
-        onclick="RAMMachine.machine.loadProgramAndReset(RAMMachine.examplePrograms.PARSING_ERROR_EXAMPLE)">
+        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.exampleProgramsAsm.PARSING_ERROR_EXAMPLE)">
         Load PARSING_ERROR_EXAMPLE
       </button>
     </div>
   </nav>
   <main>
-    <section>
-      Statistics:
-      <table>
-        <thead>
-          <td>instruction</td>
-          <td>count</td>
-        </thead>
-        <tbody id="stats"></tbody>
-      </table>
-    </section>
-    <section>
-      listing:
-      <table id="program-listing-table">
-        <colgroup>
-          <col style="width: 100px;">
-          <col style="width: 240px;">
-          <col style="width: 180px;">
-          <col style="width: 400px;">
-        </colgroup>
-        <thead>
-          <tr>
-            <th>Line</th>
-            <th>Label</th>
-            <th>Instruction</th>
-            <th>Comment</th>
-          </tr>
-        </thead>
-        <tbody id="program-listing">
+    <div id="main-panes">
+      <section class="main-pane pane-scroll-h" id="program-listing-pane">
+        <div>
+          <table id="program-listing-table">
+            <colgroup>
+              <col style="width: 100px;">
+              <col style="width: 240px;">
+              <col style="width: 180px;">
+              <col style="width: 400px;">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Line</th>
+                <th>Label</th>
+                <th>Instruction</th>
+                <th>Comment</th>
+              </tr>
+            </thead>
+            <tbody id="program-listing">
 
-        </tbody>
-      </table>
-    </section>
-    <section>
-      program:
-      <br>
-      <!-- <textarea id="program-text-editor-basic" rows="30" cols="160" resize="false">
-; This is an example program 1
-; that sums two numbers together
-;
-; You can compile it using the button below,
-; and then use the "Run" button at the top of the page
-; to execute the program
-READ 0  ; Load the first value from the input tape to r0
-READ 1  ; Load the second value from the input tape to r1
-ADD 1   ; Add the value from r1 to r0, and store the result to r0 
-WRITE 0 ; Write the contents of r0 to the output tape
-HALT    ; End program execution
-      
-      </textarea> -->
-      <div id="program-text-editor-container"></div>
-      <nav>
-        <button class="nav-button nav-button-auto" onclick="RAMMachine.compileInput()">Compile</button>
-      </nav>
-    </section>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="main-pane">
+        <br>
+        <!-- <textarea id="program-text-editor-basic" rows="30" cols="160" resize="false">
+  ; This is an example program 1
+  ; that sums two numbers together
+  ;
+  ; You can compile it using the button below,
+  ; and then use the "Run" button at the top of the page
+  ; to execute the program
+  READ 0  ; Load the first value from the input tape to r0
+  READ 1  ; Load the second value from the input tape to r1
+  ADD 1   ; Add the value from r1 to r0, and store the result to r0 
+  WRITE 0 ; Write the contents of r0 to the output tape
+  HALT    ; End program execution
+        
+        </textarea> -->
+        <div id="program-text-editor-container"></div>
+        <nav>
+          <button class="nav-button nav-button-auto" onclick="RAMMachine.compileInput()">Compile</button>
+        </nav>
+      </section>
+    </div>
+    <div> <!-- TODO idk what to do with this yet -->
+      <section>
+        Statistics:
+        <table>
+          <thead>
+            <td>instruction</td>
+            <td>count</td>
+          </thead>
+          <tbody id="stats"></tbody>
+        </table>
+      </section>
+    </div>
   </main>
   <footer>
     <hr>
