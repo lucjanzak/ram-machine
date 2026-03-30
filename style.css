@@ -109,9 +109,11 @@ main {
   white-space: pre;
 }
 
-.tile-part-comment {
+#program-listing-table .tile-part-comment {
   font-family: monospace;
   color: #000000bf;
+  white-space: pre;
+  padding-left: 1rem;
 }
 
 .tile-part-comment.present::before {
@@ -121,7 +123,18 @@ main {
   display: inline;
   position: relative;
   top: 0.15em;
-  /* margin-right: -5px; */
+  right: 1rem;
+  margin-right: -1rem;
+}
+
+.tile-part-comment.big {
+  /* text-align: center; */
+  margin: auto;
+  width: min-content;
+}
+
+#program-input {
+  resize: none;
 }
 
 footer {

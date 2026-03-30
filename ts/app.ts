@@ -9,6 +9,11 @@ const examplePrograms = {
   PARSING_ERROR_EXAMPLE: ExamplePrograms.PARSING_ERROR_EXAMPLE,
   PARSING_EXAMPLE: ExamplePrograms.PARSING_EXAMPLE,
 };
+function compileInput() {
+  const assembly = Nodes.programInput.value;
+  const program = Program.fromAssembly(assembly);
+  machine.loadProgramAndReset(program);
+}
 
 // Make these values globally available
 declare global {
@@ -16,12 +21,14 @@ declare global {
     RAMMachine: {
       machine: Machine;
       examplePrograms: { [K in keyof typeof examplePrograms]: Program };
+      compileInput: () => void;
     };
   }
 }
 window.RAMMachine = {
   machine,
   examplePrograms,
+  compileInput,
 };
 
 /// Initialization below:

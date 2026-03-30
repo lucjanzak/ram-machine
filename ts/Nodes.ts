@@ -4,6 +4,7 @@ export namespace Nodes {
   // Static elements
   export const programListing = unwrap(document.querySelector("#program-listing"));
   export const stats = unwrap(document.querySelector("#stats"));
+  export const programInput = unwrap(document.querySelector<HTMLTextAreaElement>("#program-input"));
 
   // Templates
   export const commentTile = unwrap(document.querySelector<HTMLTemplateElement>("#comment-tile"));

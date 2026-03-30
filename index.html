@@ -73,12 +73,33 @@
         </tbody>
       </table>
     </section>
+    <section>
+      program:
+      <br>
+      <textarea id="program-input" rows="30" cols="160" resize="false">
+; This is an example program
+; that sums two numbers together
+;
+; You can compile it using the button below,
+; and then use the "Run" button at the top of the page
+; to execute the program
+READ 0  ; Load the first value from the input tape to r0
+READ 1  ; Load the second value from the input tape to r1
+ADD 1   ; Add the value from r1 to r0, and store the result to r0 
+WRITE 0 ; Write the contents of r0 to the output tape
+HALT    ; End program execution
+      
+      </textarea>
+      <nav>
+        <button class="nav-button nav-button-auto" onclick="RAMMachine.compileInput()">Compile</button>
+      </nav>
+    </section>
   </main>
   <footer>
     <hr>
     Author: Lucjan Żak
     <br>
-    License: <a href="./LICENSE.txt" target="_blank">GNU General Public License</a>
+    License: <a href="./LICENSE.txt" target="_blank">GNU General Public License v3</a>
     <br>
     Source code: <a href="https://github.com/lucjanzak/ram-machine" target="_blank">GitHub</a>
     <br>
@@ -89,14 +110,17 @@
       <td id="line-number" class="tile-part-line-number"></td>
       <td id="labels" class="tile-part-labels"></td>
       <td id="instruction"></td>
-      <td id="comment" class="tile-part-comment"></td>
+      <td>
+        <div id="comment" class="tile-part-comment"></div>
+      </td>
     </tr>
   </template>
   <template id="comment-tile">
     <tr>
       <td></td>
-      <td></td>
-      <td id="comment" colspan="2" class="tile-part-comment present"></td>
+      <td colspan="3">
+        <div id="comment" class="tile-part-comment present big"></div>
+      </td>
     </tr>
   </template>
   <template id="stats-row">
