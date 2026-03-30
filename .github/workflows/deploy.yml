@@ -1,4 +1,4 @@
-name: NodeJS with Webpack
+name: Build webpack project and deploy on gh-pages
 
 on:
   push:
