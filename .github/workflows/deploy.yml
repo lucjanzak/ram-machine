@@ -24,5 +24,6 @@ jobs:
 
       - name: Build
         run: |
+          git config --global user.name "gh-pages"
           npm install
           npm run deploy
