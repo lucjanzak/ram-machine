@@ -146,12 +146,18 @@ export class Machine {
     const timeStarted = Date.now();
     let stage: "normal" | "warning" | "alert" = "normal";
 
-    const cancelRunning = (currentTime: number) => {
-      this.running = false;
+    const stopTime = (currentTime: DOMHighResTimeStamp) => {
+      console.log(this.stats);
       this.stats.timeEnd(currentTime);
       this.stats.replaceStatisticsDOM();
     };
 
+    const cancelRunning = (currentTime: DOMHighResTimeStamp) => {
+      this.running = false;
+      stopTime(currentTime);
+    };
+
+    this.stats.clear();
     this.stats.timeStart();
     while (this.running) {
       if (debug && this.debugBreakpoints.includes(this.programCounter)) {
@@ -164,16 +170,21 @@ export class Machine {
       if (stage === "normal" && currentTime - timeStarted > 1000) {
         stage = "warning";
         console.warn("WARNING: Program running longer than 1000ms...");
-      } else if (stage === "warning" && currentTime - timeStarted > 5000) {
+      } else if (stage === "warning" && currentTime - timeStarted > 3000) {
         stage = "alert";
+        const currentTimePrecise = performance.now();
         const answer = confirm("This is taking a while, do you want to cancel?");
         if (answer) {
-          cancelRunning(currentTime);
-          break;
+          // Machine run canceled by user.
+          cancelRunning(currentTimePrecise);
+          return;
         } else {
           // TODO: idk let the user run it for a while...
         }
       }
     }
+
+    // Normal stop - found a HALT instruction or errored out.
+    stopTime(performance.now());
   }
 }

@@ -4,8 +4,8 @@ import { unwrap } from "./Util.js";
 
 export class Statistics {
   private counters = Statistics.createEmptyCounters();
-  private startTime: number | null = null;
-  private endTime: number | null = null;
+  private startTime: DOMHighResTimeStamp | null = null;
+  private endTime: DOMHighResTimeStamp | null = null;
   incrementSilently(instruction: (typeof ALL_INSTRUCTIONS)[number]) {
     this.counters[instruction] += 1n;
   }
@@ -34,9 +34,9 @@ export class Statistics {
   }
 
   timeStart() {
-    this.startTime = Date.now();
+    this.startTime = performance.now();
   }
-  timeEnd(currentTime = Date.now()) {
+  timeEnd(currentTime: DOMHighResTimeStamp = performance.now()) {
     this.endTime = currentTime;
   }
   fetchTime(): number {
@@ -69,19 +69,20 @@ export class Statistics {
       Nodes.stats.append(f);
     }
 
-    const time = this.fetchTime();
+    const timeMs = this.fetchTime();
     {
       const f = useTemplate(Nodes.statsRow);
       const timeCellTitle = unwrap(f.querySelector<HTMLTableCellElement>("#instruction"));
       timeCellTitle.textContent = "Time";
       timeCellTitle.style.fontWeight = "700";
       const timeCellCounter = unwrap(f.querySelector<HTMLTableCellElement>("#count"));
-      timeCellCounter.textContent = `${time} ms`;
+      timeCellCounter.textContent = `${timeMs} ms`;
       timeCellCounter.style.fontWeight = "700";
       Nodes.stats.append(f);
     }
 
-    const speed = time === 0 ? 0 : total / (BigInt(time) / 1000n);
+    const timeMsBigInt = BigInt(Math.round(timeMs * 1000));
+    const speed = timeMsBigInt === 0n ? 0 : (total * 1000000n) / timeMsBigInt;
     const f = useTemplate(Nodes.statsRow);
     const speedCellTitle = unwrap(f.querySelector<HTMLTableCellElement>("#instruction"));
     speedCellTitle.textContent = "Speed";
