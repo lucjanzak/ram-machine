@@ -56,7 +56,10 @@ const config /*: webpack.Configuration*/ = {
     }),
     new MonacoWebpackPlugin(),
     new CopyWebpackPlugin({
-      patterns: [{ from: "src/404.html", to: "404.html" }],
+      patterns: [
+        { from: "./src/404.html", to: "404.html" },
+        { from: "./public/**/*", to: "." },
+      ],
     }),
   ],
 };
