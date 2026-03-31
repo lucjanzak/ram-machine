@@ -1,0 +1,20 @@
+#main-panes {
+  display: flex;
+  flex-direction: row;
+  height: 80vh;
+  justify-content: stretch;
+  align-items: stretch;
+}
+
+.main-pane {
+  width: 50%;
+
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.pane-scroll-h {
+  overflow-x: scroll;
+}

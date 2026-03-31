@@ -1,0 +1,56 @@
+nav {
+  background-color: var(--accent-color2);
+  padding: 0.5em 1.5em;
+  display: flex;
+  flex-direction: row;
+  color: #fff;
+  align-items: center;
+  height: 3em;
+  gap: 1em;
+}
+
+.nav-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  border-collapse: collapse;
+}
+
+.nav-button {
+  display: block;
+  border: #fff var(--nav-btn-border-width) solid;
+  border-collapse: collapse;
+  color: #fff;
+  background-color: transparent;
+  padding: 0.5em 1em;
+  font-size: 12pt;
+  transition-property: background-color, color;
+  transition-duration: 0.2s;
+  cursor: pointer;
+}
+
+.nav-button-left,
+:first-child.nav-button-auto:has(+ .nav-button-auto),
+:not(.nav-button-auto) + .nav-button-auto:has(+ .nav-button-auto) {
+  border-radius: 0.5em 0 0 0.5em;
+  margin-right: calc(0px - var(--nav-btn-border-width));
+}
+.nav-button-middle,
+.nav-button-auto + .nav-button-auto:has(+ .nav-button-auto) {
+  border-radius: 0;
+  margin-right: calc(0px - var(--nav-btn-border-width));
+}
+.nav-button-right,
+.nav-button-auto + .nav-button-auto:has(+ :not(.nav-button-auto)),
+.nav-button-auto + .nav-button-auto:last-child {
+  border-radius: 0 0.5em 0.5em 0;
+}
+.nav-button-single,
+:first-child.nav-button-auto:last-child {
+  border-radius: 0.5em;
+}
+
+.nav-button:hover {
+  background-color: #fff;
+  color: #000;
+}

@@ -1,0 +1,10 @@
+#program-text-editor-basic {
+  resize: none;
+}
+
+#program-text-editor-container {
+  /* flex-grow: 1;
+  height: 600px;
+  min-height: 600px; */
+  height: 100%;
+}

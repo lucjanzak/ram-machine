@@ -1,0 +1,27 @@
+:root {
+  --nav-btn-border-width: 1px;
+  /* --accent-color: #00545a; */
+  --accent-color: #4ba0a5;
+  --accent-color2: #317a7e;
+}
+
+html,
+body {
+  /* width: 100%;
+  height: 100%; */
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+@import url(header.module.css);
+@import url(nav.module.css);
+@import url(panes.module.css);
+@import url(program-listing.module.css);
+@import url(editor.module.css);
+@import url(footer.module.css);

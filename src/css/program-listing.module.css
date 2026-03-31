@@ -1,0 +1,48 @@
+#program-listing-pane > div {
+  padding: 2em;
+  width: fit-content;
+}
+
+#program-listing-table {
+  border-collapse: collapse;
+  transform-origin: center top;
+}
+
+#program-listing-table td {
+  padding: 0.5em 1em;
+  border: 1px solid #7f7f7f7f;
+}
+
+.tile-part-line-number {
+  text-align: right;
+}
+
+.tile-part-labels {
+  font-family: monospace;
+  text-align: right;
+  white-space: pre;
+}
+
+#program-listing-table .tile-part-comment {
+  font-family: monospace;
+  color: #000000bf;
+  white-space: preserve-breaks;
+  padding-left: 1rem;
+}
+
+.tile-part-comment.present::before {
+  content: ";";
+  font-size: 18pt;
+  color: #0000003f;
+  display: inline;
+  position: relative;
+  top: 0.15em;
+  right: 1rem;
+  margin-right: -1rem;
+}
+
+.tile-part-comment.big {
+  /* text-align: center; */
+  margin: auto;
+  width: fit-content;
+}

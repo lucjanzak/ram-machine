@@ -6,7 +6,7 @@ import { createEditor } from "./MonacoEditor";
 
 import * as monaco from "monaco-editor";
 
-import "../main.module.css";
+import "../css/main.module.css";
 
 const machine = new Machine();
 const editor = createEditor();
