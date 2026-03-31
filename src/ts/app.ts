@@ -1,4 +1,4 @@
-import { examplePrograms, exampleProgramsAsm } from "./Examples";
+import { EXAMPLE_PROGRAMS, EXAMPLE_PROGRAMS_ASSEMBLY } from "./Examples";
 import { Machine } from "./Machine";
 import { Nodes } from "./Nodes";
 import { Program } from "./Program";
@@ -22,8 +22,8 @@ declare global {
     RAMMachine: {
       machine: Machine;
       editor: monaco.editor.IStandaloneCodeEditor;
-      examplePrograms: { [K in keyof typeof examplePrograms]: Program };
-      exampleProgramsAsm: { [K in keyof typeof exampleProgramsAsm]: string };
+      EXAMPLE_PROGRAMS: { [K in keyof typeof EXAMPLE_PROGRAMS]: Program };
+      EXAMPLE_PROGRAMS_ASSEMBLY: { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBLY]: string };
       compileInput: () => void;
     };
   }
@@ -31,13 +31,13 @@ declare global {
 window.RAMMachine = {
   machine,
   editor,
-  examplePrograms,
-  exampleProgramsAsm,
+  EXAMPLE_PROGRAMS: EXAMPLE_PROGRAMS,
+  EXAMPLE_PROGRAMS_ASSEMBLY: EXAMPLE_PROGRAMS_ASSEMBLY,
   compileInput,
 };
 
 /// Initialization below:
-machine.loadAssemblyAndReset(exampleProgramsAsm.SIMPLE_EXAMPLE);
+machine.loadAssemblyAndReset(EXAMPLE_PROGRAMS_ASSEMBLY.SIMPLE_EXAMPLE);
 
 export function updateDOM() {
   const listingRows = machine.program.createListingRows();

@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>RAM machine emulator</title>
-  <!-- <link rel="stylesheet" href="main.module.css"> -->
 </head>
 
 <body>
@@ -19,33 +18,39 @@
       </h3>
     </div>
     <div>
-      Author: Lucjan Żak
+      Author: <a href="https://github.com/lucjanzak" target="_blank">Lucjan Żak</a>
     </div>
   </header>
   <nav>
     <div class="nav-buttons">
-      <button class="nav-button nav-button-auto">Load Program</button>
+      <button class="nav-button nav-button-auto">New</button>
+      <button class="nav-button nav-button-auto">Load</button>
+      <button class="nav-button nav-button-auto">Save</button>
+    </div>
+    <div>
       <button class="nav-button nav-button-auto"
         onclick="setTimeout(() => RAMMachine.machine.runAsFastAsPossible(false), 0)">
-        Execute as fast as possible
+        Run
       </button>
+      <button class="nav-button nav-button-auto">Step</button>
+      <button class="nav-button nav-button-auto">Reset</button>
     </div>
 
     <div class="nav-buttons">
       <button class="nav-button nav-button-auto"
-        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.exampleProgramsAsm.SIMPLE_EXAMPLE)">
+        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.EXAMPLE_PROGRAMS_ASSEMBLY.SIMPLE_EXAMPLE)">
         Load SIMPLE_EXAMPLE
       </button>
       <button class="nav-button nav-button-auto"
-        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.exampleProgramsAsm.BENCHMARK_EXAMPLE)">
+        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.EXAMPLE_PROGRAMS_ASSEMBLY.BENCHMARK_EXAMPLE)">
         Load BENCHMARK_EXAMPLE
       </button>
       <button class="nav-button nav-button-auto"
-        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.exampleProgramsAsm.PARSING_EXAMPLE)">
+        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.EXAMPLE_PROGRAMS_ASSEMBLY.PARSING_EXAMPLE)">
         Load PARSING_EXAMPLE
       </button>
       <button class="nav-button nav-button-auto"
-        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.exampleProgramsAsm.PARSING_ERROR_EXAMPLE)">
+        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.EXAMPLE_PROGRAMS_ASSEMBLY.PARSING_ERROR_EXAMPLE)">
         Load PARSING_ERROR_EXAMPLE
       </button>
     </div>

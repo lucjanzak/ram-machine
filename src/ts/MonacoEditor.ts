@@ -1,6 +1,6 @@
 import * as monaco from "monaco-editor";
 import { Nodes } from "./Nodes";
-import { exampleProgramsAsm } from "./Examples";
+import { EXAMPLE_PROGRAMS_ASSEMBLY } from "./Examples";
 
 function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage {
   return {
@@ -213,7 +213,7 @@ export function createEditor(): monaco.editor.IStandaloneCodeEditor {
   Nodes.programTextEditorContainer.style.height = "100%";
 
   const editor = monaco.editor.create(Nodes.programTextEditorContainer, {
-    value: exampleProgramsAsm.SIMPLE_EXAMPLE,
+    value: EXAMPLE_PROGRAMS_ASSEMBLY.SIMPLE_EXAMPLE,
     language: "ramMachineAssembly",
   });
   let timeout: NodeJS.Timeout | null = null;

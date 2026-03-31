@@ -7,6 +7,8 @@ nav {
   align-items: center;
   height: 3em;
   gap: 1em;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .nav-buttons {
@@ -27,6 +29,7 @@ nav {
   transition-property: background-color, color;
   transition-duration: 0.2s;
   cursor: pointer;
+  text-wrap: nowrap;
 }
 
 .nav-button-left,

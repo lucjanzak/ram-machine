@@ -1,8 +1,8 @@
 import { Program } from "./Program";
 
-// class Program;
+// r₀ r₁ r₂ r₃ r₄ r₅ r₆ r₇ r₈ r₉
 
-export const exampleProgramsAsm = {
+export const EXAMPLE_PROGRAMS_ASSEMBLY = {
   PARSING_EXAMPLE: `; Parser test example program
 ; =======================
 ;
@@ -93,9 +93,22 @@ HALT    ; End program execution
 `,
 };
 
-export const examplePrograms = {
-  PARSING_EXAMPLE: Program.fromAssembly(exampleProgramsAsm.PARSING_EXAMPLE),
-  PARSING_ERROR_EXAMPLE: Program.fromAssembly(exampleProgramsAsm.PARSING_ERROR_EXAMPLE, true),
-  BENCHMARK_EXAMPLE: Program.fromAssembly(exampleProgramsAsm.BENCHMARK_EXAMPLE),
-  SIMPLE_EXAMPLE: Program.fromAssembly(exampleProgramsAsm.SIMPLE_EXAMPLE),
-};
+export const EXAMPLE_PROGRAMS: { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBLY]: Program } = compileExamplePrograms();
+
+function compileExamplePrograms(): { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBLY]: Program } {
+  const programs: any = {};
+  const entries = Object.entries(EXAMPLE_PROGRAMS_ASSEMBLY);
+  const total = entries.length;
+
+  entries.forEach(([key, sourceCode], i) => {
+    console.log(`Compiling example programs... (${i + 1}/${total}) ${key}`);
+    if (key === "PARSING_ERROR_EXAMPLE") {
+      programs[key] = Program.fromAssembly(sourceCode, true);
+    } else {
+      programs[key] = Program.fromAssembly(sourceCode);
+    }
+  });
+
+  console.log("Compiling example programs done");
+  return programs as { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBLY]: Program };
+}
