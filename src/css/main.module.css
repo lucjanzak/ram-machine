@@ -19,6 +19,10 @@ body {
   flex-direction: column;
 }
 
+a {
+  transition: color 0.2s;
+}
+
 @import url(header.module.css);
 @import url(nav.module.css);
 @import url(panes.module.css);

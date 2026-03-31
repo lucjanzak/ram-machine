@@ -17,8 +17,26 @@ header > div {
   align-items: baseline;
 }
 
+header a {
+  color: #fff;
+}
+
+header a:hover {
+  color: #ddd;
+}
+
 .version-header {
   margin-left: 0.5rem;
   font-weight: 400;
   font-size: 12pt;
+}
+
+.version-header a {
+  color: #ffffff7f;
+  text-decoration: none;
+}
+
+.version-header a:hover {
+  color: #ffffff;
+  text-decoration: underline;
 }
