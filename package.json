@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode production",
+    "build": "export GIT_COMMIT_HASH=$(git rev-parse HEAD) && webpack --mode production",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "watch": "webpack --watch",
-    "start": "webpack serve --open"
+    "watch": "export GIT_COMMIT_HASH=$(git rev-parse HEAD) && webpack --watch",
+    "start": "export GIT_COMMIT_HASH=$(git rev-parse HEAD) && webpack serve --open"
   },
   "keywords": [],
   "author": "Lucjan Żak",
