@@ -4,6 +4,7 @@ import webpack from "webpack";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import CopyWebpackPlugin from "copy-webpack-plugin";
+import packageJson from "./package.json" with { type: "json" };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -53,6 +54,9 @@ const config /*: webpack.Configuration*/ = {
     new HtmlWebpackPlugin({
       title: "Development",
       template: "./src/index.html",
+      templateParameters: {
+        packageVersion: packageJson.version,
+      },
     }),
     new MonacoWebpackPlugin(),
     new CopyWebpackPlugin({

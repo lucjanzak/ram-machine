@@ -35,11 +35,13 @@ header > div {
   display: flex;
   flex-direction: row;
   gap: 0.5em;
+  align-items: baseline;
 }
 
 .version-header {
   margin-left: 0.5rem;
   font-weight: 400;
+  font-size: 12pt;
 }
 
 nav {
