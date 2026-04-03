@@ -1,19 +1,19 @@
 header {
   background-color: var(--accent-color);
-  padding: 0.5em 1.5em;
+  padding: 0.5rem 1.5rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   color: #fff;
-  height: 3em;
-  gap: 1em;
+  height: 3rem;
+  gap: 1rem;
 }
 
 header > div {
   display: flex;
   flex-direction: row;
-  gap: 0.5em;
+  gap: 0.5rem;
   align-items: baseline;
 }
 

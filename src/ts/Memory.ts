@@ -1,4 +1,4 @@
-import { BigArray, BigIntegerArray } from "./BigArray";
+import { SparseArray } from "./BigArray";
 
 export function readUnsetRegisterValue() {
   // return 0n;
@@ -7,7 +7,7 @@ export function readUnsetRegisterValue() {
 }
 
 export class Memory {
-  private registers: BigIntegerArray = new BigArray();
+  private registers = new SparseArray<bigint>();
   getAccumulator(): bigint {
     return this.getRegister(0n);
   }
@@ -26,6 +26,6 @@ export class Memory {
     this.registers.set(index, value);
   }
   clear() {
-    this.registers = new BigArray();
+    this.registers = new SparseArray();
   }
 }

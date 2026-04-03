@@ -2,9 +2,85 @@ import { Program } from "./Program";
 
 // r₀ r₁ r₂ r₃ r₄ r₅ r₆ r₇ r₈ r₉
 
+const hdiv = "==============================";
+
 export const EXAMPLE_PROGRAMS_ASSEMBLY = {
+  ABSOLUTE_VALUE: `; Absolute value
+; ${hdiv}
+;
+; Calculates the absolute value of a given number.
+READ 0     ; Read the value into r₀
+JGTZ print ; If the number is greater than 0, skip to the end
+STORE 1    ; Store the read value into r₁
+LOAD =0
+SUB 1      ; Subtract r₁ from 0
+print:
+WRITE 0    ; Write r₀ to the output tape
+HALT
+  `,
+  REVERSE_ARRAY: `; Reverse array
+; ${hdiv}
+; r₁ - length of the array
+; r₂ - remaining elements to read
+; r₃ - pointer to last loaded element + 1 (starts at 4)
+; r₄... - loaded array
+
+READ 0
+STORE 1
+STORE 2
+
+; Load initial array pointer
+LOAD =4
+STORE 3
+
+; Check if length > 0
+read_array_loop_check:
+LOAD 2
+JGTZ read_next_element
+JUMP read_array_end
+
+read_next_element:
+READ *3 ; Read element into *3
+
+; Increment array pointer
+LOAD 3
+ADD =1
+STORE 3
+
+; Subtract remaining elements counter
+LOAD 2
+SUB =1
+STORE 2
+
+JGTZ read_array_loop_check
+
+read_array_end:
+
+; Now, write all elements in reverse order
+;
+; Check if pointer is greater than 4
+write_array_loop_check:
+LOAD 3
+SUB =4
+JGTZ write_loop
+JUMP end
+
+; Decrement array pointer
+write_loop:
+LOAD 3
+SUB =1
+STORE 3
+
+; Write the pointed element to tape
+WRITE *3
+
+JUMP write_array_loop_check
+
+end:
+HALT
+`,
   PARSING_EXAMPLE: `; Parser test example program
-; =======================
+; ${hdiv}
 ;
 ; This example program contains many various combinations of labels, instructions, and comments.
 ;
@@ -46,7 +122,7 @@ HALT
 JUMP a ; <-- this highlighting was bugged, but is fixed now
 `,
   PARSING_ERROR_EXAMPLE: `; Parser errors example program
-; =======================
+; ${hdiv}
 ;
 ; This example program contains many invalid combinations of labels, instructions, and comments.
 ;
@@ -68,7 +144,7 @@ JUMP a ; <-- this highlighting was bugged, but is fixed now
     label_at_the_end:
 `,
   BENCHMARK_EXAMPLE: `; Benchmark program
-; =======================
+; ${hdiv}
 ;
 ; A tight loop that copies values from the input tape to the output tape.
 start:
@@ -76,8 +152,8 @@ READ 0
 WRITE 0
 JUMP start
 `,
-  SIMPLE_EXAMPLE: `; Simple example program
-; =======================
+  SIMPLE_EXAMPLE: `; Simple addition
+; ${hdiv}
 ;
 ; This is an example program
 ; that sums two numbers together.
@@ -112,3 +188,5 @@ function compileExamplePrograms(): { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBL
   console.log("Compiling example programs done");
   return programs as { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBLY]: Program };
 }
+
+export const DEFAULT_PROGRAM_ASSEMBLY = EXAMPLE_PROGRAMS_ASSEMBLY.REVERSE_ARRAY;

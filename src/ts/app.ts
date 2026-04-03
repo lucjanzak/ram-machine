@@ -1,4 +1,4 @@
-import { EXAMPLE_PROGRAMS, EXAMPLE_PROGRAMS_ASSEMBLY } from "./Examples";
+import { DEFAULT_PROGRAM_ASSEMBLY, EXAMPLE_PROGRAMS, EXAMPLE_PROGRAMS_ASSEMBLY } from "./Examples";
 import { Machine } from "./Machine";
 import { Nodes } from "./Nodes";
 import { Program } from "./Program";
@@ -37,7 +37,7 @@ window.RAMMachine = {
 };
 
 /// Initialization below:
-machine.loadAssemblyAndReset(EXAMPLE_PROGRAMS_ASSEMBLY.SIMPLE_EXAMPLE);
+machine.loadAssemblyAndReset(DEFAULT_PROGRAM_ASSEMBLY);
 
 export function updateDOM() {
   const listingRows = machine.program.createListingRows();

@@ -62,10 +62,10 @@
         <div>
           <table id="program-listing-table">
             <colgroup>
-              <col style="width: 100px;">
-              <col style="width: 240px;">
-              <col style="width: 180px;">
-              <col style="width: 400px;">
+              <col>
+              <col>
+              <col>
+              <col>
             </colgroup>
             <thead>
               <tr>
@@ -97,7 +97,8 @@
   WRITE 0 ; Write the contents of r0 to the output tape
   HALT    ; End program execution
         
-        </textarea> --> <!-- TODO: Add simple textarea mode as fallback -->
+        </textarea> -->
+        <!-- TODO: Add simple textarea mode as fallback -->
         <div id="program-text-editor-container"></div>
         <nav>
           <button class="nav-button nav-button-auto" onclick="RAMMachine.compileInput()">Compile</button>
