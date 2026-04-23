@@ -1,12 +1,13 @@
 import { DEFAULT_PROGRAM_ASSEMBLY, EXAMPLE_PROGRAMS, EXAMPLE_PROGRAMS_ASSEMBLY } from "./Examples";
 import { Machine } from "./Machine";
-import { Nodes } from "./Nodes";
+import { Nodes, useTemplate } from "./Nodes";
 import { Program } from "./Program";
 import { createEditor } from "./MonacoEditor";
 
 import * as monaco from "monaco-editor";
 
 import "../css/main.module.css";
+import { BigScrollList } from "./BigScrollList";
 
 const machine = new Machine();
 const editor = createEditor();
@@ -39,7 +40,7 @@ window.RAMMachine = {
 /// Initialization below:
 machine.loadAssemblyAndReset(DEFAULT_PROGRAM_ASSEMBLY);
 
-export function updateDOM() {
+export function refreshListingWithAnimation() {
   const listingRows = machine.program.createListingRows();
   console.log(machine, machine.program, listingRows);
   Nodes.programListing.textContent = "";
@@ -53,5 +54,18 @@ export function updateDOM() {
   );
 }
 
-updateDOM();
+refreshListingWithAnimation();
 machine.stats.replaceStatisticsDOM();
+
+/// Testing
+const bigScrollist = new BigScrollList(
+  Nodes.bigScrollListTest,
+  () => 200000n,
+  () => 30,
+  (index) => {
+    const f = useTemplate(Nodes.bigScrollListTestRow);
+    f.querySelector("#number")!.textContent = `${index};`;
+    return f;
+  },
+  () => 400
+);

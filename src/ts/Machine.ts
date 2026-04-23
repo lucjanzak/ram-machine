@@ -1,4 +1,4 @@
-import { updateDOM } from "./app";
+import { refreshListingWithAnimation } from "./app";
 import { InputTape, InputTapeArray } from "./InputTape";
 import { ALL_INSTRUCTIONS, Instruction, ReadableOperand, WriteableOperand } from "./Instruction";
 import { Memory } from "./Memory";
@@ -40,7 +40,7 @@ export class Machine {
   loadProgramAndReset(program: Program) {
     this._program = program;
     this.reset();
-    updateDOM();
+    refreshListingWithAnimation();
   }
 
   readFromOperand(operand: ReadableOperand): bigint {
