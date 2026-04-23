@@ -56,12 +56,12 @@ export class Machine {
       throw new Error("invalid argument: 'operand' is not a ReadableOperand");
     }
   }
-  writeToOperand(operand: WriteableOperand, word: bigint) {
+  writeToOperand(operand: WriteableOperand, word: bigint, quiet: boolean) {
     if (operand.type === "register") {
-      return this.memory.setRegister(operand.value, word);
+      return this.memory.setRegister(operand.value, word, quiet);
     } else if (operand.type === "indirect") {
       const address = this.memory.getRegister(operand.value);
-      return this.memory.setRegister(address, word);
+      return this.memory.setRegister(address, word, quiet);
     } else {
       console.error("invalid argument: 'operand' is not a WriteableOperand", operand);
       throw new Error("invalid argument: 'operand' is not a WriteableOperand");
@@ -74,9 +74,9 @@ export class Machine {
     }
     this.programCounter = newProgramCounter;
   }
-  executeInstruction(instruction: Instruction, silent: boolean) {
+  executeInstruction(instruction: Instruction, quiet: boolean) {
     // console.log("executing ", instruction, ` @ line ${this.programCounter}`);
-    if (silent) {
+    if (quiet) {
       this.stats.incrementSilently(instruction.operation);
     } else {
       this.stats.incrementAndUpdateDOM(instruction.operation);
@@ -84,31 +84,31 @@ export class Machine {
 
     if (instruction.operation === "LOAD") {
       const value = this.readFromOperand(instruction.operand);
-      this.memory.setAccumulator(value);
+      this.memory.setAccumulator(value, quiet);
       this.programCounter++;
     } else if (instruction.operation === "STORE") {
       const value = this.memory.getAccumulator();
-      this.writeToOperand(instruction.operand, value);
+      this.writeToOperand(instruction.operand, value, quiet);
       this.programCounter++;
     } else if (instruction.operation === "ADD") {
       const value = this.readFromOperand(instruction.operand);
-      this.memory.setAccumulator(this.memory.getAccumulator() + value);
+      this.memory.setAccumulator(this.memory.getAccumulator() + value, quiet);
       this.programCounter++;
     } else if (instruction.operation === "SUB") {
       const value = this.readFromOperand(instruction.operand);
-      this.memory.setAccumulator(this.memory.getAccumulator() - value);
+      this.memory.setAccumulator(this.memory.getAccumulator() - value, quiet);
       this.programCounter++;
     } else if (instruction.operation === "MUL") {
       const value = this.readFromOperand(instruction.operand);
-      this.memory.setAccumulator(this.memory.getAccumulator() * value);
+      this.memory.setAccumulator(this.memory.getAccumulator() * value, quiet);
       this.programCounter++;
     } else if (instruction.operation === "DIV") {
       const value = this.readFromOperand(instruction.operand);
-      this.memory.setAccumulator(this.memory.getAccumulator() / value);
+      this.memory.setAccumulator(this.memory.getAccumulator() / value, quiet);
       this.programCounter++;
     } else if (instruction.operation === "READ") {
       const value = this.inputTape.readOrDefault();
-      this.writeToOperand(instruction.operand, value);
+      this.writeToOperand(instruction.operand, value, quiet);
       this.programCounter++;
     } else if (instruction.operation === "WRITE") {
       const value = this.readFromOperand(instruction.operand);
@@ -162,6 +162,7 @@ export class Machine {
     const cancelRunning = (currentTime: DOMHighResTimeStamp) => {
       this.running = false;
       stopTime(currentTime);
+      this.memory.updateAllQuietlyUpdatedRegisterRows();
     };
 
     this.stats.clear();
@@ -193,5 +194,6 @@ export class Machine {
 
     // Normal stop - found a HALT instruction or errored out.
     stopTime(performance.now());
+    this.memory.updateAllQuietlyUpdatedRegisterRows();
   }
 }

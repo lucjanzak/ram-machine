@@ -17,6 +17,12 @@ export class SparseArray<ValueType> {
     if (index < 0) throw new Error("array index cannot be negative");
     return this.values.delete(index);
   }
+  clear() {
+    this.values.clear();
+  }
+  [Symbol.iterator]() {
+    return this.values[Symbol.iterator]();
+  }
   constructor() {
     this.values = new Map<bigint, ValueType>();
   }

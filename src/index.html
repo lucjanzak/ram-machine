@@ -57,7 +57,24 @@
     </div>
   </nav>
   <main>
+    <div>
+      <section>
+        <!-- input tape here -->
+        <div id="input-tape"></div>
+      </section>
+    </div>
     <div id="main-panes">
+      <section class="pane-scroll-v" id="register-pane">
+        <!-- registers here -->
+        <table>
+          <thead>
+            <td>Address</td>
+            <td>Value</td>
+          </thead>
+          <tbody id="registers"></tbody>
+        </table>
+      </section>
+      <!-- TODO: make into tabs -->
       <section class="main-pane pane-scroll-h" id="program-listing-pane">
         <div>
           <table id="program-listing-table">
@@ -103,6 +120,12 @@
         <nav>
           <button class="nav-button nav-button-auto" onclick="RAMMachine.compileInput()">Compile</button>
         </nav>
+      </section>
+    </div>
+    <div>
+      <section>
+        <!-- output tape here -->
+        <div id="output-tape"></div>
       </section>
     </div>
     <div> <!-- TODO idk what to do with this yet -->
@@ -160,6 +183,14 @@
     <tr>
       <td id="instruction"></td>
       <td id="count"></td>
+    </tr>
+  </template>
+  <template id="register-row">
+    <tr>
+      <td>
+        r<sub id="index"></sub>
+      </td>
+      <td id="value"></td>
     </tr>
   </template>
 </body>

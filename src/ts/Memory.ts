@@ -1,4 +1,6 @@
 import { SparseArray } from "./BigArray";
+import { Nodes, useTemplate } from "./Nodes";
+import { unwrap } from "./Util";
 
 export function readUnsetRegisterValue() {
   // return 0n;
@@ -8,6 +10,7 @@ export function readUnsetRegisterValue() {
 
 export class Memory {
   private registers = new SparseArray<bigint>();
+  private quietlyUpdatedRegisters = new Set<bigint>();
   getAccumulator(): bigint {
     return this.getRegister(0n);
   }
@@ -19,13 +22,56 @@ export class Memory {
       return register;
     }
   }
-  setAccumulator(value: bigint) {
-    this.setRegister(0n, value);
+  setAccumulator(value: bigint, quiet: boolean) {
+    this.setRegister(0n, value, quiet);
   }
-  setRegister(index: bigint, value: bigint) {
+  setRegister(index: bigint, value: bigint, quiet: boolean) {
     this.registers.set(index, value);
+    if (quiet) {
+      this.quietlyUpdatedRegisters.add(index);
+    } else {
+      Memory.updateRegisterRow(index, value);
+    }
   }
+
+  // This is never quiet
   clear() {
     this.registers = new SparseArray();
+    console.log(Nodes.registerRows);
+    for (const [_index, f] of Nodes.registerRows) {
+      for (const child of f.children) {
+        console.log("clearrr");
+        // TODO: fix me, this function doesn't actually remove the nodes from the DOM
+        child.remove();
+      }
+    }
+    Nodes.registerRows.clear();
+  }
+
+  updateAllQuietlyUpdatedRegisterRows() {
+    console.log("update all");
+    for (const i of this.quietlyUpdatedRegisters) {
+      Memory.updateRegisterRow(i, unwrap(this.registers.get(i)));
+    }
+    this.quietlyUpdatedRegisters.clear();
+  }
+
+  static updateRegisterRow(index: bigint, value: bigint) {
+    // TODO: move Nodes.registerRows inside this memory class, and make it nonstatic
+    // TODO: also add "associatedElement" field, which would be the parent table of the rows
+    console.log("updateRegisterRow", index, value);
+    const storedFragment = Nodes.registerRows.get(index);
+    if (storedFragment === undefined) {
+      // Create new register row here
+      const newFragment = useTemplate(Nodes.registerRow);
+      unwrap(newFragment.querySelector("#index")).textContent = `${index}`;
+      unwrap(newFragment.querySelector("#value")).textContent = `${value}`;
+      Nodes.registerRows.set(index, newFragment);
+      Nodes.registers.appendChild(newFragment);
+      // console.log(newFragment);
+      // console.log(Nodes.registerRows);
+    } else {
+      unwrap(storedFragment.querySelector("#value")).textContent = `${value}`;
+    }
   }
 }
