@@ -31,6 +31,9 @@ export class SparseArray<ValueType> {
 // No negative indeces allowed
 export class ContiguousArray<ValueType> {
   private values: Array<ValueType>;
+  asArray(): ValueType[] {
+    return this.values;
+  }
   getUnwrap(index: bigint): ValueType {
     if (index < 0) throw new Error("array index cannot be negative");
     if (index >= this.values.length) throw new Error("array index out of bounds");

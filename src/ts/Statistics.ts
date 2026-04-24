@@ -1,6 +1,6 @@
 import { instructionComplexity } from "./Complexity";
 import { ALL_INSTRUCTIONS, Instruction } from "./Instruction";
-import { Nodes, select, useTemplate } from "./Nodes";
+import { Nodes, select, Templates, useTemplate } from "./Nodes";
 
 export class Statistics {
   public instructionCounters = Statistics.createEmptyCounters();
@@ -54,7 +54,7 @@ export class Statistics {
     for (const instruction of ALL_INSTRUCTIONS) {
       const counter = this.fetchCounter(instruction);
 
-      const f = useTemplate(Nodes.statsRow);
+      const f = useTemplate(Templates.statsRow);
       select(f, "#instruction").textContent = instruction;
       select(f, "#count").textContent = `${counter}`;
       total += counter;
@@ -62,7 +62,7 @@ export class Statistics {
     }
 
     {
-      const f = useTemplate(Nodes.statsRow);
+      const f = useTemplate(Templates.statsRow);
       const totalCellTitle = select<HTMLTableCellElement>(f, "#instruction");
       totalCellTitle.textContent = "Total";
       totalCellTitle.style.fontWeight = "700";
@@ -74,7 +74,7 @@ export class Statistics {
 
     const timeMs = this.fetchTime();
     {
-      const f = useTemplate(Nodes.statsRow);
+      const f = useTemplate(Templates.statsRow);
       const timeCellTitle = select<HTMLTableCellElement>(f, "#instruction");
       timeCellTitle.textContent = "Time";
       timeCellTitle.style.fontWeight = "700";
@@ -86,7 +86,7 @@ export class Statistics {
 
     const timeMsBigInt = BigInt(Math.round(timeMs * 1000));
     const speed = timeMsBigInt === 0n ? 0 : (total * 1000000n) / timeMsBigInt;
-    const f = useTemplate(Nodes.statsRow);
+    const f = useTemplate(Templates.statsRow);
     const speedCellTitle = select<HTMLTableCellElement>(f, "#instruction");
     speedCellTitle.textContent = "Speed";
     speedCellTitle.style.fontWeight = "700";

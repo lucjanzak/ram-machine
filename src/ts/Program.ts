@@ -1,5 +1,5 @@
 import { Instruction, instructionToString } from "./Instruction";
-import { Nodes, select, useTemplate } from "./Nodes";
+import { Nodes, select, Templates, useTemplate } from "./Nodes";
 import { Parser } from "./Parser";
 
 export type ParsedLine = {
@@ -50,12 +50,12 @@ export class Program {
     let lineNumber = 0;
     tiles.forEach((tile, _index) => {
       if (tile.type === "comment") {
-        const t = useTemplate(Nodes.commentTile);
+        const t = useTemplate(Templates.commentTile);
         select(t, "#comment").textContent = tile.comment;
         tilesDOM.push(Object.assign(tile, { fragment: t }));
       } else if (tile.type === "instruction") {
         lineNumber++;
-        const t = useTemplate(Nodes.instructionTile);
+        const t = useTemplate(Templates.instructionTile);
         select(t, "#line-number").textContent = `${lineNumber}`;
         select(t, "#labels").textContent = makeLabelsText(tile.labels);
         select(t, "#instruction").textContent = instructionToString(tile.instruction);

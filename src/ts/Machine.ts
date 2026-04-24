@@ -10,9 +10,9 @@ import { assertNever } from "./Util";
 export class Machine {
   private running = false;
   private killed = false;
-  public inputTape: InputTape = new InputTapeArray();
-  public outputTape: OutputTape = new OutputTapeArray();
-  public memory;
+  public inputTape: InputTape;
+  public outputTape: OutputTape;
+  public memory: Memory;
   private programCounter: ProgramCounter = 0;
   public stats = new Statistics();
   private debugBreakpoints: ProgramCounter[] = []; //[5, 10, 15, 30]; // TODO
@@ -20,8 +20,12 @@ export class Machine {
   constructor(private program: Program = Program.EMPTY, private detachedMode = false) {
     if (this.detachedMode) {
       this.memory = new Memory(null);
+      this.inputTape = new InputTapeArray(null);
+      this.outputTape = new OutputTapeArray(null);
     } else {
       this.memory = new Memory(Nodes.registerScrollList);
+      this.inputTape = new InputTapeArray(Nodes.inputTape);
+      this.outputTape = new OutputTapeArray(Nodes.outputTape);
     }
   }
 
@@ -230,7 +234,7 @@ export class Machine {
 
   static runSimulation(program: Program, input: bigint[], options: { timeout: number } = { timeout: 100 }): Machine {
     const machine = new Machine(program, true);
-    machine.inputTape = InputTapeArray.fromValues(input);
+    machine.inputTape = InputTapeArray.fromValues(input, null);
     machine.runAsFastAsPossible(false, { timeoutWarning: undefined, timeoutAlert: undefined, timeoutKill: options.timeout });
     return machine;
   }

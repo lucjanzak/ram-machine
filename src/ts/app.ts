@@ -1,6 +1,6 @@
 import { DEFAULT_PROGRAM_ASSEMBLY, EXAMPLE_PROGRAMS, EXAMPLE_PROGRAMS_ASSEMBLY } from "./Examples";
 import { Machine } from "./Machine";
-import { Nodes, useTemplate } from "./Nodes";
+import { Nodes, Templates, useTemplate } from "./Nodes";
 import { Program } from "./Program";
 import { createEditor } from "./MonacoEditor";
 
@@ -47,7 +47,7 @@ const bigScrollist = new BigScrollList(
   2000000n,
   90, // item size
   (index) => {
-    const f = useTemplate(Nodes.bigScrollListTestRow);
+    const f = useTemplate(Templates.bigScrollListTestRow);
     f.querySelector("#number")!.textContent = `${index};`;
     return f;
   },

@@ -45,11 +45,11 @@ export class BigScrollList {
 
   updateContainer() {
     if (this.direction === "horizontal") {
-      this.containerElement.style.minWidth = `${this.containerAvailableSize}px`;
-      this.containerElement.style.maxWidth = `${this.containerAvailableSize}px`;
+      this.hostElement.style.minWidth = `${this.containerAvailableSize}px`;
+      this.hostElement.style.maxWidth = `${this.containerAvailableSize}px`;
     } else if (this.direction === "vertical") {
-      this.containerElement.style.minHeight = `${this.containerAvailableSize}px`;
-      this.containerElement.style.maxHeight = `${this.containerAvailableSize}px`;
+      this.hostElement.style.minHeight = `${this.containerAvailableSize}px`;
+      this.hostElement.style.maxHeight = `${this.containerAvailableSize}px`;
     } else {
       assertNever(this.direction);
     }
@@ -66,9 +66,9 @@ export class BigScrollList {
   }
 
   updateElements() {
-    console.log("updateElements", this);
+    // console.log("updateElements", this);
     // Analyze existing elements
-    for (const listElement of this.containerElement.children) {
+    for (const listElement of this.hostElement.children) {
       const htmlElement = listElement as HTMLElement;
       const indexStr = htmlElement.dataset.elementIndex;
       if (indexStr === undefined) {
@@ -108,7 +108,7 @@ export class BigScrollList {
       }
       listElement.dataset.elementIndex = `${index}`;
       listElement.append(this.getDocumentFragmentFromIndex(index));
-      this.containerElement.appendChild(listElement);
+      this.hostElement.appendChild(listElement);
       this.activeElements.add(index);
       // console.log(`add: ${index}`);
     }
@@ -139,7 +139,7 @@ export class BigScrollList {
   }
 
   constructor(
-    public readonly containerElement: HTMLElement,
+    public readonly hostElement: HTMLElement,
 
     public readonly direction: ScrollListDirection,
 
@@ -155,7 +155,7 @@ export class BigScrollList {
     // Available size of the container
     private containerAvailableSize: number
   ) {
-    this.containerElement.style.position = "relative";
+    this.hostElement.style.position = "relative";
     this.updateContainer();
 
     this.scrollStopElement = document.createElement("div");
@@ -166,13 +166,13 @@ export class BigScrollList {
     this.scrollStopElement.style.visibility = "hidden";
     this.updateScrollStop();
 
-    this.containerElement.appendChild(this.scrollStopElement);
-    this.containerElement.addEventListener("scroll", () => {
+    this.hostElement.appendChild(this.scrollStopElement);
+    this.hostElement.addEventListener("scroll", () => {
       // console.log("scroll detected");
       if (this.direction === "horizontal") {
-        this.currentScrollProgress = MixedNumber.fromFloat(this.containerElement.scrollLeft / this.itemSize);
+        this.currentScrollProgress = MixedNumber.fromFloat(this.hostElement.scrollLeft / this.itemSize);
       } else if (this.direction === "vertical") {
-        this.currentScrollProgress = MixedNumber.fromFloat(this.containerElement.scrollTop / this.itemSize);
+        this.currentScrollProgress = MixedNumber.fromFloat(this.hostElement.scrollTop / this.itemSize);
       } else {
         assertNever(this.direction);
       }
@@ -181,9 +181,9 @@ export class BigScrollList {
     this.updateElements();
 
     if (direction === "horizontal") {
-      this.containerElement.style.overflowX = "scroll";
+      this.hostElement.style.overflowX = "scroll";
     } else if (direction === "vertical") {
-      this.containerElement.style.overflowY = "scroll";
+      this.hostElement.style.overflowY = "scroll";
     } else {
       assertNever(direction);
     }

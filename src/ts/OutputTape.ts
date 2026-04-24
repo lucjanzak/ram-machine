@@ -8,6 +8,9 @@ export interface OutputTape {
 export class OutputTapeArray implements OutputTape {
   private values = new ContiguousArray<bigint>();
   private currentIndex: bigint = 0n;
+  getValues(): readonly bigint[] {
+    return this.values.asArray();
+  }
   write(value: bigint) {
     this.values.push(value);
     this.currentIndex++;
@@ -16,6 +19,7 @@ export class OutputTapeArray implements OutputTape {
     this.values = new ContiguousArray();
     this.currentIndex = 0n;
   }
+  constructor(public hostElement: HTMLElement | null) {}
 }
 
 export class OutputTapeMock implements OutputTape {

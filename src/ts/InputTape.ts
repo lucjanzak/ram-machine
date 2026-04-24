@@ -35,11 +35,12 @@ export class InputTapeArray implements InputTape {
     this.values = new ContiguousArray();
     this.currentIndex = 0n;
   }
-  static fromValues(values: bigint[]) {
-    const tape = new InputTapeArray();
+  static fromValues(values: bigint[], hostElement: HTMLElement | null) {
+    const tape = new InputTapeArray(hostElement);
     tape.values.push(...values);
     return tape;
   }
+  constructor(public hostElement: HTMLElement | null) {}
 }
 
 // export class InputTapeMock implements InputTape {

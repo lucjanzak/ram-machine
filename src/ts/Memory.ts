@@ -1,6 +1,6 @@
 import { SparseArray } from "./BigArray";
 import { BigScrollList } from "./BigScrollList";
-import { Nodes, select, useTemplate } from "./Nodes";
+import { Nodes, select, Templates, useTemplate } from "./Nodes";
 import { unwrap } from "./Util";
 
 export function readUnsetRegisterValue() {
@@ -14,15 +14,15 @@ export class Memory {
   private quietlyUpdatedRegisters = new Set<bigint>();
   private registerScrollList: BigScrollList | null = null;
 
-  constructor(registerScrollListHostNode: HTMLElement | null) {
-    if (registerScrollListHostNode !== null) {
+  constructor(hostElement: HTMLElement | null) {
+    if (hostElement !== null) {
       this.registerScrollList = new BigScrollList(
-        registerScrollListHostNode,
+        hostElement,
         "vertical",
         20000000n, // element count
         30, // item size
         (index) => {
-          const f = useTemplate(Nodes.registerRow);
+          const f = useTemplate(Templates.registerRow);
 
           const row = select(f, "#register-scroll-list-row");
           const indexSpan = select(f, "#index");
@@ -44,14 +44,14 @@ export class Memory {
           }
           return f;
         },
-        registerScrollListHostNode.parentElement!.clientHeight
+        hostElement.parentElement!.clientHeight
       );
     }
 
     // TODO: these are not really reliable, the container size can change independently of the window as well
     window.addEventListener("resize", () => {
       if (this.registerScrollList !== null) {
-        this.registerScrollList.setContainerAvailableSize(this.registerScrollList.containerElement.parentElement!.clientHeight);
+        this.registerScrollList.setContainerAvailableSize(this.registerScrollList.hostElement.parentElement!.clientHeight);
       }
     });
   }
@@ -102,11 +102,11 @@ export class Memory {
     // console.log("updateRegisterRow", index, value);
     if (this.registerScrollList !== null) {
       if (this.registerScrollList.isInView(index)) {
-        const row = this.registerScrollList.containerElement.querySelector(`div[data-element-index="${index}"]`);
+        const row = this.registerScrollList.hostElement.querySelector(`div[data-element-index="${index}"]`);
         if (row === null) {
           console.warn(
             `List element #${index} is in view, but there is no row element associated with it! (row === null)`,
-            this.registerScrollList.containerElement
+            this.registerScrollList.hostElement
           );
         } else {
           const valueSpan = select(row, "#value");
