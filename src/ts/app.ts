@@ -61,12 +61,12 @@ machine.stats.replaceStatisticsDOM();
 /// Testing
 const bigScrollist = new BigScrollList(
   Nodes.bigScrollListTest,
-  () => 2000000n,
-  () => 30,
+  2000000n,
+  30,
   (index) => {
     const f = useTemplate(Nodes.bigScrollListTestRow);
     f.querySelector("#number")!.textContent = `${index};`;
     return f;
   },
-  () => 400
+  400
 );

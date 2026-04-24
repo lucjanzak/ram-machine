@@ -18,8 +18,8 @@ export class Memory {
     if (registerScrollListHostNode !== null) {
       this.registerScrollList = new BigScrollList(
         registerScrollListHostNode,
-        () => 20000000n, // element count
-        () => 30, // item size
+        20000000n, // element count
+        30, // item size
         (index) => {
           const f = useTemplate(Nodes.registerRow);
 
@@ -43,11 +43,16 @@ export class Memory {
           }
           return f;
         },
-        () => {
-          return Nodes.registerScrollList.parentElement!.clientHeight;
-        }
+        Nodes.registerScrollList.parentElement!.clientHeight
       );
     }
+
+    // TODO: these are not really reliable, the container size can change independently of the window as well
+    window.addEventListener("resize", () => {
+      if (this.registerScrollList !== null) {
+        this.registerScrollList.setContainerAvailableSize(Nodes.registerScrollList.parentElement!.clientHeight);
+      }
+    });
   }
 
   // TODO: add this as an option

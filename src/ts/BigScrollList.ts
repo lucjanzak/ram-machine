@@ -143,6 +143,40 @@ export class BigScrollList {
 
   currentScrollProgress: MixedNumber = MixedNumber.zero();
   activeElements: Set<bigint> = new Set();
+  scrollStopElement: HTMLElement;
+
+  setContainerAvailableSize(newSize: number) {
+    if (newSize !== this.containerAvailableSize) {
+      console.log(`containerSizeUpdated newSize=${newSize}px`);
+      this.updateContainer();
+      this.updateElements();
+    }
+  }
+
+  setItemCount(newCount: bigint) {
+    if (newCount !== this.itemCount) {
+      console.log(`itemCount updated: newCount=${newCount}`);
+      this.updateScrollStop();
+    }
+  }
+
+  setItemSize(newSize: number) {
+    if (newSize !== this.itemSize) {
+      console.log(`itemSize updated: newSize=${newSize}`);
+      this.updateScrollStop();
+      // TODO: all elements will have to be removed probably
+      this.updateElements();
+    }
+  }
+
+  updateContainer() {
+    this.containerElement.style.minHeight = `${this.containerAvailableSize}px`;
+    this.containerElement.style.maxHeight = `${this.containerAvailableSize}px`;
+  }
+
+  updateScrollStop() {
+    this.scrollStopElement.style.top = `${this.getTotalListSize().min(BigScrollList.MAX_POSSIBLE_SCROLL).toString()}px`;
+  }
 
   updateElements() {
     // Analyze existing elements
@@ -185,23 +219,24 @@ export class BigScrollList {
       // console.log(`add: ${index}`);
     }
   }
+
   getViewBoundStart(): MixedNumber {
     return this.currentScrollProgress;
   }
   getViewBoundSize(): MixedNumber {
-    return MixedNumber.fromFloat(this.containerAvailableSize() / this.itemSize());
+    return MixedNumber.fromFloat(this.containerAvailableSize / this.itemSize);
   }
   getViewBoundEnd(): MixedNumber {
     return this.getViewBoundStart().add(this.getViewBoundSize());
   }
   getElementPosition(index: bigint): MixedNumber {
-    return MixedNumber.fromFloat(this.itemSize()).mulInt(index);
+    return MixedNumber.fromFloat(this.itemSize).mulInt(index);
   }
   getTotalListSize(): MixedNumber {
-    return MixedNumber.fromFloat(this.itemSize()).mulInt(this.itemCount());
+    return MixedNumber.fromFloat(this.itemSize).mulInt(this.itemCount);
   }
   getListEnd(): MixedNumber {
-    return MixedNumber.fromFloat(this.itemSize()).mulInt(this.itemCount() + 1n);
+    return MixedNumber.fromFloat(this.itemSize).mulInt(this.itemCount + 1n);
   }
   isInView(index: bigint) {
     const rangeStart = this.getViewBoundStart();
@@ -209,55 +244,38 @@ export class BigScrollList {
     return index >= rangeStart.integer && index < rangeEnd.integer + 1n;
   }
 
-  containerSizeUpdated(newSize: number) {
-    console.log(`containerSizeUpdated newSize=${newSize}px`);
-    this.containerElement.style.minHeight = `${newSize}px`;
-    this.containerElement.style.maxHeight = `${newSize}px`;
-    this.updateElements();
-  }
-
   constructor(
     public containerElement: HTMLElement,
 
-    // Get the amount of items stored in the list
-    public itemCount: () => bigint,
+    // Amount of items in the list
+    private itemCount: bigint,
 
-    // Get the size of each item (each element must have the same length)
-    public itemSize: () => number,
+    // The size of each item in px (each element must have the same length)
+    private itemSize: number,
 
     // Get the DocumentFragment for a specific item in the list
     public getDocumentFragmentFromIndex: (index: bigint) => DocumentFragment,
 
-    // Get the available size of the container
-    public containerAvailableSize: () => number
+    // Available size of the container
+    private containerAvailableSize: number
   ) {
     this.containerElement.style.position = "relative";
     this.containerElement.style.overflowY = "scroll";
-    this.containerSizeUpdated(this.containerAvailableSize());
+    this.updateContainer();
 
-    // TODO: these are not really reliable, the container size can change independently of the window as well
-    window.addEventListener("resize", () => {
-      this.containerSizeUpdated(this.containerAvailableSize());
-    });
-    // window.addEventListener("scale", () => {
-    //   this.containerSizeUpdated(this.containerAvailableSize());
-    // });
+    this.scrollStopElement = document.createElement("div");
+    this.scrollStopElement.textContent = "x";
+    this.scrollStopElement.style.position = "absolute";
+    this.scrollStopElement.style.maxHeight = "0px";
+    this.scrollStopElement.style.visibility = "hidden";
+    this.updateScrollStop();
 
-    const scrollStop = document.createElement("div");
-    scrollStop.textContent = "x";
-    scrollStop.style.position = "absolute";
-    scrollStop.style.top = `${this.getTotalListSize().min(BigScrollList.MAX_POSSIBLE_SCROLL).toString()}px`;
-    scrollStop.style.maxHeight = "0px";
-    scrollStop.style.visibility = "hidden";
-    this.containerElement.appendChild(scrollStop);
+    this.containerElement.appendChild(this.scrollStopElement);
     this.containerElement.addEventListener("scroll", () => {
       // console.log("scroll detected");
-      this.currentScrollProgress = MixedNumber.fromFloat(this.containerElement.scrollTop / this.itemSize());
+      this.currentScrollProgress = MixedNumber.fromFloat(this.containerElement.scrollTop / this.itemSize);
       this.updateElements();
     });
     this.updateElements();
-    // setTimeout(() => {
-    //   this.updateContainerElement();
-    // }, 500); // TODO: do not use settimeout here???
   }
 }
