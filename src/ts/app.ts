@@ -41,32 +41,16 @@ window.RAMMachine = {
 /// Initialization below:
 machine.loadAssemblyAndReset(DEFAULT_PROGRAM_ASSEMBLY);
 
-export function refreshListingWithAnimation() {
-  const listingRows = machine.program.createListingRows();
-  console.log(machine, machine.program, listingRows);
-  Nodes.programListing.textContent = "";
-  Nodes.programListing.appendChild(listingRows);
-  Nodes.programListingTable.animate(
-    [
-      { opacity: 0, transform: "scale(0%) rotateX(90deg)" },
-      { opacity: 1, transform: "scale(100%) rotateX(0deg)" },
-    ],
-    { duration: 500, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
-  );
-}
-
-refreshListingWithAnimation();
-machine.stats.replaceStatisticsDOM();
-
 /// Testing
 const bigScrollist = new BigScrollList(
   Nodes.bigScrollListTest,
+  "horizontal",
   2000000n,
-  30,
+  90, // item size
   (index) => {
     const f = useTemplate(Nodes.bigScrollListTestRow);
     f.querySelector("#number")!.textContent = `${index};`;
     return f;
   },
-  400
+  800
 );

@@ -1,4 +1,3 @@
-import { refreshListingWithAnimation } from "./app";
 import { InputTape, InputTapeArray } from "./InputTape";
 import { ALL_INSTRUCTIONS, Instruction, ReadableOperand, WriteableOperand } from "./Instruction";
 import { Memory } from "./Memory";
@@ -17,10 +16,10 @@ export class Machine {
   public stats = new Statistics();
   private debugBreakpoints: ProgramCounter[] = []; //[5, 10, 15, 30]; // TODO
 
-  constructor(private _program: Program = Program.EMPTY) {}
+  constructor(private program: Program = Program.EMPTY) {}
 
-  get program() {
-    return this._program;
+  getProgram() {
+    return this.program;
   }
 
   reset() {
@@ -40,9 +39,9 @@ export class Machine {
   }
 
   loadProgramAndReset(program: Program) {
-    this._program = program;
+    this.program = program;
     this.reset();
-    refreshListingWithAnimation();
+    this.program.refreshListingWithAnimation();
   }
 
   readFromOperand(operand: ReadableOperand): bigint {
@@ -70,7 +69,7 @@ export class Machine {
     }
   }
   jumpTo(label: string) {
-    const newProgramCounter = this._program.getLabelLocation(label);
+    const newProgramCounter = this.program.getLabelLocation(label);
     if (newProgramCounter === undefined) {
       throw new Error(`undefined label: '${label}'`);
     }
@@ -149,7 +148,7 @@ export class Machine {
   }
 
   executeCurrentInstruction(silent: boolean) {
-    const instruction = this._program.getInstruction(this.programCounter);
+    const instruction = this.program.getInstruction(this.programCounter);
     if (instruction === undefined) {
       throw new Error("program counter outside of program bounds"); // TODO
     } else {

@@ -1,7 +1,7 @@
 import { SparseArray } from "./BigArray";
 import { BigScrollList } from "./BigScrollList";
 import { Nodes, useTemplate } from "./Nodes";
-import { unwrap } from "./Util";
+import { expect, unwrap } from "./Util";
 
 export function readUnsetRegisterValue() {
   // return 0n;
@@ -18,12 +18,13 @@ export class Memory {
     if (registerScrollListHostNode !== null) {
       this.registerScrollList = new BigScrollList(
         registerScrollListHostNode,
+        "vertical",
         20000000n, // element count
         30, // item size
         (index) => {
           const f = useTemplate(Nodes.registerRow);
 
-          const row = unwrap(f.querySelector("#register-list-row"));
+          const row = unwrap(f.querySelector("#register-scroll-list-row"));
           const indexSpan = unwrap(f.querySelector("#index"));
           const valueSpan = unwrap(f.querySelector("#value"));
 

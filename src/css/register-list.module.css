@@ -1,4 +1,12 @@
-.register-list-row {
+.registers-scroll-list-container {
+  flex-grow: 1;
+  min-width: 100px;
+  max-width: 400px;
+  position: relative;
+  overflow-y: hidden;
+}
+
+.register-scroll-list-row {
   width: 200px;
   height: 30px;
   display: flex;
@@ -9,20 +17,20 @@
   box-sizing: border-box;
 }
 
-.register-list-row.odd {
+.register-scroll-list-row.odd {
   background-color: #ffffff;
 }
 
-.register-list-row.even {
+.register-scroll-list-row.even {
   background-color: var(--accent-color3);
 }
 
-.register-list-row .register-index {
+.register-scroll-list-row .register-index {
   width: 70px;
   text-align: right;
 }
 
-.register-list-row .register-value.uninitialized {
+.register-scroll-list-row .register-value.uninitialized {
   color: gray;
   font-style: italic;
 }

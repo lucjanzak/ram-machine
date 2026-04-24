@@ -1,4 +1,8 @@
+import { assert } from "node:console";
 import { MixedNumber } from "./MixedNumber";
+import { assertNever } from "./Util";
+
+type ScrollListDirection = "vertical" | "horizontal";
 
 export class BigScrollList {
   // On Chrome, the scrollstop "top" value is automatically bounded to the maximum possible value if it exceeds the limit.
@@ -30,6 +34,7 @@ export class BigScrollList {
 
   setItemSize(newSize: number) {
     if (newSize !== this.itemSize) {
+      console.warn("setItemSize not tested yet, it might not work properly");
       console.log(`itemSize updated: ${this.itemSize} -> ${newSize}`);
       this.itemSize = newSize;
       this.updateScrollStop();
@@ -39,12 +44,25 @@ export class BigScrollList {
   }
 
   updateContainer() {
-    this.containerElement.style.minHeight = `${this.containerAvailableSize}px`;
-    this.containerElement.style.maxHeight = `${this.containerAvailableSize}px`;
+    if (this.direction === "horizontal") {
+      this.containerElement.style.minWidth = `${this.containerAvailableSize}px`;
+      this.containerElement.style.maxWidth = `${this.containerAvailableSize}px`;
+    } else if (this.direction === "vertical") {
+      this.containerElement.style.minHeight = `${this.containerAvailableSize}px`;
+      this.containerElement.style.maxHeight = `${this.containerAvailableSize}px`;
+    } else {
+      assertNever(this.direction);
+    }
   }
 
   updateScrollStop() {
-    this.scrollStopElement.style.top = `${this.getTotalListSize().min(BigScrollList.MAX_POSSIBLE_SCROLL).toString()}px`; // TODO: remove limit for chrome
+    if (this.direction === "horizontal") {
+      this.scrollStopElement.style.left = `${this.getTotalListSize().min(BigScrollList.MAX_POSSIBLE_SCROLL).toString()}px`; // TODO: remove limit for chrome
+    } else if (this.direction === "vertical") {
+      this.scrollStopElement.style.top = `${this.getTotalListSize().min(BigScrollList.MAX_POSSIBLE_SCROLL).toString()}px`; // TODO: remove limit for chrome
+    } else {
+      assertNever(this.direction);
+    }
   }
 
   updateElements() {
@@ -80,7 +98,13 @@ export class BigScrollList {
 
       const listElement = document.createElement("div");
       listElement.style.position = "absolute";
-      listElement.style.top = `${this.getElementPosition(index).toString()}px`;
+      if (this.direction === "horizontal") {
+        listElement.style.left = `${this.getElementPosition(index).toString()}px`;
+      } else if (this.direction === "vertical") {
+        listElement.style.top = `${this.getElementPosition(index).toString()}px`;
+      } else {
+        assertNever(this.direction);
+      }
       listElement.dataset.elementIndex = `${index}`;
       listElement.append(this.getDocumentFragmentFromIndex(index));
       this.containerElement.appendChild(listElement);
@@ -114,7 +138,9 @@ export class BigScrollList {
   }
 
   constructor(
-    public containerElement: HTMLElement,
+    public readonly containerElement: HTMLElement,
+
+    public readonly direction: ScrollListDirection,
 
     // Amount of items in the list
     private itemCount: bigint,
@@ -129,12 +155,12 @@ export class BigScrollList {
     private containerAvailableSize: number
   ) {
     this.containerElement.style.position = "relative";
-    this.containerElement.style.overflowY = "scroll";
     this.updateContainer();
 
     this.scrollStopElement = document.createElement("div");
     this.scrollStopElement.textContent = "x";
     this.scrollStopElement.style.position = "absolute";
+    this.scrollStopElement.style.maxWidth = "0px";
     this.scrollStopElement.style.maxHeight = "0px";
     this.scrollStopElement.style.visibility = "hidden";
     this.updateScrollStop();
@@ -142,9 +168,23 @@ export class BigScrollList {
     this.containerElement.appendChild(this.scrollStopElement);
     this.containerElement.addEventListener("scroll", () => {
       // console.log("scroll detected");
-      this.currentScrollProgress = MixedNumber.fromFloat(this.containerElement.scrollTop / this.itemSize);
+      if (this.direction === "horizontal") {
+        this.currentScrollProgress = MixedNumber.fromFloat(this.containerElement.scrollLeft / this.itemSize);
+      } else if (this.direction === "vertical") {
+        this.currentScrollProgress = MixedNumber.fromFloat(this.containerElement.scrollTop / this.itemSize);
+      } else {
+        assertNever(this.direction);
+      }
       this.updateElements();
     });
     this.updateElements();
+
+    if (direction === "horizontal") {
+      this.containerElement.style.overflowX = "scroll";
+    } else if (direction === "vertical") {
+      this.containerElement.style.overflowY = "scroll";
+    } else {
+      assertNever(direction);
+    }
   }
 }

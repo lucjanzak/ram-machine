@@ -72,12 +72,27 @@ export class Program {
     return tilesDOM;
   }
 
-  createListingRows(): DocumentFragment {
+  createListingDOMFragment(): DocumentFragment {
     const fragment = document.createDocumentFragment();
     for (const tile of Program.createDOMTilesFromTiles(this.tiles)) {
       fragment.append(tile.fragment);
     }
     return fragment;
+  }
+
+  refreshListingWithAnimation() {
+    const listingRows = this.createListingDOMFragment();
+    // console.log(window.RAMMachine.machine, this, listingRows);
+    console.log("Refreshing listing:", listingRows);
+    Nodes.programListing.textContent = "";
+    Nodes.programListing.appendChild(listingRows);
+    Nodes.programListingTable.animate(
+      [
+        { opacity: 0, transform: "scale(0%) rotateX(90deg)" },
+        { opacity: 1, transform: "scale(100%) rotateX(0deg)" },
+      ],
+      { duration: 500, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
+    );
   }
 
   static fromAssembly(assemblyText: string, hideErrors = false): Program {

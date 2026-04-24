@@ -68,10 +68,8 @@
       <section id="register-pane" style="display: flex; flex-direction: column; align-items: stretch;">
         <!-- registers here -->
         <span>Registers:</span>
-        <div id="non-zero-registers-list"></div> <!-- TODO -->
-        <div id="registers-scroll-list-container"
-          style="flex-grow: 1; min-width: 100px; max-width: 400px; position: relative; overflow-y: hidden;">
-          <div id="registers-scroll-list"></div>
+        <div id="register-scroll-list-container">
+          <div id="register-scroll-list"></div>
         </div>
       </section>
       <!-- TODO: make into tabs -->
@@ -143,7 +141,7 @@
     <div>
       <section>
         Infinite scrolling test:
-        <div id="big-scroll-list-test" style="width: 500px;"></div>
+        <div id="big-scroll-list-test" style="height: 100px;"></div>
       </section>
     </div>
   </main>
@@ -192,15 +190,31 @@
     </tr>
   </template>
   <template id="register-row">
-    <div class="register-list-row" id="register-list-row">
+    <div class="register-scroll-list-row" id="register-scroll-list-row">
       <span class="register-index">
         r<sub id="index"></sub>:
       </span>
       <span id="value" class="register-value"></span>
     </div>
   </template>
+  <template id="input-tape-cell">
+    <div class="input-tape-scroll-list-cell" id="input-tape-scroll-list-cell">
+      <span class="input-tape-cell-index">
+        Tape cell #<span id="index"></span>
+      </span>
+      <input type="number" id="value" class="input-tape-cell-value" value="0" step="1" />
+    </div>
+  </template>
+  <template id="output-tape-cell">
+    <div class="output-tape-scroll-list-cell" id="output-tape-scroll-list-cell">
+      <span class="output-tape-cell-index">
+        Tape cell #<span id="index"></span>
+      </span>
+      <input type="number" id="value" class="output-tape-cell-value" value="0" step="1" disabled />
+    </div>
+  </template>
   <template id="big-scroll-list-test-row">
-    <div style="width: 200px; height: 30px; background-color: #0000ff1f;">
+    <div style="width: 90px; height: 50px; background-color: #0000ff1f; word-break: break-all;">
       Hello world <span id="number">number</span>
     </div>
   </template>
