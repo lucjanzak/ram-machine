@@ -29,6 +29,8 @@ export class Machine {
     this.outputTape.clearAndReset();
     this.memory.clear();
     this.programCounter = 0;
+    this.stats.clear();
+    this.stats.replaceStatisticsDOM();
   }
 
   loadAssemblyAndReset(assembly: string) {

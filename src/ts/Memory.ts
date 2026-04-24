@@ -55,9 +55,6 @@ export class Memory {
     });
   }
 
-  // TODO: add this as an option
-  TODO_nonzeroRegisterRowElements: SparseArray<DocumentFragment> = new SparseArray();
-
   getAccumulator(): bigint {
     return this.getRegister(0n);
   }
@@ -86,42 +83,57 @@ export class Memory {
 
   // This is never quiet
   clear() {
-    this.registers = new SparseArray();
-    // console.log(this.TODO_nonzeroRegisterRows);
-    for (const [_index, f] of this.TODO_nonzeroRegisterRowElements) {
-      for (const child of f.children) {
-        console.log("clearrr");
-        // TODO: fix me, this function doesn't actually remove the nodes from the DOM
-        child.remove();
-      }
+    for (const [index, _] of this.registers) {
+      this.updateRegisterRow(index, undefined);
     }
-    this.TODO_nonzeroRegisterRowElements.clear();
+    this.registers = new SparseArray();
   }
 
   sendUpdatesToAllQuietlyUpdatedRegisterRows() {
-    console.log("update all");
+    console.log("update all", this.quietlyUpdatedRegisters);
     for (const i of this.quietlyUpdatedRegisters) {
       this.updateRegisterRow(i, unwrap(this.registers.get(i)));
     }
     this.quietlyUpdatedRegisters.clear();
   }
 
-  updateRegisterRow(index: bigint, value: bigint) {
-    // TODO: move Nodes.registerRows inside this memory class, and make it nonstatic
-    // TODO: also add "associatedElement" field, which would be the parent table of the rows
-    console.log("updateRegisterRow", index, value);
-    const storedFragment = this.TODO_nonzeroRegisterRowElements.get(index);
-    if (storedFragment === undefined) {
-      // Create new register row here
-      const newFragment = useTemplate(Nodes.registerRow);
-      unwrap(newFragment.querySelector("#index")).textContent = `${index}`;
-      unwrap(newFragment.querySelector("#value")).textContent = `${value}`;
-      this.TODO_nonzeroRegisterRowElements.set(index, newFragment);
-      Nodes.nonZeroRegisterList.appendChild(newFragment);
-      // console.log(newFragment);
-      // console.log(Nodes.registerRows);
-    } else {
-      unwrap(storedFragment.querySelector("#value")).textContent = `${value}`;
+  updateRegisterRow(index: bigint, value: bigint | undefined) {
+    // console.log("updateRegisterRow", index, value);
+    if (this.registerScrollList !== null) {
+      if (this.registerScrollList.isInView(index)) {
+        const row = this.registerScrollList.containerElement.querySelector(`div[data-element-index="${index}"]`);
+        if (row === null) {
+          console.warn(
+            `List element #${index} is in view, but there is no row element associated with it! (row === null)`,
+            this.registerScrollList.containerElement
+          );
+        } else {
+          const valueSpan = unwrap(row.querySelector("#value"));
+          if (value === undefined) {
+            valueSpan.textContent = "uninitialized";
+            valueSpan.classList.add("uninitialized");
+            row.animate(
+              [
+                { opacity: 0, transform: "scaleX(0%)" },
+                { opacity: 1, transform: "scaleX(100%)" },
+              ],
+              { duration: 500, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
+            );
+          } else {
+            valueSpan.textContent = `${value}`;
+            valueSpan.classList.remove("uninitialized");
+            row.animate(
+              [
+                { color: "blue", transform: "scale(120%)" },
+                { color: "blue", transform: "scale(100%)" },
+                { color: "blue", transform: "scale(100%)" },
+                { color: "initial", transform: "scale(100%)" },
+              ],
+              { duration: 2000, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
+            );
+          }
+        }
+      }
     }
   }
 }
