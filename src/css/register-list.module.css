@@ -1,4 +1,10 @@
-.registers-scroll-list-container {
+#register-pane {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+#register-scroll-list-container {
   flex-grow: 1;
   min-width: 100px;
   max-width: 400px;
