@@ -1,4 +1,5 @@
 import { SparseArray } from "./BigArray";
+import { BigScrollList } from "./BigScrollList";
 import { Nodes, useTemplate } from "./Nodes";
 import { unwrap } from "./Util";
 
@@ -11,6 +12,47 @@ export function readUnsetRegisterValue() {
 export class Memory {
   private registers = new SparseArray<bigint>();
   private quietlyUpdatedRegisters = new Set<bigint>();
+  private registerScrollList: BigScrollList | null = null;
+
+  constructor(registerScrollListHostNode: HTMLElement | null) {
+    if (registerScrollListHostNode !== null) {
+      this.registerScrollList = new BigScrollList(
+        registerScrollListHostNode,
+        () => 20000000n, // element count
+        () => 30, // item size
+        (index) => {
+          const f = useTemplate(Nodes.registerRow);
+
+          const row = unwrap(f.querySelector("#register-list-row"));
+          const indexSpan = unwrap(f.querySelector("#index"));
+          const valueSpan = unwrap(f.querySelector("#value"));
+
+          if (index % 2n === 0n) {
+            row.classList.add("even");
+          } else {
+            row.classList.add("odd");
+          }
+          indexSpan.textContent = `${index}`;
+
+          const value = this.getRegisterState(index);
+          if (value === undefined) {
+            valueSpan.textContent = "uninitialized";
+            valueSpan.classList.add("uninitialized");
+          } else {
+            valueSpan.textContent = `${value}`;
+          }
+          return f;
+        },
+        () => {
+          return Nodes.registerScrollList.parentElement!.clientHeight;
+        }
+      );
+    }
+  }
+
+  // TODO: add this as an option
+  TODO_nonzeroRegisterRowElements: SparseArray<DocumentFragment> = new SparseArray();
+
   getAccumulator(): bigint {
     return this.getRegister(0n);
   }
@@ -33,44 +75,44 @@ export class Memory {
     if (quiet) {
       this.quietlyUpdatedRegisters.add(index);
     } else {
-      Memory.updateRegisterRow(index, value);
+      this.updateRegisterRow(index, value);
     }
   }
 
   // This is never quiet
   clear() {
     this.registers = new SparseArray();
-    console.log(Nodes.TODO_nonzeroRegisterRows);
-    for (const [_index, f] of Nodes.TODO_nonzeroRegisterRows) {
+    // console.log(this.TODO_nonzeroRegisterRows);
+    for (const [_index, f] of this.TODO_nonzeroRegisterRowElements) {
       for (const child of f.children) {
         console.log("clearrr");
         // TODO: fix me, this function doesn't actually remove the nodes from the DOM
         child.remove();
       }
     }
-    Nodes.TODO_nonzeroRegisterRows.clear();
+    this.TODO_nonzeroRegisterRowElements.clear();
   }
 
   updateAllQuietlyUpdatedRegisterRows() {
     console.log("update all");
     for (const i of this.quietlyUpdatedRegisters) {
-      Memory.updateRegisterRow(i, unwrap(this.registers.get(i)));
+      this.updateRegisterRow(i, unwrap(this.registers.get(i)));
     }
     this.quietlyUpdatedRegisters.clear();
   }
 
-  static updateRegisterRow(index: bigint, value: bigint) {
+  updateRegisterRow(index: bigint, value: bigint) {
     // TODO: move Nodes.registerRows inside this memory class, and make it nonstatic
     // TODO: also add "associatedElement" field, which would be the parent table of the rows
     console.log("updateRegisterRow", index, value);
-    const storedFragment = Nodes.TODO_nonzeroRegisterRows.get(index);
+    const storedFragment = this.TODO_nonzeroRegisterRowElements.get(index);
     if (storedFragment === undefined) {
       // Create new register row here
       const newFragment = useTemplate(Nodes.registerRow);
       unwrap(newFragment.querySelector("#index")).textContent = `${index}`;
       unwrap(newFragment.querySelector("#value")).textContent = `${value}`;
-      Nodes.TODO_nonzeroRegisterRows.set(index, newFragment);
-      Nodes.registersScrollList.appendChild(newFragment);
+      this.TODO_nonzeroRegisterRowElements.set(index, newFragment);
+      Nodes.registerScrollList.appendChild(newFragment);
       // console.log(newFragment);
       // console.log(Nodes.registerRows);
     } else {

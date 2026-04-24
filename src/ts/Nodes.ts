@@ -4,7 +4,8 @@ import { unwrap } from "./Util";
 export namespace Nodes {
   // Static elements
   export const inputTape = unwrap(document.querySelector("#input-tape"));
-  export const registersScrollList = unwrap(document.querySelector<HTMLElement>("#registers-scroll-list"));
+  export const registerScrollList = unwrap(document.querySelector<HTMLElement>("#registers-scroll-list"));
+  export const nonZeroRegisterList = unwrap(document.querySelector("#non-zero-registers-list")); // TODO
   export const programListingTable = unwrap(document.querySelector("#program-listing-table"));
   export const programListing = unwrap(document.querySelector("#program-listing"));
   export const outputTape = unwrap(document.querySelector("#input-tape"));
@@ -19,9 +20,6 @@ export namespace Nodes {
   export const statsRow = unwrap(document.querySelector<HTMLTemplateElement>("#stats-row"));
   export const registerRow = unwrap(document.querySelector<HTMLTemplateElement>("#register-row"));
   export const bigScrollListTestRow = unwrap(document.querySelector<HTMLTemplateElement>("#big-scroll-list-test-row"));
-
-  // TODO: add this as an option
-  export const TODO_nonzeroRegisterRows: SparseArray<DocumentFragment> = new SparseArray();
 }
 
 export function useTemplate(instructionTile: HTMLTemplateElement) {
