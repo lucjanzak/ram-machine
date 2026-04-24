@@ -1,7 +1,7 @@
 import { SparseArray } from "./BigArray";
 import { BigScrollList } from "./BigScrollList";
-import { Nodes, useTemplate } from "./Nodes";
-import { expect, unwrap } from "./Util";
+import { Nodes, select, useTemplate } from "./Nodes";
+import { unwrap } from "./Util";
 
 export function readUnsetRegisterValue() {
   // return 0n;
@@ -24,9 +24,9 @@ export class Memory {
         (index) => {
           const f = useTemplate(Nodes.registerRow);
 
-          const row = unwrap(f.querySelector("#register-scroll-list-row"));
-          const indexSpan = unwrap(f.querySelector("#index"));
-          const valueSpan = unwrap(f.querySelector("#value"));
+          const row = select(f, "#register-scroll-list-row");
+          const indexSpan = select(f, "#index");
+          const valueSpan = select(f, "#value");
 
           if (index % 2n === 0n) {
             row.classList.add("even");
@@ -109,7 +109,7 @@ export class Memory {
             this.registerScrollList.containerElement
           );
         } else {
-          const valueSpan = unwrap(row.querySelector("#value"));
+          const valueSpan = select(row, "#value");
           if (value === undefined) {
             valueSpan.textContent = "uninitialized";
             valueSpan.classList.add("uninitialized");

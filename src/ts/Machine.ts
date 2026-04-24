@@ -1,11 +1,11 @@
 import { InputTape, InputTapeArray } from "./InputTape";
-import { ALL_INSTRUCTIONS, Instruction, ReadableOperand, WriteableOperand } from "./Instruction";
+import { Instruction, ReadableOperand, WriteableOperand } from "./Instruction";
 import { Memory } from "./Memory";
-import { Nodes, useTemplate } from "./Nodes";
+import { Nodes } from "./Nodes";
 import { OutputTape, OutputTapeArray } from "./OutputTape";
 import { Program, ProgramCounter } from "./Program";
 import { Statistics } from "./Statistics";
-import { assertNever, unwrap } from "./Util";
+import { assertNever } from "./Util";
 
 export class Machine {
   private running = false;

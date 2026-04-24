@@ -8,7 +8,6 @@ import * as monaco from "monaco-editor";
 
 import "../css/main.module.css";
 import { BigScrollList } from "./BigScrollList";
-import { unwrap } from "./Util";
 
 const machine = new Machine();
 const editor = createEditor();

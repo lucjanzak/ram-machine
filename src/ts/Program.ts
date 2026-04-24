@@ -1,7 +1,6 @@
 import { Instruction, instructionToString } from "./Instruction";
-import { Nodes, useTemplate } from "./Nodes";
+import { Nodes, select, useTemplate } from "./Nodes";
 import { Parser } from "./Parser";
-import { unwrap } from "./Util";
 
 export type ParsedLine = {
   labels: string[];
@@ -52,16 +51,16 @@ export class Program {
     tiles.forEach((tile, _index) => {
       if (tile.type === "comment") {
         const t = useTemplate(Nodes.commentTile);
-        unwrap(t.querySelector("#comment")).textContent = tile.comment;
+        select(t, "#comment").textContent = tile.comment;
         tilesDOM.push(Object.assign(tile, { fragment: t }));
       } else if (tile.type === "instruction") {
         lineNumber++;
         const t = useTemplate(Nodes.instructionTile);
-        unwrap(t.querySelector("#line-number")).textContent = `${lineNumber}`;
-        unwrap(t.querySelector("#labels")).textContent = makeLabelsText(tile.labels);
-        unwrap(t.querySelector("#instruction")).textContent = instructionToString(tile.instruction);
+        select(t, "#line-number").textContent = `${lineNumber}`;
+        select(t, "#labels").textContent = makeLabelsText(tile.labels);
+        select(t, "#instruction").textContent = instructionToString(tile.instruction);
         if (tile.comment !== null) {
-          const comment = unwrap(t.querySelector("#comment"));
+          const comment = select(t, "#comment");
           comment.textContent = tile.comment;
           comment.classList.add("present");
         }

@@ -1,7 +1,6 @@
 import { instructionComplexity } from "./Complexity";
 import { ALL_INSTRUCTIONS, Instruction } from "./Instruction";
-import { Nodes, useTemplate } from "./Nodes";
-import { unwrap } from "./Util";
+import { Nodes, select, useTemplate } from "./Nodes";
 
 export class Statistics {
   private instructionCounters = Statistics.createEmptyCounters();
@@ -56,18 +55,18 @@ export class Statistics {
       const counter = this.fetchCounter(instruction);
 
       const f = useTemplate(Nodes.statsRow);
-      unwrap(f.querySelector("#instruction")).textContent = instruction;
-      unwrap(f.querySelector("#count")).textContent = `${counter}`;
+      select(f, "#instruction").textContent = instruction;
+      select(f, "#count").textContent = `${counter}`;
       total += counter;
       Nodes.stats.append(f);
     }
 
     {
       const f = useTemplate(Nodes.statsRow);
-      const totalCellTitle = unwrap(f.querySelector<HTMLTableCellElement>("#instruction"));
+      const totalCellTitle = select<HTMLTableCellElement>(f, "#instruction");
       totalCellTitle.textContent = "Total";
       totalCellTitle.style.fontWeight = "700";
-      const totalCellCounter = unwrap(f.querySelector<HTMLTableCellElement>("#count"));
+      const totalCellCounter = select<HTMLTableCellElement>(f, "#count");
       totalCellCounter.textContent = `${total}`;
       totalCellCounter.style.fontWeight = "700";
       Nodes.stats.append(f);
@@ -76,10 +75,10 @@ export class Statistics {
     const timeMs = this.fetchTime();
     {
       const f = useTemplate(Nodes.statsRow);
-      const timeCellTitle = unwrap(f.querySelector<HTMLTableCellElement>("#instruction"));
+      const timeCellTitle = select<HTMLTableCellElement>(f, "#instruction");
       timeCellTitle.textContent = "Time";
       timeCellTitle.style.fontWeight = "700";
-      const timeCellCounter = unwrap(f.querySelector<HTMLTableCellElement>("#count"));
+      const timeCellCounter = select<HTMLTableCellElement>(f, "#count");
       timeCellCounter.textContent = `${timeMs} ms`;
       timeCellCounter.style.fontWeight = "700";
       Nodes.stats.append(f);
@@ -88,10 +87,10 @@ export class Statistics {
     const timeMsBigInt = BigInt(Math.round(timeMs * 1000));
     const speed = timeMsBigInt === 0n ? 0 : (total * 1000000n) / timeMsBigInt;
     const f = useTemplate(Nodes.statsRow);
-    const speedCellTitle = unwrap(f.querySelector<HTMLTableCellElement>("#instruction"));
+    const speedCellTitle = select<HTMLTableCellElement>(f, "#instruction");
     speedCellTitle.textContent = "Speed";
     speedCellTitle.style.fontWeight = "700";
-    const speedCellCounter = unwrap(f.querySelector<HTMLTableCellElement>("#count"));
+    const speedCellCounter = select<HTMLTableCellElement>(f, "#count");
     speedCellCounter.textContent = `${speed} inst. / s`;
     speedCellCounter.style.fontWeight = "700";
     Nodes.stats.append(f);

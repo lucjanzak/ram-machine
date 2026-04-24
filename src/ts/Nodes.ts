@@ -1,5 +1,4 @@
-import { SparseArray } from "./BigArray";
-import { expect, unwrap } from "./Util";
+import { expect } from "./Util";
 
 export namespace Nodes {
   function element<T extends Element = Element>(selector: string) {
@@ -34,6 +33,6 @@ export function useTemplate(instructionTile: HTMLTemplateElement) {
   return document.importNode(instructionTile.content, true);
 }
 
-function select<T extends Element = Element>(f: ParentNode, selector: string) {
+export function select<T extends Element = Element>(f: ParentNode, selector: string) {
   return expect(f.querySelector<T>(selector), `element with selector '${selector}' not found in f: ${f}`);
 }
