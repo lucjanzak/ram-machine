@@ -122,6 +122,8 @@ export class Memory {
           } else {
             valueSpan.textContent = `${value}`;
             valueSpan.classList.remove("uninitialized");
+            // TODO: maybe the color should stay blue until the next update?
+            // that would require storing a list/set of all recently-updated registers, and also probably a css class, instead of an animation
             row.animate(
               [
                 { color: "blue", transform: "scale(120%)" },
