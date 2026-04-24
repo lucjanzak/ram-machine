@@ -3,13 +3,13 @@ import { ALL_INSTRUCTIONS, Instruction } from "./Instruction";
 import { Nodes, select, useTemplate } from "./Nodes";
 
 export class Statistics {
-  private instructionCounters = Statistics.createEmptyCounters();
-  private startTime: DOMHighResTimeStamp | null = null;
-  private endTime: DOMHighResTimeStamp | null = null;
-  private totalLogComplexity: bigint = 0n;
+  public instructionCounters = Statistics.createEmptyCounters();
+  public startTime: DOMHighResTimeStamp | null = null;
+  public endTime: DOMHighResTimeStamp | null = null;
+  public timeLogComplexity: bigint = 0n;
   processSilently(instruction: Instruction, c: (i: bigint) => bigint, peekInput: () => bigint) {
     this.instructionCounters[instruction.operation] += 1n;
-    this.totalLogComplexity += instructionComplexity(instruction, c, peekInput);
+    this.timeLogComplexity += instructionComplexity(instruction, c, peekInput);
   }
   processAndUpdateDOM(instruction: Instruction, c: (i: bigint) => bigint, peekInput: () => bigint) {
     this.processSilently(instruction, c, peekInput);
@@ -31,7 +31,7 @@ export class Statistics {
 
   clear() {
     this.instructionCounters = Statistics.createEmptyCounters();
-    this.totalLogComplexity = 0n;
+    this.timeLogComplexity = 0n;
     this.startTime = null;
     this.endTime = null;
   }

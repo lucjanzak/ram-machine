@@ -44,14 +44,14 @@ export class Memory {
           }
           return f;
         },
-        Nodes.registerScrollList.parentElement!.clientHeight
+        registerScrollListHostNode.parentElement!.clientHeight
       );
     }
 
     // TODO: these are not really reliable, the container size can change independently of the window as well
     window.addEventListener("resize", () => {
       if (this.registerScrollList !== null) {
-        this.registerScrollList.setContainerAvailableSize(Nodes.registerScrollList.parentElement!.clientHeight);
+        this.registerScrollList.setContainerAvailableSize(this.registerScrollList.containerElement.parentElement!.clientHeight);
       }
     });
   }

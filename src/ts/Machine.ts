@@ -9,21 +9,33 @@ import { assertNever } from "./Util";
 
 export class Machine {
   private running = false;
-  private inputTape: InputTape = new InputTapeArray();
-  private outputTape: OutputTape = new OutputTapeArray();
-  public memory = new Memory(Nodes.registerScrollList);
+  private killed = false;
+  public inputTape: InputTape = new InputTapeArray();
+  public outputTape: OutputTape = new OutputTapeArray();
+  public memory;
   private programCounter: ProgramCounter = 0;
   public stats = new Statistics();
   private debugBreakpoints: ProgramCounter[] = []; //[5, 10, 15, 30]; // TODO
 
-  constructor(private program: Program = Program.EMPTY) {}
+  constructor(private program: Program = Program.EMPTY, private detachedMode = false) {
+    if (this.detachedMode) {
+      this.memory = new Memory(null);
+    } else {
+      this.memory = new Memory(Nodes.registerScrollList);
+    }
+  }
 
   getProgram() {
     return this.program;
   }
 
+  wasKilled() {
+    return this.killed;
+  }
+
   reset() {
     this.running = false;
+    this.killed = false;
     this.inputTape.reset();
     this.outputTape.clearAndReset();
     this.memory.clear();
@@ -156,11 +168,15 @@ export class Machine {
     }
   }
 
-  runAsFastAsPossible(debug: boolean) {
+  runAsFastAsPossible(
+    debug: boolean,
+    options: { timeoutWarning?: number; timeoutAlert?: number; timeoutKill: number } = { timeoutWarning: 1000, timeoutAlert: 3000, timeoutKill: 20000 }
+  ) {
     this.running = true;
 
     const timeStarted = Date.now();
-    let stage: "normal" | "warning" | "alert" = "normal";
+    let timeoutWarned = false;
+    let timeoutAlerted = false;
 
     const stopTime = (currentTime: DOMHighResTimeStamp) => {
       console.log(this.stats);
@@ -184,25 +200,38 @@ export class Machine {
       this.executeCurrentInstruction(true);
 
       const currentTime = Date.now();
-      if (stage === "normal" && currentTime - timeStarted > 1000) {
-        stage = "warning";
-        console.warn("WARNING: Program running longer than 1000ms...");
-      } else if (stage === "warning" && currentTime - timeStarted > 3000) {
-        stage = "alert";
+      const timePassed = currentTime - timeStarted;
+      if (options.timeoutWarning && timePassed > options.timeoutWarning && !timeoutWarned) {
+        timeoutWarned = true;
+        console.warn(`Program running longer than ${options.timeoutWarning}ms...`);
+      }
+      if (options.timeoutAlert && timePassed > options.timeoutAlert && !timeoutAlerted) {
+        timeoutAlerted = true;
         const currentTimePrecise = performance.now();
         const answer = confirm("This is taking a while, do you want to cancel?");
         if (answer) {
           // Machine run canceled by user.
           cancelRunning(currentTimePrecise);
           return;
-        } else {
-          // TODO: idk let the user run it for a while...
         }
+      }
+      if (options.timeoutKill && timePassed > options.timeoutKill) {
+        const currentTimePrecise = performance.now();
+        console.error(`Could not run the program in under ${options.timeoutKill}ms, terminating`);
+        this.killed = true;
+        cancelRunning(currentTimePrecise);
       }
     }
 
     // Normal stop - found a HALT instruction or errored out.
     stopTime(performance.now());
     this.memory.sendUpdatesToAllQuietlyUpdatedRegisterRows();
+  }
+
+  static runSimulation(program: Program, input: bigint[], options: { timeout: number } = { timeout: 100 }): Machine {
+    const machine = new Machine(program, true);
+    machine.inputTape = InputTapeArray.fromValues(input);
+    machine.runAsFastAsPossible(false, { timeoutWarning: undefined, timeoutAlert: undefined, timeoutKill: options.timeout });
+    return machine;
   }
 }

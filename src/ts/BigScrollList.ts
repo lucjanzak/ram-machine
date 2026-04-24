@@ -1,4 +1,4 @@
-import { assert } from "node:console";
+import { assert, time } from "node:console";
 import { MixedNumber } from "./MixedNumber";
 import { assertNever } from "./Util";
 
@@ -66,6 +66,7 @@ export class BigScrollList {
   }
 
   updateElements() {
+    console.log("updateElements", this);
     // Analyze existing elements
     for (const listElement of this.containerElement.children) {
       const htmlElement = listElement as HTMLElement;
