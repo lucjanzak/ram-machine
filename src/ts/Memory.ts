@@ -22,6 +22,9 @@ export class Memory {
       return register;
     }
   }
+  getRegisterState(index: bigint): bigint | undefined {
+    return this.registers.get(index);
+  }
   setAccumulator(value: bigint, quiet: boolean) {
     this.setRegister(0n, value, quiet);
   }
@@ -37,15 +40,15 @@ export class Memory {
   // This is never quiet
   clear() {
     this.registers = new SparseArray();
-    console.log(Nodes.registerRows);
-    for (const [_index, f] of Nodes.registerRows) {
+    console.log(Nodes.TODO_nonzeroRegisterRows);
+    for (const [_index, f] of Nodes.TODO_nonzeroRegisterRows) {
       for (const child of f.children) {
         console.log("clearrr");
         // TODO: fix me, this function doesn't actually remove the nodes from the DOM
         child.remove();
       }
     }
-    Nodes.registerRows.clear();
+    Nodes.TODO_nonzeroRegisterRows.clear();
   }
 
   updateAllQuietlyUpdatedRegisterRows() {
@@ -60,14 +63,14 @@ export class Memory {
     // TODO: move Nodes.registerRows inside this memory class, and make it nonstatic
     // TODO: also add "associatedElement" field, which would be the parent table of the rows
     console.log("updateRegisterRow", index, value);
-    const storedFragment = Nodes.registerRows.get(index);
+    const storedFragment = Nodes.TODO_nonzeroRegisterRows.get(index);
     if (storedFragment === undefined) {
       // Create new register row here
       const newFragment = useTemplate(Nodes.registerRow);
       unwrap(newFragment.querySelector("#index")).textContent = `${index}`;
       unwrap(newFragment.querySelector("#value")).textContent = `${value}`;
-      Nodes.registerRows.set(index, newFragment);
-      Nodes.registers.appendChild(newFragment);
+      Nodes.TODO_nonzeroRegisterRows.set(index, newFragment);
+      Nodes.registersScrollList.appendChild(newFragment);
       // console.log(newFragment);
       // console.log(Nodes.registerRows);
     } else {

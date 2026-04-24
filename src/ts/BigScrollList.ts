@@ -30,6 +30,42 @@ export class MixedNumber {
     return mixed;
   }
 
+  isNegative() {
+    return this.integer < 0n;
+  }
+
+  isZero() {
+    return this.integer === 0n && this.fraction === 0;
+  }
+
+  isInteger() {
+    return this.fraction === 0;
+  }
+
+  floor() {
+    return new MixedNumber(this.integer, 0);
+  }
+
+  ceil() {
+    if (this.isInteger()) {
+      return new MixedNumber(this.integer, 0);
+    } else {
+      return new MixedNumber(this.integer + 1n, 0);
+    }
+  }
+
+  nextInt() {
+    return new MixedNumber(this.integer + 1n, 0);
+  }
+
+  prevInt() {
+    if (this.isInteger()) {
+      return new MixedNumber(this.integer - 1n, 0);
+    } else {
+      return new MixedNumber(this.integer, 0);
+    }
+  }
+
   add(rhs: MixedNumber) {
     return MixedNumber.fromImproper(this.integer + rhs.integer, this.fraction + rhs.fraction);
   }
@@ -40,6 +76,48 @@ export class MixedNumber {
 
   mulInt(rhs: bigint) {
     return MixedNumber.fromImproper(this.integer * rhs, this.fraction * Number(rhs));
+  }
+
+  eq(rhs: MixedNumber): boolean {
+    return this.sub(rhs).isZero();
+  }
+
+  ne(rhs: MixedNumber): boolean {
+    return !this.sub(rhs).isZero();
+  }
+
+  lt(rhs: MixedNumber): boolean {
+    return this.sub(rhs).isNegative();
+  }
+
+  lte(rhs: MixedNumber): boolean {
+    const diff = this.sub(rhs);
+    return diff.isNegative() || diff.isZero();
+  }
+
+  gt(rhs: MixedNumber): boolean {
+    const diff = this.sub(rhs);
+    return !diff.isNegative() && !diff.isZero();
+  }
+
+  gte(rhs: MixedNumber): boolean {
+    return !this.sub(rhs).isNegative();
+  }
+
+  min(rhs: MixedNumber) {
+    if (this.lte(rhs)) {
+      return this;
+    } else {
+      return rhs;
+    }
+  }
+
+  max(rhs: MixedNumber) {
+    if (this.gte(rhs)) {
+      return this;
+    } else {
+      return rhs;
+    }
   }
 
   // Warning: lossy
@@ -57,25 +135,34 @@ export class MixedNumber {
 }
 
 export class BigScrollList {
-  currentScrollProgress: MixedNumber = MixedNumber.zero();
+  // On Chrome, the scrollstop "top" value is automatically bounded to the maximum possible value if it exceeds the limit.
+  // The max value for Chrome is 33554432n, which is equal to `2147483648 * (1 / 64)`.
+  // On Firefox, the maximum possible scrollstop "top" value is written below, which is equal to `2147483648 * (1 / 120)`:
+  // static MAX_POSSIBLE_SCROLL = MixedNumber.fromFloat(2147483648 / 120).floor();
+  static MAX_POSSIBLE_SCROLL = new MixedNumber(17895697n, 1 / 15).floor();
 
-  updateContainerElement() {
+  currentScrollProgress: MixedNumber = MixedNumber.zero();
+  activeElements: Set<bigint> = new Set();
+
+  updateElements() {
     // Analyze existing elements
-    const existingElements: bigint[] = [];
     for (const listElement of this.containerElement.children) {
       const htmlElement = listElement as HTMLElement;
-      const index = htmlElement.dataset.elementIndex;
-      if (index === undefined) {
-        // console.warn("Found element with no index!", listElement);
+      const indexStr = htmlElement.dataset.elementIndex;
+      if (indexStr === undefined) {
+        // console.warn("Found element with no index property!", listElement);
         continue;
       }
 
-      const bigintIndex = BigInt(index);
-      if (this.isInView(bigintIndex)) {
-        existingElements.push(bigintIndex);
+      const index = BigInt(indexStr);
+      if (this.isInView(index)) {
+        // htmlElement.style.backgroundColor = "#00ff001f";
+        this.activeElements.add(index);
       } else {
-        console.log("removing element out of view");
+        // console.log(`remove: ${index}`);
+        // htmlElement.style.backgroundColor = "#ff00001f";
         listElement.remove();
+        this.activeElements.delete(index);
       }
     }
 
@@ -83,7 +170,7 @@ export class BigScrollList {
     const viewBoundStart = this.getViewBoundStart();
     const viewBoundEnd = this.getViewBoundEnd();
     for (let index = viewBoundStart.integer; index <= viewBoundEnd.integer; index++) {
-      if (existingElements.includes(index)) {
+      if (this.activeElements.has(index)) {
         // This one already exists
         continue;
       }
@@ -94,7 +181,8 @@ export class BigScrollList {
       listElement.dataset.elementIndex = `${index}`;
       listElement.append(this.getDocumentFragmentFromIndex(index));
       this.containerElement.appendChild(listElement);
-      console.log("adding element in view");
+      this.activeElements.add(index);
+      // console.log(`add: ${index}`);
     }
   }
   getViewBoundStart(): MixedNumber {
@@ -120,6 +208,14 @@ export class BigScrollList {
     const rangeEnd = this.getViewBoundEnd();
     return index >= rangeStart.integer && index < rangeEnd.integer + 1n;
   }
+
+  containerSizeUpdated(newSize: number) {
+    console.log(`containerSizeUpdated newSize=${newSize}px`);
+    this.containerElement.style.minHeight = `${newSize}px`;
+    this.containerElement.style.maxHeight = `${newSize}px`;
+    this.updateElements();
+  }
+
   constructor(
     public containerElement: HTMLElement,
 
@@ -136,23 +232,32 @@ export class BigScrollList {
     public containerAvailableSize: () => number
   ) {
     this.containerElement.style.position = "relative";
-    this.containerElement.style.minHeight = `${this.containerAvailableSize()}px`;
-    // this.containerElement.style.height = `${this.containerAvailableSize()}px`;
-    this.containerElement.style.maxHeight = `${this.containerAvailableSize()}px`;
     this.containerElement.style.overflowY = "scroll";
-    const decorativeElement = document.createElement("div");
-    decorativeElement.textContent = "x";
-    decorativeElement.style.position = "absolute";
-    decorativeElement.style.top = `${this.getTotalListSize().toString()}px`;
-    decorativeElement.style.maxHeight = `0px`;
-    this.containerElement.appendChild(decorativeElement);
-    this.containerElement.addEventListener("scroll", () => {
-      console.log("scroll detected");
-      this.currentScrollProgress = MixedNumber.fromFloat(this.containerElement.scrollTop / this.itemSize());
-      this.updateContainerElement();
+    this.containerSizeUpdated(this.containerAvailableSize());
+
+    // TODO: these are not really reliable, the container size can change independently of the window as well
+    window.addEventListener("resize", () => {
+      this.containerSizeUpdated(this.containerAvailableSize());
     });
-    setTimeout(() => {
-      this.updateContainerElement();
-    }, 500); // TODO: do not use settimeout here???
+    // window.addEventListener("scale", () => {
+    //   this.containerSizeUpdated(this.containerAvailableSize());
+    // });
+
+    const scrollStop = document.createElement("div");
+    scrollStop.textContent = "x";
+    scrollStop.style.position = "absolute";
+    scrollStop.style.top = `${this.getTotalListSize().min(BigScrollList.MAX_POSSIBLE_SCROLL).toString()}px`;
+    scrollStop.style.maxHeight = "0px";
+    scrollStop.style.visibility = "hidden";
+    this.containerElement.appendChild(scrollStop);
+    this.containerElement.addEventListener("scroll", () => {
+      // console.log("scroll detected");
+      this.currentScrollProgress = MixedNumber.fromFloat(this.containerElement.scrollTop / this.itemSize());
+      this.updateElements();
+    });
+    this.updateElements();
+    // setTimeout(() => {
+    //   this.updateContainerElement();
+    // }, 500); // TODO: do not use settimeout here???
   }
 }

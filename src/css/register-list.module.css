@@ -1,0 +1,28 @@
+.register-list-row {
+  width: 200px;
+  height: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  border-top: 1px solid #7f7f7f7f;
+  box-sizing: border-box;
+}
+
+.register-list-row.odd {
+  background-color: #ffffff;
+}
+
+.register-list-row.even {
+  background-color: var(--accent-color3);
+}
+
+.register-list-row .register-index {
+  width: 70px;
+  text-align: right;
+}
+
+.register-list-row .register-value.uninitialized {
+  color: gray;
+  font-style: italic;
+}

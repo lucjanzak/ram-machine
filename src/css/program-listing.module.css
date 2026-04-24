@@ -1,12 +1,13 @@
 #program-listing-pane > div {
-  padding: 1rem;
+  /* padding: 1rem; */
   width: fit-content;
 }
 
 #program-listing-table {
   border-collapse: collapse;
   transform-origin: center top;
-  border: 1px solid #7f7f7f7f;
+  border-top: 1px solid #7f7f7f7f;
+  border-bottom: 1px solid #7f7f7f7f;
 }
 
 #program-listing-table col:nth-child(1) {

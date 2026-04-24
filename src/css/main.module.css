@@ -3,6 +3,7 @@
   /* --accent-color: #00545a; */
   --accent-color: #4ba0a5;
   --accent-color2: #317a7e;
+  --accent-color3: #e9f6f6;
 }
 
 html,
@@ -26,6 +27,7 @@ a {
 @import url(header.module.css);
 @import url(nav.module.css);
 @import url(panes.module.css);
+@import url(register-list.module.css);
 @import url(program-listing.module.css);
 @import url(editor.module.css);
 @import url(footer.module.css);

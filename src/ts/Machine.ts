@@ -12,7 +12,7 @@ export class Machine {
   private running = false;
   private inputTape: InputTape = new InputTapeArray();
   private outputTape: OutputTape = new OutputTapeArray();
-  private memory = new Memory();
+  public memory = new Memory();
   private programCounter: ProgramCounter = 0;
   public stats = new Statistics();
   private debugBreakpoints: ProgramCounter[] = []; //[5, 10, 15, 30]; // TODO

@@ -8,6 +8,7 @@ import * as monaco from "monaco-editor";
 
 import "../css/main.module.css";
 import { BigScrollList } from "./BigScrollList";
+import { unwrap } from "./Util";
 
 const machine = new Machine();
 const editor = createEditor();
@@ -60,7 +61,7 @@ machine.stats.replaceStatisticsDOM();
 /// Testing
 const bigScrollist = new BigScrollList(
   Nodes.bigScrollListTest,
-  () => 200000n,
+  () => 2000000n,
   () => 30,
   (index) => {
     const f = useTemplate(Nodes.bigScrollListTestRow);
@@ -68,4 +69,37 @@ const bigScrollist = new BigScrollList(
     return f;
   },
   () => 400
+);
+
+// TODO: move to a reasonable location
+const bigScrollistRegisters = new BigScrollList(
+  Nodes.registersScrollList,
+  () => 20000000n,
+  () => 30,
+  (index) => {
+    const f = useTemplate(Nodes.registerRow);
+
+    const row = unwrap(f.querySelector("#register-list-row"));
+    const indexSpan = unwrap(f.querySelector("#index"));
+    const valueSpan = unwrap(f.querySelector("#value"));
+
+    if (index % 2n === 0n) {
+      row.classList.add("even");
+    } else {
+      row.classList.add("odd");
+    }
+    indexSpan.textContent = `${index}`;
+
+    const value = window.RAMMachine.machine.memory.getRegisterState(index);
+    if (value === undefined) {
+      valueSpan.textContent = "uninitialized";
+      valueSpan.classList.add("uninitialized");
+    } else {
+      valueSpan.textContent = `${value}`;
+    }
+    return f;
+  },
+  () => {
+    return Nodes.registersScrollList.parentElement!.clientHeight;
+  }
 );

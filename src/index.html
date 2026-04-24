@@ -64,15 +64,13 @@
       </section>
     </div>
     <div id="main-panes">
-      <section class="pane-scroll-v" id="register-pane">
+      <section id="register-pane" style="display: flex; flex-direction: column; align-items: stretch;">
         <!-- registers here -->
-        <table>
-          <thead>
-            <td>Address</td>
-            <td>Value</td>
-          </thead>
-          <tbody id="registers"></tbody>
-        </table>
+        <span>Registers:</span>
+        <div id="registers-scroll-list-container"
+          style="flex-grow: 1; min-width: 100px; max-width: 400px; position: relative; overflow-y: hidden;">
+          <div id="registers-scroll-list"></div>
+        </div>
       </section>
       <!-- TODO: make into tabs -->
       <section class="main-pane pane-scroll-h" id="program-listing-pane">
@@ -192,15 +190,15 @@
     </tr>
   </template>
   <template id="register-row">
-    <tr>
-      <td>
-        r<sub id="index"></sub>
-      </td>
-      <td id="value"></td>
-    </tr>
+    <div class="register-list-row" id="register-list-row">
+      <span class="register-index">
+        r<sub id="index"></sub>:
+      </span>
+      <span id="value" class="register-value"></span>
+    </div>
   </template>
   <template id="big-scroll-list-test-row">
-    <div style="width: 200px; height: 30px; background-color: #ff00007f;">
+    <div style="width: 200px; height: 30px; background-color: #0000ff1f;">
       Hello world <span id="number">number</span>
     </div>
   </template>

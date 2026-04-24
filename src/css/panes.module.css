@@ -8,6 +8,7 @@
 
 .main-pane {
   width: 50%;
+  border-left: 1px solid #7f7f7f7f;
 
   display: flex;
   justify-content: stretch;
