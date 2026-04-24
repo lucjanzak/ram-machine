@@ -1,22 +1,25 @@
-import { ALL_INSTRUCTIONS } from "./Instruction";
+import { instructionComplexity } from "./Complexity";
+import { ALL_INSTRUCTIONS, Instruction } from "./Instruction";
 import { Nodes, useTemplate } from "./Nodes";
 import { unwrap } from "./Util";
 
 export class Statistics {
-  private counters = Statistics.createEmptyCounters();
+  private instructionCounters = Statistics.createEmptyCounters();
   private startTime: DOMHighResTimeStamp | null = null;
   private endTime: DOMHighResTimeStamp | null = null;
-  incrementSilently(instruction: (typeof ALL_INSTRUCTIONS)[number]) {
-    this.counters[instruction] += 1n;
+  private totalLogComplexity: bigint = 0n;
+  processSilently(instruction: Instruction, c: (i: bigint) => bigint, peekInput: () => bigint) {
+    this.instructionCounters[instruction.operation] += 1n;
+    this.totalLogComplexity += instructionComplexity(instruction, c, peekInput);
   }
-  incrementAndUpdateDOM(instruction: (typeof ALL_INSTRUCTIONS)[number]) {
-    this.incrementSilently(instruction);
+  processAndUpdateDOM(instruction: Instruction, c: (i: bigint) => bigint, peekInput: () => bigint) {
+    this.processSilently(instruction, c, peekInput);
     // TODO: this can be improved by not replacing the entire statistics table every time
     this.replaceStatisticsDOM();
   }
 
   fetchCounter(instruction: (typeof ALL_INSTRUCTIONS)[number]) {
-    return this.counters[instruction];
+    return this.instructionCounters[instruction];
   }
 
   static createEmptyCounters(): { [key in (typeof ALL_INSTRUCTIONS)[number]]: bigint } {
@@ -28,7 +31,8 @@ export class Statistics {
   }
 
   clear() {
-    this.counters = Statistics.createEmptyCounters();
+    this.instructionCounters = Statistics.createEmptyCounters();
+    this.totalLogComplexity = 0n;
     this.startTime = null;
     this.endTime = null;
   }

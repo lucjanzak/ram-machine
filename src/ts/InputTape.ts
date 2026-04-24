@@ -2,6 +2,7 @@ import { ContiguousArray } from "./BigArray";
 import { readUnsetRegisterValue } from "./Memory";
 
 export interface InputTape {
+  peek(): bigint | undefined;
   read(): bigint | undefined;
   readOrDefault(): bigint;
   reset(): void;
@@ -11,6 +12,9 @@ export interface InputTape {
 export class InputTapeArray implements InputTape {
   private values = new ContiguousArray<bigint>();
   private currentIndex: bigint = 0n;
+  peek() {
+    return this.values.get(this.currentIndex);
+  }
   read() {
     const value = this.values.get(this.currentIndex);
     this.currentIndex++;

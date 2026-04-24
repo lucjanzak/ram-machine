@@ -98,7 +98,7 @@ export class Memory {
     this.TODO_nonzeroRegisterRowElements.clear();
   }
 
-  updateAllQuietlyUpdatedRegisterRows() {
+  sendUpdatesToAllQuietlyUpdatedRegisterRows() {
     console.log("update all");
     for (const i of this.quietlyUpdatedRegisters) {
       this.updateRegisterRow(i, unwrap(this.registers.get(i)));
@@ -117,7 +117,7 @@ export class Memory {
       unwrap(newFragment.querySelector("#index")).textContent = `${index}`;
       unwrap(newFragment.querySelector("#value")).textContent = `${value}`;
       this.TODO_nonzeroRegisterRowElements.set(index, newFragment);
-      Nodes.registerScrollList.appendChild(newFragment);
+      Nodes.nonZeroRegisterList.appendChild(newFragment);
       // console.log(newFragment);
       // console.log(Nodes.registerRows);
     } else {

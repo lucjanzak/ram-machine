@@ -44,7 +44,7 @@ export class BigScrollList {
   }
 
   updateScrollStop() {
-    this.scrollStopElement.style.top = `${this.getTotalListSize().min(BigScrollList.MAX_POSSIBLE_SCROLL).toString()}px`;
+    this.scrollStopElement.style.top = `${this.getTotalListSize().min(BigScrollList.MAX_POSSIBLE_SCROLL).toString()}px`; // TODO: remove limit for chrome
   }
 
   updateElements() {

@@ -77,9 +77,17 @@ export class Machine {
   executeInstruction(instruction: Instruction, quiet: boolean) {
     // console.log("executing ", instruction, ` @ line ${this.programCounter}`);
     if (quiet) {
-      this.stats.incrementSilently(instruction.operation);
+      this.stats.processSilently(
+        instruction,
+        (i) => this.memory.getRegister(i),
+        () => this.inputTape.peek() || 0n
+      );
     } else {
-      this.stats.incrementAndUpdateDOM(instruction.operation);
+      this.stats.processAndUpdateDOM(
+        instruction,
+        (i) => this.memory.getRegister(i),
+        () => this.inputTape.peek() || 0n
+      );
     }
 
     if (instruction.operation === "LOAD") {
@@ -162,7 +170,7 @@ export class Machine {
     const cancelRunning = (currentTime: DOMHighResTimeStamp) => {
       this.running = false;
       stopTime(currentTime);
-      this.memory.updateAllQuietlyUpdatedRegisterRows();
+      this.memory.sendUpdatesToAllQuietlyUpdatedRegisterRows();
     };
 
     this.stats.clear();
@@ -194,6 +202,6 @@ export class Machine {
 
     // Normal stop - found a HALT instruction or errored out.
     stopTime(performance.now());
-    this.memory.updateAllQuietlyUpdatedRegisterRows();
+    this.memory.sendUpdatesToAllQuietlyUpdatedRegisterRows();
   }
 }
