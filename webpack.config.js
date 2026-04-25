@@ -53,6 +53,7 @@ const __dirname = path.dirname(__filename);
 const config /*: webpack.Configuration*/ = {
   mode: "development",
   entry: "./src/ts/app.ts",
+  devtool: "source-map",
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
