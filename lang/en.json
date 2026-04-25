@@ -1,0 +1,39 @@
+{
+  "languageName": "English",
+  "pageTitle": "RAM machine emulator",
+  "header": {
+    "title": "RAM machine emulator",
+    "language": "Language:",
+    "author": "Author:"
+  },
+  "nav": {
+    "new": "New",
+    "load": "Load",
+    "save": "Save",
+    "loadInputTape": "Load Tape",
+    "run": "Run"
+  },
+  "inputTape": {
+    "header": "Input tape (length: ",
+    "headerEnd": ")",
+    "cellLabel": "Cell #",
+    "cellLabelEnd": ""
+  },
+  "registers": {
+    "header": "Registers:"
+  },
+  "programListing": {
+    "tableHeader": {
+      "line": "Line",
+      "label": "Label",
+      "instruction": "Instruction",
+      "comment": "Comment"
+    }
+  },
+  "footer": {
+    "author": "Author:",
+    "license": "License:",
+    "sourceCode": "Source code:",
+    "externalLibraries": "External libraries used:"
+  }
+}

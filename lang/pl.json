@@ -1,0 +1,39 @@
+{
+  "languageName": "Polski",
+  "pageTitle": "Emulator maszyny RAM",
+  "header": {
+    "title": "Emulator maszyny RAM",
+    "language": "Język:",
+    "author": "Autor:"
+  },
+  "nav": {
+    "new": "Nowy",
+    "load": "Otwórz",
+    "save": "Zapisz",
+    "loadInputTape": "Załaduj taśmę",
+    "run": "Uruchom"
+  },
+  "inputTape": {
+    "header": "Taśma wejściowa (długość: ",
+    "headerEnd": ")",
+    "cellLabel": "Komórka #",
+    "cellLabelEnd": ""
+  },
+  "registers": {
+    "header": "Rejestry:"
+  },
+  "programListing": {
+    "tableHeader": {
+      "line": "Linia",
+      "label": "Etykieta",
+      "instruction": "Instrukcja",
+      "comment": "Komentarz"
+    }
+  },
+  "footer": {
+    "author": "Autor:",
+    "license": "Licencja:",
+    "sourceCode": "Kod źródłowy:",
+    "externalLibraries": "Zewnętrzne biblioteki:"
+  }
+}

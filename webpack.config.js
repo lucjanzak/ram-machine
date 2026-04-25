@@ -7,6 +7,15 @@ import CopyWebpackPlugin from "copy-webpack-plugin";
 import packageJson from "./package.json" with { type: "json" };
 import process from "node:process";
 
+import en from "./lang/en.json" with { type: "json" };
+import pl from "./lang/pl.json" with { type: "json" };
+const translations = {en, pl};
+const languageInfo = Object.keys(translations).map(key => ({
+  key: key,
+  displayName: translations[key].languageName
+}));
+console.log(languageInfo);
+
 const packageVersion = packageJson.version;
 const gitCommitHash = process.env.GIT_COMMIT_HASH;
 if (gitCommitHash === undefined) {
@@ -21,6 +30,20 @@ const templateParameters = {
   gitCommitHashShort,
   displayedVersion
 };
+function getTemplateParametersForLanguage(lang) {
+  if (!(lang in translations)) {
+    throw new Error(`Unknown language: ${lang}`);
+  }
+  return Object.assign({}, templateParameters, {t: translations[lang], languageInfo}) 
+}
+function generateHtmlWebpackPlugin(languageCode) {
+  return new HtmlWebpackPlugin({
+    title: "Development",
+    template: "./src/index.html",
+    templateParameters: getTemplateParametersForLanguage(languageCode),
+    filename: `${languageCode}.html`
+  });
+}
 console.log("Creating template with parameters: ", templateParameters);
 
 const __filename = fileURLToPath(import.meta.url);
@@ -68,14 +91,11 @@ const config /*: webpack.Configuration*/ = {
     extensions: [".js", ".jsx", ".ts", ".tsx"],
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      title: "Development",
-      template: "./src/index.html",
-      templateParameters,
-    }),
+    ...Object.keys(translations).map(lang => generateHtmlWebpackPlugin(lang)),
     new MonacoWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
+        { from: "./src/index_redirect.html", to: "index.html" },
         { from: "./src/404.html", to: "404.html" },
         { from: "./public/**/*", to: "." },
       ],
