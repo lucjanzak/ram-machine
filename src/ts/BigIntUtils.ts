@@ -13,3 +13,11 @@ export function bigintMin(a: bigint, b: bigint) {
     return a;
   }
 }
+
+export function bigintParse(text: string): bigint | undefined {
+  try {
+    return BigInt(text);
+  } catch {
+    return undefined;
+  }
+}

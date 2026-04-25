@@ -18,15 +18,9 @@ export class Machine {
   private debugBreakpoints: ProgramCounter[] = []; //[5, 10, 15, 30]; // TODO
 
   constructor(private program: Program = Program.EMPTY, private detachedMode = false) {
-    if (this.detachedMode) {
-      this.memory = new Memory(null);
-      this.inputTape = new InputTapeArray(null);
-      this.outputTape = new OutputTapeArray(null);
-    } else {
-      this.memory = new Memory(Nodes.registerScrollList);
-      this.inputTape = new InputTapeArray(Nodes.inputTape);
-      this.outputTape = new OutputTapeArray(Nodes.outputTape);
-    }
+    this.memory = new Memory(this.detachedMode ? null : Nodes.registerScrollList);
+    this.inputTape = new InputTapeArray(this.detachedMode ? null : Nodes.inputTape, this.detachedMode ? null : Nodes.inputTapeLength);
+    this.outputTape = new OutputTapeArray(this.detachedMode ? null : Nodes.outputTape);
   }
 
   getProgram() {
@@ -58,6 +52,10 @@ export class Machine {
     this.program = program;
     this.reset();
     this.program.refreshListingWithAnimation();
+  }
+
+  loadTapeFromText(text: string) {
+    this.inputTape = InputTapeArray.fromText(text, this.detachedMode ? null : Nodes.inputTape, this.detachedMode ? null : Nodes.inputTapeLength);
   }
 
   readFromOperand(operand: ReadableOperand): bigint {
@@ -234,7 +232,7 @@ export class Machine {
 
   static runSimulation(program: Program, input: bigint[], options: { timeout: number } = { timeout: 100 }): Machine {
     const machine = new Machine(program, true);
-    machine.inputTape = InputTapeArray.fromValues(input, null);
+    machine.inputTape = InputTapeArray.fromValues(input, null, null);
     machine.runAsFastAsPossible(false, { timeoutWarning: undefined, timeoutAlert: undefined, timeoutKill: options.timeout });
     return machine;
   }

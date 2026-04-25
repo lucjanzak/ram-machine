@@ -1,25 +1,31 @@
 import { assert, time } from "node:console";
 import { MixedNumber } from "./MixedNumber";
 import { assertNever } from "./Util";
+import { ElementManager, ManagedElement } from "./ElementManager";
+import { bigintMax } from "./BigIntUtils";
 
 type ScrollListDirection = "vertical" | "horizontal";
 
-export class BigScrollList {
+export class BigScrollList implements ElementManager {
   // On Chrome, the scrollstop "top" value is automatically bounded to the maximum possible value if it exceeds the limit.
   // The max value for Chrome is 33554432n, which is equal to `2147483648 * (1 / 64)`.
   // On Firefox, the maximum possible scrollstop "top" value is written below, which is equal to `2147483648 * (1 / 120)`:
   // static MAX_POSSIBLE_SCROLL = MixedNumber.fromFloat(2147483648 / 120).floor();
   static MAX_POSSIBLE_SCROLL = new MixedNumber(17895697n, 1 / 15).floor();
+  static BUFFER_BEFORE = new MixedNumber(1n, 0.5);
+  static BUFFER_AFTER = new MixedNumber(1n, 0.5);
 
+  public readonly hostElement: ManagedElement<BigScrollList>;
   currentScrollProgress: MixedNumber = MixedNumber.zero();
   activeElements: Set<bigint> = new Set();
   scrollStopElement: HTMLElement;
+  private scrollHandler;
 
   setContainerAvailableSize(newSize: number) {
     if (newSize !== this.containerAvailableSize) {
       console.log(`containerSizeUpdated ${this.containerAvailableSize}px -> ${newSize}px`);
       this.containerAvailableSize = newSize;
-      this.updateContainer();
+      this.updateHostElement();
       this.updateElements();
     }
   }
@@ -44,7 +50,7 @@ export class BigScrollList {
     }
   }
 
-  updateContainer() {
+  updateHostElement() {
     if (this.direction === "horizontal") {
       this.hostElement.style.minWidth = `${this.containerAvailableSize}px`;
       this.hostElement.style.maxWidth = `${this.containerAvailableSize}px`;
@@ -66,9 +72,22 @@ export class BigScrollList {
     }
   }
 
+  iterActive(callback: (element: HTMLElement, index: bigint) => void) {
+    for (const listElement of this.hostElement.children) {
+      const htmlElement = listElement as HTMLElement;
+      const indexStr = htmlElement.dataset.elementIndex;
+      if (indexStr === undefined) {
+        continue;
+      }
+      const index = BigInt(indexStr);
+      callback(htmlElement, index);
+    }
+  }
+
   updateElements() {
     // console.log("updateElements", this);
     // Analyze existing elements
+    this.activeElements.clear();
     for (const listElement of this.hostElement.children) {
       const htmlElement = listElement as HTMLElement;
       const indexStr = htmlElement.dataset.elementIndex;
@@ -76,8 +95,8 @@ export class BigScrollList {
         // console.warn("Found element with no index property!", listElement);
         continue;
       }
-
       const index = BigInt(indexStr);
+
       if (this.isInView(index) || listElement.contains(document.activeElement)) {
         this.activeElements.add(index);
       } else {
@@ -94,34 +113,50 @@ export class BigScrollList {
     // Add new in-view elements
     const viewBoundStart = this.getViewBoundStart();
     const viewBoundEnd = this.getViewBoundEnd();
-    for (let index = viewBoundStart.integer; index <= viewBoundEnd.integer && index < this.itemCount; index++) {
+    for (let index = bigintMax(viewBoundStart.integer, 0n); index <= viewBoundEnd.integer && index < this.itemCount; index++) {
       if (this.activeElements.has(index)) {
         // This one already exists
         continue;
       }
 
-      const listElement = document.createElement("div");
-      listElement.style.position = "absolute";
+      const newListElement = document.createElement("div");
+      newListElement.style.position = "absolute";
       if (this.direction === "horizontal") {
-        listElement.style.left = `${this.getElementPosition(index).toString()}px`;
+        newListElement.style.left = `${this.getElementPosition(index).toString()}px`;
       } else if (this.direction === "vertical") {
-        listElement.style.top = `${this.getElementPosition(index).toString()}px`;
+        newListElement.style.top = `${this.getElementPosition(index).toString()}px`;
       } else {
         assertNever(this.direction);
       }
-      listElement.dataset.elementIndex = `${index}`;
-      listElement.append(this.getDocumentFragmentFromIndex(index));
-      this.hostElement.appendChild(listElement);
+      newListElement.dataset.elementIndex = `${index}`;
+      newListElement.append(this.getDocumentFragmentFromIndex(index));
+
+      // Find next child, the elements should be sorted (because otherwise Tabbing through elements is annoying)
+      let nextChildInOrder: Node | null = null;
+      for (const child of this.hostElement.children) {
+        const htmlChild = child as HTMLElement;
+        const childIndexStr = htmlChild.dataset.elementIndex;
+        if (childIndexStr === undefined) continue;
+        const childIndex = BigInt(childIndexStr);
+
+        if (childIndex > index) {
+          nextChildInOrder = child;
+          break;
+        }
+      }
+      this.hostElement.insertBefore(newListElement, nextChildInOrder);
       this.activeElements.add(index);
       // console.log(`add: ${index}`);
     }
   }
 
   getViewBoundStart(): MixedNumber {
-    return this.currentScrollProgress;
+    return this.currentScrollProgress.sub(BigScrollList.BUFFER_BEFORE);
   }
   getViewBoundSize(): MixedNumber {
-    return MixedNumber.fromFloat(this.containerAvailableSize / this.itemSize);
+    return MixedNumber.fromFloat(this.containerAvailableSize / this.itemSize)
+      .add(BigScrollList.BUFFER_BEFORE)
+      .add(BigScrollList.BUFFER_AFTER);
   }
   getViewBoundEnd(): MixedNumber {
     return this.getViewBoundStart().add(this.getViewBoundSize());
@@ -142,7 +177,7 @@ export class BigScrollList {
   }
 
   constructor(
-    public readonly hostElement: HTMLElement,
+    hostElement: ManagedElement,
 
     public readonly direction: ScrollListDirection,
 
@@ -158,8 +193,16 @@ export class BigScrollList {
     // Available size of the container
     private containerAvailableSize: number
   ) {
+    // Clear host node
+    console.log("Old manager object: ", hostElement.managerObject);
+    hostElement.innerHTML = "";
+    if (hostElement.managerObject !== undefined) {
+      hostElement.managerObject.onDemote();
+    }
+
+    this.hostElement = Object.assign(hostElement, { managerObject: this });
     this.hostElement.style.position = "relative";
-    this.updateContainer();
+    this.updateHostElement();
 
     this.scrollStopElement = document.createElement("div");
     this.scrollStopElement.textContent = "x";
@@ -168,9 +211,9 @@ export class BigScrollList {
     this.scrollStopElement.style.maxHeight = "0px";
     this.scrollStopElement.style.visibility = "hidden";
     this.updateScrollStop();
-
     this.hostElement.appendChild(this.scrollStopElement);
-    this.hostElement.addEventListener("scroll", () => {
+
+    this.scrollHandler = () => {
       // console.log("scroll detected");
       if (this.direction === "horizontal") {
         this.currentScrollProgress = MixedNumber.fromFloat(this.hostElement.scrollLeft / this.itemSize);
@@ -180,7 +223,9 @@ export class BigScrollList {
         assertNever(this.direction);
       }
       this.updateElements();
-    });
+    };
+
+    this.hostElement.addEventListener("scroll", this.scrollHandler);
     this.updateElements();
 
     if (direction === "horizontal") {
@@ -190,5 +235,11 @@ export class BigScrollList {
     } else {
       assertNever(direction);
     }
+  }
+
+  onDemote(): void {
+    console.log("this is being demoted!: ", this);
+    this.hostElement.innerHTML = "";
+    this.hostElement.removeEventListener("scroll", this.scrollHandler);
   }
 }

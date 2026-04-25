@@ -1,6 +1,7 @@
 import { SparseArray } from "./BigArray";
 import { BigScrollList } from "./BigScrollList";
-import { Nodes, select, Templates, useTemplate } from "./Nodes";
+import { ManagedElement } from "./ElementManager";
+import { select, Templates, useTemplate } from "./Nodes";
 import { unwrap } from "./Util";
 
 export function readUnsetRegisterValue() {

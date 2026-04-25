@@ -26,6 +26,9 @@
       <button class="nav-button nav-button-auto">New</button>
       <button class="nav-button nav-button-auto">Load</button>
       <button class="nav-button nav-button-auto">Save</button>
+      <button class="nav-button nav-button-auto" onclick="RAMMachine.machine.loadTapeFromText(prompt('input values:'))">
+        Load Input Tape
+      </button>
     </div>
     <div class="nav-buttons">
       <button class="nav-button nav-button-auto"
@@ -61,7 +64,7 @@
     <div>
       <section class="input-tape-pane">
         <!-- input tape here -->
-        <span>Input tape:</span>
+        <span>Input tape (length: <span id="input-tape-length">0</span>)</span>
         <div id="input-tape-container">
           <div id="input-tape"></div>
         </div>
@@ -70,6 +73,7 @@
     <div id="main-panes">
       <section id="register-pane">
         <!-- registers here -->
+        <!-- TODO: r0 is updated very often, it should be sticky at the top. this is not trivial to do because it is currently in a scrolllist so i don't want to do it yet -->
         <span>Registers:</span>
         <div id="register-scroll-list-container">
           <div id="register-scroll-list"></div>
@@ -206,17 +210,17 @@
   <template id="input-tape-cell">
     <div class="input-tape-scroll-list-cell" id="input-tape-scroll-list-cell">
       <span class="input-tape-cell-index">
-        Tape cell #<span id="index"></span>
+        Cell #<span id="index"></span>
       </span>
-      <input type="number" id="value" class="input-tape-cell-value" value="0" step="1" />
+      <input type="text" id="value" class="input-tape-cell-value" value="0" step="1" />
     </div>
   </template>
   <template id="output-tape-cell">
     <div class="output-tape-scroll-list-cell" id="output-tape-scroll-list-cell">
       <span class="output-tape-cell-index">
-        Tape cell #<span id="index"></span>
+        Cell #<span id="index"></span>
       </span>
-      <input type="number" id="value" class="output-tape-cell-value" value="0" step="1" disabled />
+      <input type="text" id="value" class="output-tape-cell-value" value="0" step="1" disabled />
     </div>
   </template>
   <template id="big-scroll-list-test-row">

@@ -1,5 +1,5 @@
 import { ContiguousArray } from "./BigArray";
-import { bigintMax } from "./BigIntUtils";
+import { bigintMax, bigintParse } from "./BigIntUtils";
 import { BigScrollList } from "./BigScrollList";
 import { readUnsetRegisterValue } from "./Memory";
 import { select, Templates, useTemplate } from "./Nodes";
@@ -39,18 +39,67 @@ export class InputTapeArray implements InputTape {
     this.values = new ContiguousArray();
     this.currentIndex = 0n;
   }
-  static fromValues(values: bigint[], hostElement: HTMLElement | null) {
-    const tape = new InputTapeArray(hostElement);
-    tape.values.push(...values);
+
+  updateListLength() {
+    if (this.scrollList !== null) {
+      this.scrollList.setItemCount(bigintMax(this.values.length() + 2n, 10n));
+    }
+    if (this.lengthElement !== null) {
+      this.lengthElement.textContent = `${this.values.length()}`;
+    }
+  }
+
+  refreshExistingItems() {
+    if (this.scrollList !== null) {
+      this.scrollList.iterActive((element, index) => {
+        const valueInput = select<HTMLInputElement>(element, "#value");
+
+        const value = this.values.get(index);
+        if (value === undefined) {
+          valueInput.value = "";
+          valueInput.placeholder = "empty";
+        } else {
+          valueInput.value = `${value}`;
+          valueInput.placeholder = `${value}`;
+        }
+        valueInput.classList.remove("invalid");
+      });
+    }
+  }
+
+  static fromText(text: string, hostElement: HTMLElement | null, lengthElement: Element | null): InputTape {
+    const split = text.split(/[\s,]+/);
+    const values = split
+      .map((x): bigint | undefined => {
+        try {
+          const value = BigInt(x);
+          return value;
+        } catch (e) {
+          console.warn(`Could not convert string '${x}' to bigint: `, e);
+          return undefined;
+        }
+      })
+      .filter((x) => x !== undefined);
+    return InputTapeArray.fromValues(values, hostElement, lengthElement);
+  }
+
+  static fromValues(values: bigint[], hostElement: HTMLElement | null, lengthElement: Element | null) {
+    const tape = new InputTapeArray(hostElement, lengthElement);
+    for (const value of values) {
+      // tape.values.push(...values); <-- this does not work for a very large amount of values
+      tape.values.push(value);
+    }
+    tape.updateListLength();
+    tape.refreshExistingItems();
     return tape;
   }
-  constructor(public hostElement: HTMLElement | null) {
+  constructor(hostElement: HTMLElement | null, public lengthElement: Element | null) {
     if (hostElement !== null) {
       this.scrollList = new BigScrollList(
         hostElement,
         "horizontal",
         10n, // element count
-        200, // item size
+        120, // item size
         (index) => {
           const f = useTemplate(Templates.inputTapeCell);
 
@@ -63,7 +112,7 @@ export class InputTapeArray implements InputTape {
           } else {
             cell.classList.add("odd");
           }
-          indexSpan.textContent = `${index}`;
+          indexSpan.textContent = `${index + 1n}`;
 
           const value = this.values.get(index);
           if (value === undefined) {
@@ -71,31 +120,43 @@ export class InputTapeArray implements InputTape {
             valueInput.placeholder = "empty";
           } else {
             valueInput.value = `${value}`;
+            valueInput.placeholder = `${value}`;
           }
 
-          const updateValue = () => {
-            const valueNum = valueInput.valueAsNumber;
-            console.log(valueInput);
-            console.log(`Changed input tape cell #${index} to ${valueNum}`);
-            if (Number.isNaN(valueNum)) {
+          const updateValue = (confirmed: boolean) => {
+            const valueText = valueInput.value;
+            const value = bigintParse(valueText);
+            // console.log(valueInput);
+            console.log(`Changed input tape cell #${index} to '${valueText}' ${value}`, confirmed);
+            if (valueText === "") {
+              // Empty value TODO- make it possible to remove values from the end????
+              valueInput.classList.remove("invalid");
+            } else if (value === undefined) {
+              // Invalid text inputted
               valueInput.classList.add("invalid");
             } else {
-              const value = BigInt(valueNum);
+              // Valid value inputted
               valueInput.classList.remove("invalid");
-              if (index >= this.values.length()) {
-                this.values.setWithFill(index, value, 0n);
 
-                if (this.scrollList !== null) {
-                  this.scrollList.setItemCount(bigintMax(this.values.length() + 1n, 10n));
+              if (confirmed) {
+                // Set the value in the actual tape array
+                if (index >= this.values.length()) {
+                  this.values.setWithFill(index, value, 0n);
+                  this.refreshExistingItems();
+                  this.scrollList?.updateElements();
+                  this.updateListLength();
+                } else {
+                  this.values.update(index, value);
                 }
-              } else {
-                this.values.update(index, value);
+
+                // Update the placeholder
+                valueInput.placeholder = `${value}`;
               }
             }
           };
 
-          valueInput.addEventListener("change", () => updateValue());
-          valueInput.addEventListener("keyup", () => updateValue());
+          valueInput.addEventListener("change", () => updateValue(true));
+          valueInput.addEventListener("keyup", () => updateValue(false));
           return f;
         },
         hostElement.parentElement!.clientWidth
@@ -108,6 +169,8 @@ export class InputTapeArray implements InputTape {
         }
       });
     }
+
+    this.updateListLength();
   }
 }
 

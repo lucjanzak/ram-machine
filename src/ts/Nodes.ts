@@ -13,6 +13,7 @@ export namespace Nodes {
   export const stats = element("#stats");
   export const registerScrollList = element<HTMLElement>("#register-scroll-list");
   export const inputTape = element<HTMLElement>("#input-tape");
+  export const inputTapeLength = element("#input-tape-length");
   export const outputTape = element<HTMLElement>("#output-tape");
   export const bigScrollListTest = element<HTMLElement>("#big-scroll-list-test");
 }

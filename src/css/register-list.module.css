@@ -23,11 +23,11 @@
 }
 
 .register-scroll-list-row.odd {
-  background-color: #ffffff;
+  background-color: var(--accent-color3);
 }
 
 .register-scroll-list-row.even {
-  background-color: var(--accent-color3);
+  background-color: #ffffff;
 }
 
 .register-scroll-list-row .register-index {
