@@ -129,6 +129,7 @@ export class BigScrollList implements ElementManager {
         assertNever(this.direction);
       }
       newListElement.dataset.elementIndex = `${index}`;
+      newListElement.classList.add("scroll-list-element");
       newListElement.append(this.getDocumentFragmentFromIndex(index));
 
       // Find next child, the elements should be sorted (because otherwise Tabbing through elements is annoying)

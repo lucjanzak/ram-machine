@@ -62,8 +62,9 @@ LOAD 2
 JGTZ ${rev.labels.read_next_element}
 JUMP ${rev.labels.read_array_end}
 
+; ${rev.comments[2]}
 ${rev.labels.read_next_element}:
-READ *3 ; ${rev.comments[2]}
+READ *3
 
 ; ${rev.comments[3]}
 LOAD 3

@@ -18,17 +18,19 @@ main {
 
 #register-pane {
   min-width: 150px;
-  width: 20%;
-  max-width: 250px;
+  width: 15%;
+  max-width: 300px;
 
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  position: relative;
 }
 
 #program-listing-pane {
   width: 50%;
   flex-grow: 1;
+  min-width: 200px;
   border-left: var(--generic-border);
 
   /* min-height: 0; */
@@ -39,6 +41,7 @@ main {
 #program-text-editor-pane {
   width: 50%;
   flex-grow: 1;
+  min-width: 200px;
   border-left: var(--generic-border);
 
   display: flex;
