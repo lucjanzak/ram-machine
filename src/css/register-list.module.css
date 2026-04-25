@@ -3,7 +3,7 @@
   overflow-y: hidden;
 }
 
-.scroll-list-element {
+#register-scroll-list .scroll-list-element {
   width: 100%;
 }
 

@@ -1,6 +1,9 @@
 {
   "languageName": "English",
   "pageTitle": "RAM machine emulator",
+  "general": {
+    "notImplementedYet": "This feature is not available yet."
+  },
   "header": {
     "title": "RAM machine emulator",
     "language": "Language:",
@@ -11,7 +14,10 @@
     "load": "Load",
     "save": "Save",
     "loadInputTape": "Load Tape",
-    "run": "Run"
+    "run": "Run All",
+    "reset": "Reset",
+    "debugContinue": "Continue",
+    "debugStep": "Step"
   },
   "inputTape": {
     "header": "Input tape (length: ",

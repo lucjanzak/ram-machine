@@ -41,13 +41,13 @@
     </header>
     <nav>
       <div class="nav-buttons">
-        <button class="nav-button nav-button-auto">
+        <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>">
           <%= t.nav.new %>
         </button>
-        <button class="nav-button nav-button-auto">
+        <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>">
           <%= t.nav.load %>
         </button>
-        <button class="nav-button nav-button-auto">
+        <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>">
           <%= t.nav.save %>
         </button>
         <button class="nav-button nav-button-auto"
@@ -56,14 +56,18 @@
         </button>
       </div>
       <div class="nav-buttons">
-        <button class="nav-button nav-button-auto"
-          onclick="setTimeout(() => RAMMachine.machine.runAsFastAsPossible(false), 0)">
+        <button class="nav-button nav-button-auto" onclick="RAMMachine.machine.runAsFastAsPossible(false)">
           <%= t.nav.run %>
         </button>
-        <button class="nav-button nav-button-auto" onclick="setTimeout(() => RAMMachine.machine.reset())">Reset</button>
-        <button class="nav-button nav-button-auto">Start Debug</button>
-        <button class="nav-button nav-button-auto">Continue</button>
-        <button class="nav-button nav-button-auto">Step</button>
+        <button class="nav-button nav-button-auto" onclick="RAMMachine.machine.reset()">
+          <%= t.nav.reset %>
+        </button>
+        <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>">
+          <%= t.nav.debugContinue %>
+        </button>
+        <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>">
+          <%= t.nav.debugStep %>
+        </button>
       </div>
 
       <div class="nav-buttons" id="load-program-buttons"></div>

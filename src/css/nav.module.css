@@ -35,6 +35,11 @@ nav {
   text-wrap: nowrap;
 }
 
+.nav-button:disabled {
+  color: #ffffff7f;
+  cursor: not-allowed;
+}
+
 .nav-button-left,
 :first-child.nav-button-auto:has(+ .nav-button-auto),
 :not(.nav-button-auto) + .nav-button-auto:has(+ .nav-button-auto) {
@@ -56,7 +61,7 @@ nav {
   border-radius: 0.5rem;
 }
 
-.nav-button:hover {
+.nav-button:not(:disabled):hover {
   background-color: #fff;
   color: #000;
 }

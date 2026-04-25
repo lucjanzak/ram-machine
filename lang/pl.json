@@ -1,6 +1,9 @@
 {
   "languageName": "Polski",
   "pageTitle": "Emulator maszyny RAM",
+  "general": {
+    "notImplementedYet": "Ta funkcja nie jest jeszcze dostępna."
+  },
   "header": {
     "title": "Emulator maszyny RAM",
     "language": "Język:",
@@ -11,7 +14,10 @@
     "load": "Załaduj",
     "save": "Zapisz",
     "loadInputTape": "Załaduj taśmę",
-    "run": "Uruchom"
+    "run": "Wykonaj wszystko",
+    "reset": "Reset",
+    "debugContinue": "Kontynuuj",
+    "debugStep": "Wykonaj krok"
   },
   "inputTape": {
     "header": "Taśma wejściowa (długość: ",
