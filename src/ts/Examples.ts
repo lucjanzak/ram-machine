@@ -14,6 +14,7 @@ function rightpad(text: string, n: number, c: string = " ") {
 const add = t.examples.ADDITION;
 const abs = t.examples.ABSOLUTE_VALUE;
 const rev = t.examples.REVERSE_ARRAY;
+const str = t.examples.STRESS_TEST;
 
 export const EXAMPLE_PROGRAMS_ASSEMBLY = {
   ADDITION: `; ${add.title}
@@ -103,14 +104,14 @@ JUMP ${rev.labels.write_array_loop_check}
 end:
 HALT
 `,
-  BENCHMARK_TEST: `; Benchmark program
+  STRESS_TEST: `; ${str.title}
 ; ${hdiv}
 ;
-; A tight loop that copies values from the input tape to the output tape.
-start:
+; ${str.description}
+${str.labels.start}:
 READ 0
 WRITE 0
-JUMP start
+JUMP ${str.labels.start}
 `,
   PARSER_TEST: `; Parser test example program
 ; ${hdiv}
@@ -202,7 +203,7 @@ function compileExamplePrograms(): { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBL
 export const DEFAULT_PROGRAM_ASSEMBLY = EXAMPLE_PROGRAMS_ASSEMBLY.ADDITION;
 
 function initDOM() {
-  const hidden = ["BENCHMARK_TEST", "PARSER_TEST", "PARSER_ERROR_TEST"];
+  const hidden = ["PARSER_TEST", "PARSER_ERROR_TEST"];
   for (const [programKey, programText] of Object.entries(EXAMPLE_PROGRAMS_ASSEMBLY)) {
     if (hidden.includes(programKey)) continue;
     const btn = document.createElement("button");

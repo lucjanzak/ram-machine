@@ -51,7 +51,7 @@
           <%= t.nav.save %>
         </button>
         <button class="nav-button nav-button-auto"
-          onclick="RAMMachine.machine.loadTapeFromText(prompt('input values:'))">
+          onclick="RAMMachine.machine.loadTapeFromText(prompt('<%= t.nav.loadInputTapePrompt %>'))">
           <%= t.nav.loadInputTape %>
         </button>
       </div>

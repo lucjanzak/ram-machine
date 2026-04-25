@@ -1,5 +1,6 @@
 import { InputTape, InputTapeArray, InputTapeUnderflowBehavior } from "./InputTape";
 import { Instruction, ReadableOperand, WriteableOperand } from "./Instruction";
+import { t } from "./Localization";
 import { Memory, ReadUninitializedRegisterBehavior as UninitializedRegisterReadBehavior } from "./Memory";
 import { Nodes } from "./Nodes";
 import { OutputTape, OutputTapeArray } from "./OutputTape";
@@ -241,7 +242,7 @@ export class Machine {
       if (options.timeoutAlert && timePassed > options.timeoutAlert && !timeoutAlerted) {
         timeoutAlerted = true;
         const currentTimePrecise = performance.now();
-        const answer = confirm("This is taking a while, do you want to cancel?");
+        const answer = confirm(t.general.executionTimeoutAlert);
         if (answer) {
           // Machine run canceled by user.
           cancelRunning(currentTimePrecise);

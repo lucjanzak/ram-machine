@@ -2,7 +2,8 @@
   "languageName": "Polski",
   "pageTitle": "Emulator maszyny RAM",
   "general": {
-    "notImplementedYet": "Ta funkcja nie jest jeszcze dostępna."
+    "notImplementedYet": "Ta funkcja nie jest jeszcze dostępna.",
+    "executionTimeoutAlert": "Program wykonuje się dość długo, czy chcesz zatrzymać działanie programu?"
   },
   "header": {
     "title": "Emulator maszyny RAM",
@@ -14,6 +15,7 @@
     "load": "Załaduj",
     "save": "Zapisz",
     "loadInputTape": "Załaduj taśmę",
+    "loadInputTapePrompt": "Wprowadź liczby oddzielone przecinkiem lub spacją:",
     "run": "Wykonaj wszystko",
     "reset": "Reset",
     "debugContinue": "Kontynuuj",
@@ -99,6 +101,11 @@
         "Zmniejsz wskaźnik",
         "Wypisz wskazany element na taśmę"
       ]
+    },
+    "STRESS_TEST": {
+      "title": "Stress test",
+      "description": "Krótka pętla która kopiuje wartości z taśmy wejściowej na taśmę wyjściową.",
+      "labels": { "start": "start" }
     }
   }
 }

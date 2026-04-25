@@ -2,7 +2,8 @@
   "languageName": "English",
   "pageTitle": "RAM machine emulator",
   "general": {
-    "notImplementedYet": "This feature is not available yet."
+    "notImplementedYet": "This feature is not available yet.",
+    "executionTimeoutAlert": "This is taking a while, do you want to stop program execution?"
   },
   "header": {
     "title": "RAM machine emulator",
@@ -14,6 +15,7 @@
     "load": "Load",
     "save": "Save",
     "loadInputTape": "Load Tape",
+    "loadInputTapePrompt": "Input numeric values separated by commas or spaces:",
     "run": "Run All",
     "reset": "Reset",
     "debugContinue": "Continue",
@@ -99,6 +101,11 @@
         "Decrement array pointer",
         "Write the pointed element to tape"
       ]
+    },
+    "STRESS_TEST": {
+      "title": "Stress test",
+      "description": "A tight loop that copies values from the input tape to the output tape.",
+      "labels": { "start": "start" }
     }
   }
 }
