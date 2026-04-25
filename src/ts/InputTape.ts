@@ -140,7 +140,7 @@ export class InputTapeArray implements InputTape {
             const valueText = valueInput.value;
             const value = bigintParse(valueText);
             // console.log(valueInput);
-            console.log(`Changed input tape cell #${index} to '${valueText}' ${value}`, confirmed);
+            // console.log(`Changed input tape cell #${index} to '${valueText}' ${value}`, confirmed);
             if (valueText === "") {
               // Empty value
               valueInput.classList.remove("invalid");
@@ -183,7 +183,7 @@ export class InputTapeArray implements InputTape {
         hostElement.parentElement!.clientWidth
       );
 
-      // TODO: these are not really reliable, the container size can change independently of the window as well
+      // TODO: these are probably not reliable, the container size can change independently of the window as well
       window.addEventListener("resize", () => {
         if (this.scrollList !== null) {
           this.scrollList.setContainerAvailableSize(this.scrollList.hostElement.parentElement!.clientWidth);

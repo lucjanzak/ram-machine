@@ -23,7 +23,7 @@ export class BigScrollList implements ElementManager {
 
   setContainerAvailableSize(newSize: number) {
     if (newSize !== this.containerAvailableSize) {
-      console.log(`containerSizeUpdated ${this.containerAvailableSize}px -> ${newSize}px`);
+      // console.log(`containerSizeUpdated ${this.containerAvailableSize}px -> ${newSize}px`);
       this.containerAvailableSize = newSize;
       this.updateHostElement();
       this.updateElements();
@@ -32,7 +32,7 @@ export class BigScrollList implements ElementManager {
 
   setItemCount(newCount: bigint) {
     if (newCount !== this.itemCount) {
-      console.log(`itemCount updated: ${this.itemCount} -> ${newCount}`);
+      // console.log(`itemCount updated: ${this.itemCount} -> ${newCount}`);
       this.itemCount = newCount;
       this.updateScrollStop();
       this.updateElements();
@@ -41,7 +41,7 @@ export class BigScrollList implements ElementManager {
 
   setItemSize(newSize: number) {
     if (newSize !== this.itemSize) {
-      console.warn("setItemSize not tested yet, it might not work properly");
+      console.warn("setItemSize not tested yet, it might not work properly"); // TODO
       console.log(`itemSize updated: ${this.itemSize} -> ${newSize}`);
       this.itemSize = newSize;
       this.updateScrollStop();
@@ -194,7 +194,7 @@ export class BigScrollList implements ElementManager {
     private containerAvailableSize: number
   ) {
     // Clear host node
-    console.log("Old manager object: ", hostElement.managerObject);
+    // console.log("Old manager object: ", hostElement.managerObject);
     hostElement.innerHTML = "";
     if (hostElement.managerObject !== undefined) {
       hostElement.managerObject.onDemote();
@@ -238,7 +238,7 @@ export class BigScrollList implements ElementManager {
   }
 
   onDemote(): void {
-    console.log("this is being demoted!: ", this);
+    // console.log("this object is being demoted: ", this);
     this.hostElement.innerHTML = "";
     this.hostElement.removeEventListener("scroll", this.scrollHandler);
   }

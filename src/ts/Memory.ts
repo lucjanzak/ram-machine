@@ -1,6 +1,7 @@
 import { SparseArray } from "./BigArray";
 import { BigScrollList } from "./BigScrollList";
 import { ManagedElement } from "./ElementManager";
+import { t } from "./Localization";
 import { select, Templates, useTemplate } from "./Nodes";
 import { unwrap } from "./Util";
 
@@ -38,7 +39,7 @@ export class Memory {
 
           const value = this.getRegisterState(index);
           if (value === undefined) {
-            valueSpan.textContent = "uninitialized";
+            valueSpan.textContent = t.registers.uninitialized;
             valueSpan.classList.add("uninitialized");
           } else {
             valueSpan.textContent = `${value}`;
@@ -48,7 +49,7 @@ export class Memory {
         hostElement.parentElement!.clientHeight
       );
 
-      // TODO: these are not really reliable, the container size can change independently of the window as well
+      // TODO: these are probably not reliable, the container size can change independently of the window as well
       window.addEventListener("resize", () => {
         if (this.scrollList !== null) {
           this.scrollList.setContainerAvailableSize(this.scrollList.hostElement.parentElement!.clientHeight);
@@ -109,7 +110,7 @@ export class Memory {
         } else {
           const valueSpan = select(row, "#value");
           if (value === undefined) {
-            valueSpan.textContent = "uninitialized";
+            valueSpan.textContent = t.registers.uninitialized;
             valueSpan.classList.add("uninitialized");
             row.animate(
               [

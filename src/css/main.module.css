@@ -4,6 +4,7 @@
   --accent-color: #4ba0a5;
   --accent-color2: #317a7e;
   --accent-color3: #e9f6f6;
+  --accent-color3-hover: #d2e0e0;
   --generic-border-color: #7f7f7f7f;
   --generic-border: 1px solid var(--generic-border-color);
 }

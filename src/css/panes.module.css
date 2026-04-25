@@ -23,8 +23,3 @@
 .pane-scroll-v {
   overflow-y: scroll;
 }
-
-#register-pane {
-  min-width: 200px;
-  max-width: 400px;
-}

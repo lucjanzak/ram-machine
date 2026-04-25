@@ -21,7 +21,8 @@
     "cellEmpty": "(empty)"
   },
   "registers": {
-    "header": "Registers:"
+    "header": "Registers:",
+    "uninitialized": "uninitialized"
   },
   "programListing": {
     "tableHeader": {
