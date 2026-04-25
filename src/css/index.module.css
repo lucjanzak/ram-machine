@@ -31,6 +31,11 @@ body {
   box-sizing: border-box;
 }
 
+.centered-text {
+  margin: auto;
+  text-align: center;
+}
+
 @import url(header.module.css);
 @import url(nav.module.css);
 @import url(main.module.css);

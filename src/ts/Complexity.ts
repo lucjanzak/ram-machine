@@ -16,7 +16,7 @@ function lengthOfNumberDecimal(value: bigint) {
 // c(i): contents of register with index `i`
 
 // l(i): "length" of number `i`
-function lengthOfNumber(i: bigint) {
+export function lengthOfNumber(i: bigint) {
   if (i === 0n) return 1n;
   if (i < 0n) i = -i;
 

@@ -41,7 +41,7 @@
     </header>
     <nav>
       <div class="nav-buttons">
-        <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>">
+        <button id="new-program-button" class="nav-button nav-button-auto">
           <%= t.nav.new %>
         </button>
         <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>">
@@ -50,16 +50,15 @@
         <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>">
           <%= t.nav.save %>
         </button>
-        <button class="nav-button nav-button-auto"
-          onclick="RAMMachine.machine.loadTapeFromText(prompt('<%= t.nav.loadInputTapePrompt %>'))">
+        <button id="load-input-tape-button" class="nav-button nav-button-auto">
           <%= t.nav.loadInputTape %>
         </button>
       </div>
       <div class="nav-buttons">
-        <button class="nav-button nav-button-auto" onclick="RAMMachine.machine.runAll(false)">
+        <button id="run-all-button" class="nav-button nav-button-auto">
           <%= t.nav.run %>
         </button>
-        <button class="nav-button nav-button-auto" onclick="RAMMachine.machine.reset()">
+        <button id="reset-button" class="nav-button nav-button-auto">
           <%= t.nav.reset %>
         </button>
         <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>">
@@ -76,7 +75,7 @@
       <div>
         <section class="input-tape-pane">
           <!-- input tape here -->
-          <span>
+          <span class="centered-text">
             <% print(t.inputTape.header + '<span id="input-tape-length">0</span>' + t.inputTape.headerEnd) %>
           </span>
           <div id="input-tape-container">
@@ -88,7 +87,7 @@
         <section id="register-pane">
           <!-- registers here -->
           <!-- TODO: r0 is updated very often, it should be sticky at the top. this is not trivial to do because it is currently in a scrolllist so i don't want to do it yet -->
-          <span>
+          <span class="centered-text">
             <%= t.registers.header %>
           </span>
           <div id="register-scroll-list-container">
@@ -149,8 +148,8 @@
       </div>
       <div>
         <section class="output-tape-pane">
-          <!-- output tape here -->
-          <span>Output tape:</span>
+          <!-- TODO: output tape here -->
+          <span class="centered-text">Output tape:</span>
           <div id="output-tape-container">
             <div id="output-tape"></div>
           </div>

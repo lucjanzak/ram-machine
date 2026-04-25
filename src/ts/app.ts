@@ -1,6 +1,6 @@
 import { DEFAULT_PROGRAM_ASSEMBLY, EXAMPLE_PROGRAMS, EXAMPLE_PROGRAMS_ASSEMBLY } from "./Examples";
 import { Machine } from "./Machine";
-import { Nodes, Templates, useTemplate } from "./Nodes";
+import { initDOM, Nodes, Templates, useTemplate } from "./Nodes";
 import { Program } from "./Program";
 import { createEditor } from "./MonacoEditor";
 
@@ -48,6 +48,7 @@ window.lang = {
 };
 
 // Initialization
+initDOM();
 machine.loadAssemblyAndReset(DEFAULT_PROGRAM_ASSEMBLY);
 
 /// Testing area

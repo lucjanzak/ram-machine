@@ -20,6 +20,9 @@ export class SparseArray<ValueType> {
   clear() {
     this.values.clear();
   }
+  size() {
+    return this.values.size;
+  }
   [Symbol.iterator]() {
     return this.values[Symbol.iterator]();
   }

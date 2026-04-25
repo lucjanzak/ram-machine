@@ -98,6 +98,10 @@ export class InputTapeArray implements InputTape {
   }
 
   static fromText(text: string, hostElement: HTMLElement | null, lengthElement: Element | null): InputTape {
+    if (text === "") {
+      return InputTapeArray.fromValues([], hostElement, lengthElement);
+    }
+
     const split = text.split(/[\s,]+/);
     const values = split
       .map((x): bigint | undefined => {

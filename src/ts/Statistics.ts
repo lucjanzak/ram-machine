@@ -1,20 +1,53 @@
-import { instructionComplexity } from "./Complexity";
+import { SparseArray } from "./BigArray";
+import { instructionComplexity, lengthOfNumber } from "./Complexity";
 import { ALL_INSTRUCTIONS, Instruction } from "./Instruction";
 import { Nodes, select, Templates, useTemplate } from "./Nodes";
 
 export class Statistics {
+  public timeComplexityLog: bigint = 0n;
   public instructionCounters = Statistics.createEmptyCounters();
+  private memoryTracker = new SparseArray<bigint>();
   public startTime: DOMHighResTimeStamp | null = null;
   public endTime: DOMHighResTimeStamp | null = null;
-  public timeLogComplexity: bigint = 0n;
+
   processSilently(instruction: Instruction, c: (i: bigint) => bigint, peekInput: () => bigint) {
     this.instructionCounters[instruction.operation] += 1n;
-    this.timeLogComplexity += instructionComplexity(instruction, c, peekInput);
+    this.timeComplexityLog += instructionComplexity(instruction, c, peekInput);
   }
+
   processAndUpdateDOM(instruction: Instruction, c: (i: bigint) => bigint, peekInput: () => bigint) {
     this.processSilently(instruction, c, peekInput);
     // TODO: this can be improved by not replacing the entire statistics table every time
     this.replaceStatisticsDOM();
+  }
+
+  trackMemory(index: bigint, writtenValue: bigint) {
+    const length = lengthOfNumber(writtenValue);
+    const stored = this.memoryTracker.get(index);
+    if (stored === undefined || length > stored) {
+      this.memoryTracker.set(index, length);
+    }
+  }
+
+  fetchTimeComplexitySimple() {
+    let total = 0n;
+    for (const instruction of ALL_INSTRUCTIONS) {
+      const counter = this.fetchCounter(instruction);
+      total += counter;
+    }
+    return total;
+  }
+
+  fetchMemoryComplexitySimple() {
+    return this.memoryTracker.size();
+  }
+
+  fetchMemoryComplexityLog() {
+    let result = 0n;
+    for (const [index, value] of this.memoryTracker) {
+      result += value;
+    }
+    return result;
   }
 
   fetchCounter(instruction: (typeof ALL_INSTRUCTIONS)[number]) {
@@ -31,7 +64,8 @@ export class Statistics {
 
   clear() {
     this.instructionCounters = Statistics.createEmptyCounters();
-    this.timeLogComplexity = 0n;
+    this.memoryTracker.clear();
+    this.timeComplexityLog = 0n;
     this.startTime = null;
     this.endTime = null;
   }

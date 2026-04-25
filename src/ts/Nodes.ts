@@ -1,3 +1,4 @@
+import { t } from "./Localization";
 import { expect } from "./Util";
 
 export namespace Nodes {
@@ -6,6 +7,10 @@ export namespace Nodes {
   }
 
   // Static elements
+  export const newProgramButton = element("#new-program-button");
+  export const loadInputTapeButton = element("#load-input-tape-button");
+  export const runAllButton = element("#run-all-button");
+  export const resetButton = element("#reset-button");
   export const loadProgramButtons = element("#load-program-buttons");
   export const programListingTable = element("#program-listing-table");
   // export const programTextEditorBasic = element<HTMLTextAreaElement>("#program-text-editor-basic");
@@ -39,4 +44,22 @@ export function useTemplate(instructionTile: HTMLTemplateElement) {
 
 export function select<T extends Element = Element>(f: ParentNode, selector: string) {
   return expect(f.querySelector<T>(selector), `element with selector '${selector}' not found in f: ${f}`);
+}
+
+export function initDOM() {
+  Nodes.newProgramButton.addEventListener("click", () => {
+    window.RAMMachine.machine.loadAssemblyAndReset("");
+  });
+  Nodes.loadInputTapeButton.addEventListener("click", () => {
+    const answer = prompt(t.nav.loadInputTapePrompt);
+    if (answer !== null) {
+      window.RAMMachine.machine.loadTapeFromText(answer);
+    }
+  });
+  Nodes.runAllButton.addEventListener("click", () => {
+    window.RAMMachine.machine.runAll(false);
+  });
+  Nodes.resetButton.addEventListener("click", () => {
+    window.RAMMachine.machine.reset();
+  });
 }

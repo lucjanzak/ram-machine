@@ -72,11 +72,23 @@ export class Machine {
   getRegister(index: bigint, quiet: boolean): bigint {
     return this.memory.getRegister(index, this.config.uninitializedRegisterRead, quiet);
   }
+
   getAccumulator(quiet: boolean): bigint {
     return this.memory.getAccumulator(this.config.uninitializedRegisterRead, quiet);
   }
+
   readInputTape(): bigint {
     return this.inputTape.readOrDefault(this.config.inputTapeUnderflow);
+  }
+
+  setRegister(index: bigint, value: bigint, quiet: boolean) {
+    this.stats.trackMemory(index, value);
+    this.memory.setRegister(index, value, quiet);
+  }
+
+  setAccumulator(value: bigint, quiet: boolean) {
+    this.stats.trackMemory(0n, value);
+    this.memory.setAccumulator(value, quiet);
   }
 
   readFromOperand(operand: ReadableOperand, quiet: boolean): bigint {
@@ -94,10 +106,10 @@ export class Machine {
   }
   writeToOperand(operand: WriteableOperand, word: bigint, quiet: boolean) {
     if (operand.type === "register") {
-      return this.memory.setRegister(operand.value, word, quiet);
+      return this.setRegister(operand.value, word, quiet);
     } else if (operand.type === "indirect") {
       const address = this.getRegister(operand.value, quiet);
-      return this.memory.setRegister(address, word, quiet);
+      return this.setRegister(address, word, quiet);
     } else {
       console.error("invalid argument: 'operand' is not a WriteableOperand", operand);
       throw new Error("invalid argument: 'operand' is not a WriteableOperand");
@@ -132,7 +144,7 @@ export class Machine {
 
     if (instruction.operation === "LOAD") {
       const value = this.readFromOperand(instruction.operand, quiet);
-      this.memory.setAccumulator(value, quiet);
+      this.setAccumulator(value, quiet);
       this.programCounter++;
     } else if (instruction.operation === "STORE") {
       const value = this.getAccumulator(quiet);
@@ -140,19 +152,19 @@ export class Machine {
       this.programCounter++;
     } else if (instruction.operation === "ADD") {
       const value = this.readFromOperand(instruction.operand, quiet);
-      this.memory.setAccumulator(this.getAccumulator(quiet) + value, quiet);
+      this.setAccumulator(this.getAccumulator(quiet) + value, quiet);
       this.programCounter++;
     } else if (instruction.operation === "SUB") {
       const value = this.readFromOperand(instruction.operand, quiet);
-      this.memory.setAccumulator(this.getAccumulator(quiet) - value, quiet);
+      this.setAccumulator(this.getAccumulator(quiet) - value, quiet);
       this.programCounter++;
     } else if (instruction.operation === "MUL") {
       const value = this.readFromOperand(instruction.operand, quiet);
-      this.memory.setAccumulator(this.getAccumulator(quiet) * value, quiet);
+      this.setAccumulator(this.getAccumulator(quiet) * value, quiet);
       this.programCounter++;
     } else if (instruction.operation === "DIV") {
       const value = this.readFromOperand(instruction.operand, quiet);
-      this.memory.setAccumulator(this.getAccumulator(quiet) / value, quiet);
+      this.setAccumulator(this.getAccumulator(quiet) / value, quiet);
       this.programCounter++;
     } else if (instruction.operation === "READ") {
       const value = this.readInputTape();
