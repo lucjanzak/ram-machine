@@ -16,13 +16,9 @@ body {
 }
 
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", sans-serif;
   display: flex;
   flex-direction: column;
-}
-
-a {
-  transition: color 0.2s;
 }
 
 #whole-screen {
