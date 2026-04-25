@@ -39,7 +39,7 @@
     "externalLibraries": "External libraries used:"
   },
   "examples": {
-    "addition": {
+    "ADDITION": {
       "title": "Simple addition",
       "description": [
         "This is an example program\n; that sums two numbers together.",
@@ -53,7 +53,7 @@
         "End program execution"
       ]
     },
-    "absoluteValue": {
+    "ABSOLUTE_VALUE": {
       "title": "Absolute value",
       "description": "Calculates the absolute value of a given number.",
       "labels": {
@@ -67,7 +67,7 @@
         "Write r₀ to the output tape"
       ]
     },
-    "reverseArray": {
+    "REVERSE_ARRAY": {
       "title": "Reverse array",
       "registers": {
         "r1": "length of the array",

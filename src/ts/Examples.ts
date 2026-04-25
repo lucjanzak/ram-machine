@@ -11,9 +11,9 @@ function rightpad(text: string, n: number, c: string = " ") {
   }
   return text;
 }
-const add = t.examples.addition;
-const abs = t.examples.absoluteValue;
-const rev = t.examples.reverseArray;
+const add = t.examples.ADDITION;
+const abs = t.examples.ABSOLUTE_VALUE;
+const rev = t.examples.REVERSE_ARRAY;
 
 export const EXAMPLE_PROGRAMS_ASSEMBLY = {
   ADDITION: `; ${add.title}
@@ -210,7 +210,8 @@ function initDOM() {
     btn.addEventListener("click", () => {
       window.RAMMachine.machine.loadAssemblyAndReset(programText);
     });
-    btn.textContent = `Load ${programKey}`;
+    const title: string = (t.examples as any)[programKey].title || programKey;
+    btn.textContent = `${t.nav.load} '${title}'`;
     Nodes.loadProgramButtons.appendChild(btn);
   }
 }

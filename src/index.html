@@ -22,24 +22,20 @@
         </a>
       </h3>
     </div>
-    <div style="display: flex; flex-flow: column; justify-content: center; gap: 0; text-align: right;">
-      <span>
+    <div class="header-right">
+      <div>
         <%= t.header.language %>
-          <ul style="display: inline; padding: 0;">
+          <ul>
             <% _.forEach(languageInfo, function(lang) { %>
-              <li style="display: inline;">
-                |
-                <a href="<%= lang.key %>.html">
-                  <%= lang.displayName %>
-                </a>
-
+              <li>
+                <% print('<a href="' + lang.key + '.html">' + lang.displayName + '</a>') %>
               </li>
               <% }); %>
           </ul>
-      </span>
-      <span>
+      </div>
+      <div>
         <%= t.header.author %> <a href="https://lucjanzak.github.io" target=" _blank">Lucjan Żak</a>
-      </span>
+      </div>
     </div>
   </header>
   <nav>

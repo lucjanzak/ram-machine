@@ -40,3 +40,29 @@ header a:hover {
   color: #ffffff;
   text-decoration: underline;
 }
+
+.header-right {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  gap: 0;
+  text-align: right;
+  align-items: end;
+}
+
+.header-right ul {
+  display: inline;
+  padding: 0;
+}
+.header-right li {
+  display: inline list-item;
+  list-style-type: none;
+}
+
+.header-right li + li {
+  list-style-type: disc;
+}
+
+.header-right li + li::marker {
+  content: "•";
+}

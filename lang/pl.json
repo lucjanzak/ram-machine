@@ -8,7 +8,7 @@
   },
   "nav": {
     "new": "Nowy",
-    "load": "Otwórz",
+    "load": "Załaduj",
     "save": "Zapisz",
     "loadInputTape": "Załaduj taśmę",
     "run": "Uruchom"
@@ -39,8 +39,8 @@
     "externalLibraries": "Zewnętrzne biblioteki:"
   },
   "examples": {
-    "addition": {
-      "title": "Proste dodawanie",
+    "ADDITION": {
+      "title": "Dodawanie",
       "description": [
         "Oto przykładowy program\n; który dodaje dwie liczby do siebie.",
         "Skompiluj go przy użyciu przycisku poniżej,\n; a następnie użyj przycisku \"Uruchom\" na górze,\n; aby wykonać program."
@@ -53,7 +53,7 @@
         "Zakończ działanie programu"
       ]
     },
-    "absoluteValue": {
+    "ABSOLUTE_VALUE": {
       "title": "Wartość bezwzględna",
       "description": "Program obliczający wartość bezwzględną podanej liczby.",
       "labels": {
@@ -67,7 +67,7 @@
         "Wypisz r₀ na taśmę wyjściową"
       ]
     },
-    "reverseArray": {
+    "REVERSE_ARRAY": {
       "title": "Odwróć tablicę",
       "registers": {
         "r1": "długość tablicy",
