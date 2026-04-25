@@ -16,6 +16,17 @@ export class InputTapeArray implements InputTape {
   private values = new ContiguousArray<bigint>();
   private currentIndex: bigint = 0n;
   private scrollList: BigScrollList | null = null;
+
+  // Minimum amount of cells to display on tape
+  static readonly MIN_ELEMENTS_ON_VISIBLE_TAPE = 3n as const;
+
+  // Amount of "empty" tape cells displayed after the end of the input tape.
+  // 0n => no empty cells; it is impossible to extend the tape beyond the size that it already is.
+  // 1n => one empty cell; if focused, pressing Tab will skip to the next section instead of the next cell (because there is no 2nd empty cell)
+  // 2n => two empty cells is the bare minimum; it fixes the Tab issue partially, but sometimes it can still happen
+  // 3n => three empty cells is the recommended minimum; it fixes the Tab issue fully
+  static readonly EXTRA_ELEMENTS_ON_VISIBLE_TAPE = 3n as const;
+
   peek() {
     return this.values.get(this.currentIndex);
   }
@@ -42,27 +53,34 @@ export class InputTapeArray implements InputTape {
 
   updateListLength() {
     if (this.scrollList !== null) {
-      this.scrollList.setItemCount(bigintMax(this.values.length() + 2n, 10n));
+      this.scrollList.setItemCount(
+        bigintMax(this.values.length() + InputTapeArray.EXTRA_ELEMENTS_ON_VISIBLE_TAPE, InputTapeArray.MIN_ELEMENTS_ON_VISIBLE_TAPE)
+      );
     }
     if (this.lengthElement !== null) {
       this.lengthElement.textContent = `${this.values.length()}`;
     }
   }
 
-  refreshExistingItems() {
-    if (this.scrollList !== null) {
-      this.scrollList.iterActive((element, index) => {
-        const valueInput = select<HTMLInputElement>(element, "#value");
+  private updateCellValue(cell: Element, value: bigint | undefined) {
+    const valueInput = select<HTMLInputElement>(cell, "#value");
+    if (value === undefined) {
+      valueInput.value = "";
+      valueInput.placeholder = "(empty)";
+      cell.classList.add("empty");
+    } else {
+      valueInput.value = `${value}`;
+      valueInput.placeholder = `${value}`;
+      cell.classList.remove("empty");
+    }
+    valueInput.classList.remove("invalid");
+  }
 
-        const value = this.values.get(index);
-        if (value === undefined) {
-          valueInput.value = "";
-          valueInput.placeholder = "empty";
-        } else {
-          valueInput.value = `${value}`;
-          valueInput.placeholder = `${value}`;
-        }
-        valueInput.classList.remove("invalid");
+  refreshExistingCells() {
+    if (this.scrollList !== null) {
+      this.scrollList.iterActive((listItem, index) => {
+        const cell = select(listItem, "#input-tape-scroll-list-cell");
+        this.updateCellValue(cell, this.values.get(index));
       });
     }
   }
@@ -90,7 +108,7 @@ export class InputTapeArray implements InputTape {
       tape.values.push(value);
     }
     tape.updateListLength();
-    tape.refreshExistingItems();
+    tape.refreshExistingCells();
     return tape;
   }
   constructor(hostElement: HTMLElement | null, public lengthElement: Element | null) {
@@ -98,7 +116,7 @@ export class InputTapeArray implements InputTape {
       this.scrollList = new BigScrollList(
         hostElement,
         "horizontal",
-        10n, // element count
+        0n, // initial element count
         120, // item size
         (index) => {
           const f = useTemplate(Templates.inputTapeCell);
@@ -115,13 +133,7 @@ export class InputTapeArray implements InputTape {
           indexSpan.textContent = `${index + 1n}`;
 
           const value = this.values.get(index);
-          if (value === undefined) {
-            valueInput.value = "";
-            valueInput.placeholder = "empty";
-          } else {
-            valueInput.value = `${value}`;
-            valueInput.placeholder = `${value}`;
-          }
+          this.updateCellValue(cell, value);
 
           const updateValue = (confirmed: boolean) => {
             const valueText = valueInput.value;
@@ -129,8 +141,15 @@ export class InputTapeArray implements InputTape {
             // console.log(valueInput);
             console.log(`Changed input tape cell #${index} to '${valueText}' ${value}`, confirmed);
             if (valueText === "") {
-              // Empty value TODO- make it possible to remove values from the end????
+              // Empty value
               valueInput.classList.remove("invalid");
+
+              // Remove from tape if this is the last element
+              if (index === this.values.length() - 1n) {
+                this.values.pop();
+                this.updateCellValue(cell, undefined);
+                this.updateListLength();
+              }
             } else if (value === undefined) {
               // Invalid text inputted
               valueInput.classList.add("invalid");
@@ -142,7 +161,7 @@ export class InputTapeArray implements InputTape {
                 // Set the value in the actual tape array
                 if (index >= this.values.length()) {
                   this.values.setWithFill(index, value, 0n);
-                  this.refreshExistingItems();
+                  this.refreshExistingCells();
                   this.scrollList?.updateElements();
                   this.updateListLength();
                 } else {
@@ -151,6 +170,7 @@ export class InputTapeArray implements InputTape {
 
                 // Update the placeholder
                 valueInput.placeholder = `${value}`;
+                cell.classList.remove("empty");
               }
             }
           };

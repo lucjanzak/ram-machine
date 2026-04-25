@@ -11,6 +11,8 @@
   overflow: hidden;
   border-top: var(--generic-border);
   border-bottom: var(--generic-border);
+  background-color: var(--grayout);
+  --grayout: #dfdfdf;
 }
 
 #input-tape {
@@ -28,6 +30,7 @@
   gap: 0.25rem;
   border-right: var(--generic-border);
   box-sizing: border-box;
+  transition: 0.2s color, 0.2s background-color;
 }
 
 .input-tape-scroll-list-cell.odd {
@@ -38,6 +41,11 @@
   background-color: #ffffff;
 }
 
+.input-tape-scroll-list-cell.empty {
+  color: #0000007f;
+  background-color: var(--grayout);
+}
+
 .input-tape-scroll-list-cell .input-tape-cell-index {
   text-align: center;
 }
@@ -45,6 +53,10 @@
 .input-tape-scroll-list-cell .input-tape-cell-value {
   width: 80%;
   background-color: #ffffff;
+  text-align: center;
+  border-radius: 4px;
+  border: var(--generic-border);
+  border-style: inset;
   transition: 0.2s background-color;
 }
 
