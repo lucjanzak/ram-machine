@@ -59,9 +59,12 @@
   </nav>
   <main>
     <div>
-      <section>
+      <section class="input-tape-pane">
         <!-- input tape here -->
-        <div id="input-tape"></div>
+        <span>Input tape:</span>
+        <div id="input-tape-container">
+          <div id="input-tape"></div>
+        </div>
       </section>
     </div>
     <div id="main-panes">
@@ -83,7 +86,7 @@
               <col>
             </colgroup>
             <thead>
-              <tr>
+              <tr class="sticky-row">
                 <th>Line</th>
                 <th>Label</th>
                 <th>Instruction</th>
@@ -121,9 +124,12 @@
       </section>
     </div>
     <div>
-      <section>
+      <section class="output-tape-pane">
         <!-- output tape here -->
-        <div id="output-tape"></div>
+        <span>Output tape:</span>
+        <div id="output-tape-container">
+          <div id="output-tape"></div>
+        </div>
       </section>
     </div>
     <div> <!-- TODO idk what to do with this yet -->

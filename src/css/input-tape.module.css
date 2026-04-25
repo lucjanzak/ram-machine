@@ -1,0 +1,51 @@
+.input-tape-pane {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+#input-tape-container {
+  display: flex;
+  height: 70px;
+  overflow: hidden;
+  border-top: var(--generic-border);
+  border-bottom: var(--generic-border);
+}
+
+#input-tape {
+  overflow-y: hidden;
+}
+
+.input-tape-scroll-list-cell {
+  width: 200px;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 0.25rem;
+  gap: 0.25rem;
+  border-left: var(--generic-border);
+  box-sizing: border-box;
+}
+
+.input-tape-scroll-list-cell.odd {
+  background-color: #ffffff;
+}
+
+.input-tape-scroll-list-cell.even {
+  background-color: var(--accent-color3);
+}
+
+.input-tape-scroll-list-cell .input-tape-cell-index {
+  text-align: center;
+}
+
+.input-tape-scroll-list-cell .input-tape-cell-value {
+  width: 90%;
+}
+
+.input-tape-scroll-list-cell .input-tape-cell-value.invalid {
+  outline: 2px #ff00007f solid;
+  background: #ff00003f;
+}

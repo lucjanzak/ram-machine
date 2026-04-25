@@ -29,6 +29,7 @@ export class BigScrollList {
       console.log(`itemCount updated: ${this.itemCount} -> ${newCount}`);
       this.itemCount = newCount;
       this.updateScrollStop();
+      this.updateElements();
     }
   }
 
@@ -77,13 +78,15 @@ export class BigScrollList {
       }
 
       const index = BigInt(indexStr);
-      if (this.isInView(index)) {
-        // htmlElement.style.backgroundColor = "#00ff001f";
+      if (this.isInView(index) || listElement.contains(document.activeElement)) {
         this.activeElements.add(index);
       } else {
-        // console.log(`remove: ${index}`);
-        // htmlElement.style.backgroundColor = "#ff00001f";
-        listElement.remove();
+        try {
+          listElement.remove();
+        } catch (e) {
+          // sometimes removing a node can fail on Chrome, not much i can do about it
+          console.warn(e);
+        }
         this.activeElements.delete(index);
       }
     }
@@ -91,7 +94,7 @@ export class BigScrollList {
     // Add new in-view elements
     const viewBoundStart = this.getViewBoundStart();
     const viewBoundEnd = this.getViewBoundEnd();
-    for (let index = viewBoundStart.integer; index <= viewBoundEnd.integer; index++) {
+    for (let index = viewBoundStart.integer; index <= viewBoundEnd.integer && index < this.itemCount; index++) {
       if (this.activeElements.has(index)) {
         // This one already exists
         continue;

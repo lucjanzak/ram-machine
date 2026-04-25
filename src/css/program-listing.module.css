@@ -6,8 +6,7 @@
 #program-listing-table {
   border-collapse: collapse;
   transform-origin: center top;
-  border-top: 1px solid #7f7f7f7f;
-  border-bottom: 1px solid #7f7f7f7f;
+  border-bottom: var(--generic-border);
 }
 
 #program-listing-table col:nth-child(1) {
@@ -32,9 +31,17 @@
 #program-listing-table td,
 #program-listing-table th {
   padding: 0.5rem 1rem;
-  border: 1px solid #7f7f7f7f;
-  border-right-width: 0;
-  border-left-width: 0;
+  border-width: 0;
+  border-bottom: var(--generic-border);
+}
+
+#program-listing-table .sticky-row {
+  position: sticky;
+  top: 1px;
+  background: #ffffffdf;
+  /* outline: var(--generic-border); */
+  box-sizing: border-box;
+  transform: translateY(-2px);
 }
 
 #program-listing-table tr:nth-child(even):not(:has(.tile-part-comment.big)) {

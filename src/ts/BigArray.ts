@@ -67,6 +67,7 @@ export class ContiguousArray<ValueType> {
       this.push(value);
     }
   }
+
   popUnwrap(): ValueType {
     if (this.values.length === 0) throw new Error("array underflow");
     return this.values.pop()!;
