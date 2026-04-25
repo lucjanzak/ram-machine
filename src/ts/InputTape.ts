@@ -2,13 +2,16 @@ import { ContiguousArray } from "./BigArray";
 import { bigintMax, bigintParse } from "./BigIntUtils";
 import { BigScrollList } from "./BigScrollList";
 import { t } from "./Localization";
-import { readUnsetRegisterValue } from "./Memory";
+import { randomBigint } from "./Memory";
 import { select, Templates, useTemplate } from "./Nodes";
+import { assertNever } from "./Util";
+
+export type InputTapeUnderflowBehavior = "error" | "zero" | "random";
 
 export interface InputTape {
   peek(): bigint | undefined;
   read(): bigint | undefined;
-  readOrDefault(): bigint;
+  readOrDefault(config: InputTapeUnderflowBehavior): bigint;
   reset(): void;
   clearAndReset(): void;
 }
@@ -36,10 +39,18 @@ export class InputTapeArray implements InputTape {
     this.currentIndex++;
     return value;
   }
-  readOrDefault() {
+  readOrDefault(config: InputTapeUnderflowBehavior) {
     const value = this.read();
     if (value === undefined) {
-      return readUnsetRegisterValue();
+      if (config === "error") {
+        throw new Error(`tried to read from input tape, but there is no more cells to read`);
+      } else if (config === "zero") {
+        return 0n;
+      } else if (config === "random") {
+        return randomBigint();
+      } else {
+        assertNever(config);
+      }
     } else {
       return value;
     }

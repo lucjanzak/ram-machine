@@ -24,7 +24,7 @@ export type Tile =
 // One parsed element of the source code, with a DOM element attached to it
 export type TileDOM = Tile & { fragment: DocumentFragment };
 
-// should always be a positive integer from 0(?) or from 1 to programlength // TODO: i think it should be from 0
+// should always be a positive integer from 0 to programlength
 export type ProgramCounter = number;
 
 export class Program {

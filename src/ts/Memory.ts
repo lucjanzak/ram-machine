@@ -3,13 +3,13 @@ import { BigScrollList } from "./BigScrollList";
 import { ManagedElement } from "./ElementManager";
 import { t } from "./Localization";
 import { select, Templates, useTemplate } from "./Nodes";
-import { unwrap } from "./Util";
+import { assertNever, unwrap } from "./Util";
 
-export function readUnsetRegisterValue() {
-  // return 0n;
-  // TODO: option for this: either 0n, or error out, or random value
+export function randomBigint() {
   return BigInt(Math.floor(Math.random() * 10000));
 }
+
+export type ReadUninitializedRegisterBehavior = "error" | "zero" | "random" | "superpositionCollapse";
 
 export class Memory {
   private registers = new SparseArray<bigint>();
@@ -58,13 +58,26 @@ export class Memory {
     }
   }
 
-  getAccumulator(): bigint {
-    return this.getRegister(0n);
+  getAccumulator(config: ReadUninitializedRegisterBehavior, quiet: boolean): bigint {
+    return this.getRegister(0n, config, quiet);
   }
-  getRegister(index: bigint): bigint {
+
+  getRegister(index: bigint, config: ReadUninitializedRegisterBehavior, quiet: boolean): bigint {
     const register = this.registers.get(index);
     if (register === undefined) {
-      return readUnsetRegisterValue(); // Default value for unset registers
+      if (config === "error") {
+        throw new Error(`tried to read uninitialized register (r${index})`);
+      } else if (config === "zero") {
+        return 0n;
+      } else if (config === "random") {
+        return randomBigint();
+      } else if (config === "superpositionCollapse") {
+        const random = randomBigint();
+        this.setRegister(index, random, quiet);
+        return random;
+      } else {
+        assertNever(config);
+      }
     } else {
       return register;
     }

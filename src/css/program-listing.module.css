@@ -26,7 +26,7 @@
 
 #program-listing-table td,
 #program-listing-table th {
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 0.6rem;
   border-width: 0;
   border-bottom: var(--generic-border);
 }

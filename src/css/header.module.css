@@ -55,6 +55,7 @@ header a:hover {
   display: inline;
   padding: 0;
   margin: 0;
+  margin-left: 0.5rem;
 }
 
 .header-right li {
