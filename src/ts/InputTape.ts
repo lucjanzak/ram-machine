@@ -1,6 +1,7 @@
 import { ContiguousArray } from "./BigArray";
 import { bigintMax, bigintParse } from "./BigIntUtils";
 import { BigScrollList } from "./BigScrollList";
+import { t } from "./Localization";
 import { readUnsetRegisterValue } from "./Memory";
 import { select, Templates, useTemplate } from "./Nodes";
 
@@ -66,7 +67,7 @@ export class InputTapeArray implements InputTape {
     const valueInput = select<HTMLInputElement>(cell, "#value");
     if (value === undefined) {
       valueInput.value = "";
-      valueInput.placeholder = "(empty)";
+      valueInput.placeholder = t.inputTape.cellEmpty;
       cell.classList.add("empty");
     } else {
       valueInput.value = `${value}`;

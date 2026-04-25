@@ -10,8 +10,9 @@ import process from "node:process";
 import en from "./lang/en.json" with { type: "json" };
 import pl from "./lang/pl.json" with { type: "json" };
 const translations = {en, pl};
+
 const languageInfo = Object.keys(translations).map(key => ({
-  key: key,
+  key,
   displayName: translations[key].languageName
 }));
 console.log(languageInfo);
@@ -34,7 +35,7 @@ function getTemplateParametersForLanguage(lang) {
   if (!(lang in translations)) {
     throw new Error(`Unknown language: ${lang}`);
   }
-  return Object.assign({}, templateParameters, {t: translations[lang], languageInfo}) 
+  return Object.assign({}, templateParameters, {lang, t: translations[lang], languageInfo}) 
 }
 function generateHtmlWebpackPlugin(languageCode) {
   return new HtmlWebpackPlugin({

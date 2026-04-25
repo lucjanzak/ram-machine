@@ -17,7 +17,8 @@
     "header": "Taśma wejściowa (długość: ",
     "headerEnd": ")",
     "cellLabel": "Komórka #",
-    "cellLabelEnd": ""
+    "cellLabelEnd": "",
+    "cellEmpty": "(pusta)"
   },
   "registers": {
     "header": "Rejestry:"

@@ -8,6 +8,7 @@ import * as monaco from "monaco-editor";
 
 import "../css/main.module.css";
 import { BigScrollList } from "./BigScrollList";
+import { translations } from "./Localization";
 
 const machine = new Machine();
 const editor = createEditor();
@@ -27,6 +28,7 @@ declare global {
       EXAMPLE_PROGRAMS_ASSEMBLY: { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBLY]: string };
       compileInput: () => void;
     };
+    currentLanguage: keyof typeof translations;
   }
 }
 window.RAMMachine = {
@@ -53,3 +55,5 @@ const bigScrollist = new BigScrollList(
   },
   800
 );
+
+console.log(translations.en);

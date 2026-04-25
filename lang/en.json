@@ -17,7 +17,8 @@
     "header": "Input tape (length: ",
     "headerEnd": ")",
     "cellLabel": "Cell #",
-    "cellLabelEnd": ""
+    "cellLabelEnd": "",
+    "cellEmpty": "(empty)"
   },
   "registers": {
     "header": "Registers:"
