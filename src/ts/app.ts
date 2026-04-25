@@ -6,7 +6,7 @@ import { createEditor } from "./MonacoEditor";
 
 import * as monaco from "monaco-editor";
 
-import "../css/main.module.css";
+import "../css/index.module.css";
 import { BigScrollList } from "./BigScrollList";
 import { t, translations } from "./Localization";
 

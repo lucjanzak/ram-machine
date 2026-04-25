@@ -10,88 +10,89 @@
 </head>
 
 <body>
-  <header>
-    <div>
-      <h1>
-        <%= t.header.title %>
-      </h1>
-      <h3 class="version-header">
-        <a href="https://github.com/lucjanzak/ram-machine/commit/<%= gitCommitHash %>" target="_blank"
-          title="View git commit <%= gitCommitHash %>">
-          v<%= displayedVersion %>
-        </a>
-      </h3>
-    </div>
-    <div class="header-right">
+  <div id="whole-screen">
+    <header>
       <div>
-        <%= t.header.language %>
-          <ul>
-            <% _.forEach(languageInfo, function(lang) { %>
-              <li>
-                <% print('<a href="' + lang.key + '.html">' + lang.displayName + '</a>') %>
-              </li>
-              <% }); %>
-          </ul>
+        <h1>
+          <%= t.header.title %>
+        </h1>
+        <h3 class="version-header">
+          <a href="https://github.com/lucjanzak/ram-machine/commit/<%= gitCommitHash %>" target="_blank"
+            title="View git commit <%= gitCommitHash %>">
+            v<%= displayedVersion %>
+          </a>
+        </h3>
       </div>
-      <div>
-        <%= t.header.author %> <a href="https://lucjanzak.github.io" target=" _blank">Lucjan Żak</a>
-      </div>
-    </div>
-  </header>
-  <nav>
-    <div class="nav-buttons">
-      <button class="nav-button nav-button-auto">
-        <%= t.nav.new %>
-      </button>
-      <button class="nav-button nav-button-auto">
-        <%= t.nav.load %>
-      </button>
-      <button class="nav-button nav-button-auto">
-        <%= t.nav.save %>
-      </button>
-      <button class="nav-button nav-button-auto" onclick="RAMMachine.machine.loadTapeFromText(prompt('input values:'))">
-        <%= t.nav.loadInputTape %>
-      </button>
-    </div>
-    <div class="nav-buttons">
-      <button class="nav-button nav-button-auto"
-        onclick="setTimeout(() => RAMMachine.machine.runAsFastAsPossible(false), 0)">
-        <%= t.nav.run %>
-      </button>
-      <button class="nav-button nav-button-auto" onclick="setTimeout(() => RAMMachine.machine.reset())">Reset</button>
-      <button class="nav-button nav-button-auto">Start Debug</button>
-      <button class="nav-button nav-button-auto">Continue</button>
-      <button class="nav-button nav-button-auto">Step</button>
-    </div>
-
-    <div class="nav-buttons" id="load-program-buttons"></div>
-  </nav>
-  <main>
-    <div>
-      <section class="input-tape-pane">
-        <!-- input tape here -->
-        <span>
-          <% print(t.inputTape.header + '<span id="input-tape-length">0</span>' + t.inputTape.headerEnd) %>
-        </span>
-        <div id="input-tape-container">
-          <div id="input-tape"></div>
-        </div>
-      </section>
-    </div>
-    <div id="main-panes">
-      <section id="register-pane">
-        <!-- registers here -->
-        <!-- TODO: r0 is updated very often, it should be sticky at the top. this is not trivial to do because it is currently in a scrolllist so i don't want to do it yet -->
-        <span>
-          <%= t.registers.header %>
-        </span>
-        <div id="register-scroll-list-container">
-          <div id="register-scroll-list"></div>
-        </div>
-      </section>
-      <!-- TODO: make into tabs -->
-      <section class="main-pane pane-scroll-h" id="program-listing-pane">
+      <div class="header-right">
         <div>
+          <%= t.header.language %>
+            <ul>
+              <% _.forEach(languageInfo, function(lang) { %>
+                <li>
+                  <% print('<a href="' + lang.key + '.html">' + lang.displayName + '</a>') %>
+                </li>
+                <% }); %>
+            </ul>
+        </div>
+        <div>
+          <%= t.header.author %> <a href="https://lucjanzak.github.io" target=" _blank">Lucjan Żak</a>
+        </div>
+      </div>
+    </header>
+    <nav>
+      <div class="nav-buttons">
+        <button class="nav-button nav-button-auto">
+          <%= t.nav.new %>
+        </button>
+        <button class="nav-button nav-button-auto">
+          <%= t.nav.load %>
+        </button>
+        <button class="nav-button nav-button-auto">
+          <%= t.nav.save %>
+        </button>
+        <button class="nav-button nav-button-auto"
+          onclick="RAMMachine.machine.loadTapeFromText(prompt('input values:'))">
+          <%= t.nav.loadInputTape %>
+        </button>
+      </div>
+      <div class="nav-buttons">
+        <button class="nav-button nav-button-auto"
+          onclick="setTimeout(() => RAMMachine.machine.runAsFastAsPossible(false), 0)">
+          <%= t.nav.run %>
+        </button>
+        <button class="nav-button nav-button-auto" onclick="setTimeout(() => RAMMachine.machine.reset())">Reset</button>
+        <button class="nav-button nav-button-auto">Start Debug</button>
+        <button class="nav-button nav-button-auto">Continue</button>
+        <button class="nav-button nav-button-auto">Step</button>
+      </div>
+
+      <div class="nav-buttons" id="load-program-buttons"></div>
+    </nav>
+    <main>
+      <div>
+        <section class="input-tape-pane">
+          <!-- input tape here -->
+          <span>
+            <% print(t.inputTape.header + '<span id="input-tape-length">0</span>' + t.inputTape.headerEnd) %>
+          </span>
+          <div id="input-tape-container">
+            <div id="input-tape"></div>
+          </div>
+        </section>
+      </div>
+      <div id="panes">
+        <section id="register-pane">
+          <!-- registers here -->
+          <!-- TODO: r0 is updated very often, it should be sticky at the top. this is not trivial to do because it is currently in a scrolllist so i don't want to do it yet -->
+          <span>
+            <%= t.registers.header %>
+          </span>
+          <div id="register-scroll-list-container">
+            <div id="register-scroll-list"></div>
+          </div>
+        </section>
+        <!-- TODO: make into tabs -->
+        <section id="program-listing-pane">
           <table id="program-listing-table">
             <colgroup>
               <col>
@@ -119,12 +120,9 @@
 
             </tbody>
           </table>
-        </div>
-      </section>
-
-      <section class="main-pane">
-        <br>
-        <!-- <textarea id="program-text-editor-basic" rows="30" cols="160" resize="false">
+        </section>
+        <section id="program-text-editor-pane">
+          <!-- <textarea id="program-text-editor-basic" rows="30" cols="160" resize="false">
   ; This is an example program 1
   ; that sums two numbers together
   ;
@@ -138,41 +136,45 @@
   HALT    ; End program execution
         
         </textarea> -->
-        <!-- TODO: Add simple textarea mode as fallback -->
-        <div id="program-text-editor-container"></div>
-        <nav>
-          <button class="nav-button nav-button-auto" onclick="RAMMachine.compileInput()">Compile</button>
-        </nav>
-      </section>
-    </div>
-    <div>
-      <section class="output-tape-pane">
-        <!-- output tape here -->
-        <span>Output tape:</span>
-        <div id="output-tape-container">
-          <div id="output-tape"></div>
-        </div>
-      </section>
-    </div>
-    <div> <!-- TODO idk what to do with this yet -->
-      <section>
-        Statistics:
-        <table>
-          <thead>
-            <td>instruction</td>
-            <td>count</td>
-          </thead>
-          <tbody id="stats"></tbody>
-        </table>
-      </section>
-    </div>
-    <div style="display: none;">
-      <section>
-        Infinite scrolling test:
-        <div id="big-scroll-list-test" style="height: 100px;"></div>
-      </section>
-    </div>
-  </main>
+          <!-- TODO: Add simple textarea mode as fallback -->
+          <div id="program-text-editor-container"></div>
+          <nav>
+            <button class="nav-button nav-button-auto" onclick="RAMMachine.compileInput()">Compile</button>
+          </nav>
+        </section>
+      </div>
+      <div>
+        <section class="output-tape-pane">
+          <!-- output tape here -->
+          <span>Output tape:</span>
+          <div id="output-tape-container">
+            <div id="output-tape"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div> <!-- TODO idk what to do with this yet -->
+    <section>
+      Statistics:
+      <table>
+        <thead>
+          <td>instruction</td>
+          <td>count</td>
+        </thead>
+        <tbody id="stats"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <div style="display: none;">
+    <section>
+      Infinite scrolling test:
+      <div id="big-scroll-list-test" style="height: 100px;"></div>
+    </section>
+  </div>
+
   <footer>
     <hr>
     <%= t.footer.author %> <a href="https://lucjanzak.github.io" target=" _blank">Lucjan Żak</a>

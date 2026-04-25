@@ -1,12 +1,13 @@
 header {
   background-color: var(--accent-color);
+  height: 3rem;
   padding: 0.5rem 1.5rem;
+
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   color: #fff;
-  height: 3rem;
   gap: 1rem;
 }
 

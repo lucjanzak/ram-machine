@@ -1,12 +1,13 @@
 nav {
   background-color: var(--accent-color2);
   padding: 0.5rem 1.5rem;
+  height: 3rem;
+  min-height: 3rem;
+
   display: flex;
   flex-direction: row;
   color: #fff;
   align-items: center;
-  height: 3rem;
-  min-height: 3rem;
   gap: 1rem;
   max-width: 100%;
   overflow-x: auto;

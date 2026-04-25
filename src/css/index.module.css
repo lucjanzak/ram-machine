@@ -1,0 +1,41 @@
+:root {
+  --nav-btn-border-width: 1px;
+  /* --accent-color: #00545a; */
+  --accent-color: #4ba0a5;
+  --accent-color2: #317a7e;
+  --accent-color3: #e9f6f6;
+  --accent-color3-hover: #d2e0e0;
+  --generic-border-color: #7f7f7f7f;
+  --generic-border: 1px solid var(--generic-border-color);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  transition: color 0.2s;
+}
+
+#whole-screen {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-flow: column;
+
+  /* border: #ff00ff 8px solid; */
+  box-sizing: border-box;
+}
+
+@import url(header.module.css);
+@import url(nav.module.css);
+@import url(main.module.css);
+@import url(footer.module.css);

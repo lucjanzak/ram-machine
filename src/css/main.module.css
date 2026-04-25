@@ -1,37 +1,51 @@
-:root {
-  --nav-btn-border-width: 1px;
-  /* --accent-color: #00545a; */
-  --accent-color: #4ba0a5;
-  --accent-color2: #317a7e;
-  --accent-color3: #e9f6f6;
-  --accent-color3-hover: #d2e0e0;
-  --generic-border-color: #7f7f7f7f;
-  --generic-border: 1px solid var(--generic-border-color);
+main {
+  flex-grow: 1;
+  min-height: 0;
+  /* overflow-y: hidden; */
+
+  display: flex;
+  flex-flow: column;
 }
 
-html,
-body {
-  /* width: 100%;
-  height: 100%; */
-  margin: 0;
-  padding: 0;
+#panes {
+  flex-grow: 1;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: row;
+  position: relative;
 }
 
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+#register-pane {
+  min-width: 150px;
+  width: 20%;
+  max-width: 250px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+#program-listing-pane {
+  width: 50%;
+  flex-grow: 1;
+  border-left: var(--generic-border);
+
+  /* min-height: 0; */
+  overflow-x: scroll;
+  overflow-y: scroll;
+}
+
+#program-text-editor-pane {
+  width: 50%;
+  flex-grow: 1;
+  border-left: var(--generic-border);
+
   display: flex;
   flex-direction: column;
 }
 
-a {
-  transition: color 0.2s;
-}
-
-@import url(header.module.css);
-@import url(nav.module.css);
-@import url(panes.module.css);
-@import url(register-list.module.css);
 @import url(input-tape.module.css);
+@import url(register-list.module.css);
 @import url(program-listing.module.css);
 @import url(editor.module.css);
-@import url(footer.module.css);
