@@ -54,7 +54,9 @@ header a:hover {
 .header-right ul {
   display: inline;
   padding: 0;
+  margin: 0;
 }
+
 .header-right li {
   display: inline list-item;
   list-style-type: none;
@@ -65,5 +67,5 @@ header a:hover {
 }
 
 .header-right li + li::marker {
-  content: "•";
+  content: " • ";
 }

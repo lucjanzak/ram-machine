@@ -6,8 +6,8 @@
   },
   "header": {
     "title": "RAM machine emulator",
-    "language": "Language:",
-    "author": "Author:"
+    "language": "Language: ",
+    "author": "Author: "
   },
   "nav": {
     "new": "New",
