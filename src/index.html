@@ -68,24 +68,7 @@
       <button class="nav-button nav-button-auto">Step</button>
     </div>
 
-    <div class="nav-buttons">
-      <button class="nav-button nav-button-auto"
-        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.EXAMPLE_PROGRAMS_ASSEMBLY.SIMPLE_EXAMPLE)">
-        Load SIMPLE_EXAMPLE
-      </button>
-      <button class="nav-button nav-button-auto"
-        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.EXAMPLE_PROGRAMS_ASSEMBLY.BENCHMARK_EXAMPLE)">
-        Load BENCHMARK_EXAMPLE
-      </button>
-      <button class="nav-button nav-button-auto"
-        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.EXAMPLE_PROGRAMS_ASSEMBLY.PARSING_EXAMPLE)">
-        Load PARSING_EXAMPLE
-      </button>
-      <button class="nav-button nav-button-auto"
-        onclick="RAMMachine.machine.loadAssemblyAndReset(RAMMachine.EXAMPLE_PROGRAMS_ASSEMBLY.PARSING_ERROR_EXAMPLE)">
-        Load PARSING_ERROR_EXAMPLE
-      </button>
-    </div>
+    <div class="nav-buttons" id="load-program-buttons"></div>
   </nav>
   <main>
     <div>

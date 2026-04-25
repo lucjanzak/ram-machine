@@ -1,85 +1,117 @@
+import { t } from "./Localization";
+import { Nodes } from "./Nodes";
 import { Program } from "./Program";
 
 // r₀ r₁ r₂ r₃ r₄ r₅ r₆ r₇ r₈ r₉
 
 const hdiv = "==============================";
+function rightpad(text: string, n: number, c: string = " ") {
+  while (text.length < n) {
+    text = text + c;
+  }
+  return text;
+}
+const add = t.examples.addition;
+const abs = t.examples.absoluteValue;
+const rev = t.examples.reverseArray;
 
 export const EXAMPLE_PROGRAMS_ASSEMBLY = {
-  ABSOLUTE_VALUE: `; Absolute value
+  ADDITION: `; ${add.title}
 ; ${hdiv}
 ;
-; Calculates the absolute value of a given number.
-READ 0     ; Read the value into r₀
-JGTZ print ; If the number is greater than 0, skip to the end
-STORE 1    ; Store the read value into r₁
+; ${add.description[0]}
+;
+; ${add.description[1]}
+READ 0  ; ${add.comments[0]}
+READ 1  ; ${add.comments[1]}
+ADD 1   ; ${add.comments[2]}
+WRITE 0 ; ${add.comments[3]}
+HALT    ; ${add.comments[4]}
+`,
+  ABSOLUTE_VALUE: `; ${abs.title}
+; ${hdiv}
+;
+; ${abs.description}
+READ 0        ; ${abs.comments[0]}
+JGTZ ${rightpad(abs.labels.print, 8)} ; ${abs.comments[1]}
+STORE 1       ; ${abs.comments[2]}
 LOAD =0
-SUB 1      ; Subtract r₁ from 0
-print:
-WRITE 0    ; Write r₀ to the output tape
+SUB 1         ; ${abs.comments[3]}
+${abs.labels.print}:
+WRITE 0       ; ${abs.comments[4]}
 HALT
   `,
-  REVERSE_ARRAY: `; Reverse array
+  REVERSE_ARRAY: `; ${rev.title}
 ; ${hdiv}
-; r₁ - length of the array
-; r₂ - remaining elements to read
-; r₃ - pointer to last loaded element + 1 (starts at 4)
-; r₄... - loaded array
+; r₁ - ${rev.registers.r1}
+; r₂ - ${rev.registers.r2}
+; r₃ - ${rev.registers.r3}
+; r₄... - ${rev.registers.r4}
 
 READ 0
 STORE 1
 STORE 2
 
-; Load initial array pointer
+; ${rev.comments[0]}
 LOAD =4
 STORE 3
 
-; Check if length > 0
-read_array_loop_check:
+; ${rev.comments[1]}
+${rev.labels.read_array_loop_check}:
 LOAD 2
-JGTZ read_next_element
-JUMP read_array_end
+JGTZ ${rev.labels.read_next_element}
+JUMP ${rev.labels.read_array_end}
 
-read_next_element:
-READ *3 ; Read element into *3
+${rev.labels.read_next_element}:
+READ *3 ; ${rev.comments[2]}
 
-; Increment array pointer
+; ${rev.comments[3]}
 LOAD 3
 ADD =1
 STORE 3
 
-; Subtract remaining elements counter
+; ${rev.comments[4]}
 LOAD 2
 SUB =1
 STORE 2
 
-JGTZ read_array_loop_check
+JGTZ ${rev.labels.read_array_loop_check}
 
-read_array_end:
+${rev.labels.read_array_end}:
 
-; Now, write all elements in reverse order
+; ${rev.comments[5]}
 ;
-; Check if pointer is greater than 4
-write_array_loop_check:
+; ${rev.comments[6]}
+${rev.labels.write_array_loop_check}:
 LOAD 3
 SUB =4
-JGTZ write_loop
+JGTZ ${rev.labels.write_loop}
 JUMP end
 
-; Decrement array pointer
-write_loop:
+; ${rev.comments[7]}
+${rev.labels.write_loop}:
 LOAD 3
 SUB =1
 STORE 3
 
-; Write the pointed element to tape
+; ${rev.comments[8]}
 WRITE *3
 
-JUMP write_array_loop_check
+JUMP ${rev.labels.write_array_loop_check}
 
 end:
 HALT
 `,
-  PARSING_EXAMPLE: `; Parser test example program
+  BENCHMARK_TEST: `; Benchmark program
+; ${hdiv}
+;
+; A tight loop that copies values from the input tape to the output tape.
+start:
+READ 0
+WRITE 0
+JUMP start
+`,
+  PARSER_TEST: `; Parser test example program
 ; ${hdiv}
 ;
 ; This example program contains many various combinations of labels, instructions, and comments.
@@ -121,7 +153,7 @@ JUMP 13
 HALT
 JUMP a ; <-- this highlighting was bugged, but is fixed now
 `,
-  PARSING_ERROR_EXAMPLE: `; Parser errors example program
+  PARSER_ERROR_TEST: `; Parser errors example program
 ; ${hdiv}
 ;
 ; This example program contains many invalid combinations of labels, instructions, and comments.
@@ -142,30 +174,6 @@ JUMP a ; <-- this highlighting was bugged, but is fixed now
 
     ; this should report an error:
     label_at_the_end:
-`,
-  BENCHMARK_EXAMPLE: `; Benchmark program
-; ${hdiv}
-;
-; A tight loop that copies values from the input tape to the output tape.
-start:
-READ 0
-WRITE 0
-JUMP start
-`,
-  SIMPLE_EXAMPLE: `; Simple addition
-; ${hdiv}
-;
-; This is an example program
-; that sums two numbers together.
-;
-; You can compile it using the button below,
-; and then use the "Run" button at the top of the page
-; to execute the program.
-READ 0  ; Load the first value from the input tape to r0
-READ 1  ; Load the second value from the input tape to r1
-ADD 1   ; Add the value from r1 to r0, and store the result to r0 
-WRITE 0 ; Write the contents of r0 to the output tape
-HALT    ; End program execution
 `,
 };
 
@@ -189,4 +197,20 @@ function compileExamplePrograms(): { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBL
   return programs as { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBLY]: Program };
 }
 
-export const DEFAULT_PROGRAM_ASSEMBLY = EXAMPLE_PROGRAMS_ASSEMBLY.REVERSE_ARRAY;
+export const DEFAULT_PROGRAM_ASSEMBLY = EXAMPLE_PROGRAMS_ASSEMBLY.ADDITION;
+
+function initDOM() {
+  const hidden = ["BENCHMARK_TEST", "PARSER_TEST", "PARSER_ERROR_TEST"];
+  for (const [programKey, programText] of Object.entries(EXAMPLE_PROGRAMS_ASSEMBLY)) {
+    if (hidden.includes(programKey)) continue;
+    const btn = document.createElement("button");
+    btn.classList.add("nav-button");
+    btn.classList.add("nav-button-auto");
+    btn.addEventListener("click", () => {
+      window.RAMMachine.machine.loadAssemblyAndReset(programText);
+    });
+    btn.textContent = `Load ${programKey}`;
+    Nodes.loadProgramButtons.appendChild(btn);
+  }
+}
+initDOM();

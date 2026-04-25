@@ -36,5 +36,62 @@
     "license": "License:",
     "sourceCode": "Source code:",
     "externalLibraries": "External libraries used:"
+  },
+  "examples": {
+    "addition": {
+      "title": "Simple addition",
+      "description": [
+        "This is an example program\n; that sums two numbers together.",
+        "You can compile it using the button below,\n; and then use the \"Run\" button at the top of the page\n; to execute the program."
+      ],
+      "comments": [
+        "Load the first value from the input tape to r₀",
+        "Load the second value from the input tape to r₁",
+        "Add the value from r₁ to r₀, and store the result to r₀",
+        "Write the contents of r₀ to the output tape",
+        "End program execution"
+      ]
+    },
+    "absoluteValue": {
+      "title": "Absolute value",
+      "description": "Calculates the absolute value of a given number.",
+      "labels": {
+        "print": "print"
+      },
+      "comments": [
+        "Read the value into r₀",
+        "If the number is greater than 0, skip to the end",
+        "Store the read value into r₁",
+        "Subtract r₁ from 0",
+        "Write r₀ to the output tape"
+      ]
+    },
+    "reverseArray": {
+      "title": "Reverse array",
+      "registers": {
+        "r1": "length of the array",
+        "r2": "remaining elements to read",
+        "r3": "pointer to last loaded element + 1 (starts at 4)",
+        "r4": "loaded array"
+      },
+      "labels": {
+        "read_array_loop_check": "read_array_loop_check",
+        "read_next_element": "read_next_element",
+        "read_array_end": "read_array_end",
+        "write_array_loop_check": "write_array_loop_check",
+        "write_loop": "write_loop"
+      },
+      "comments": [
+        "Load initial array pointer",
+        "Check if length > 0",
+        "Read element into *3",
+        "Increment array pointer",
+        "Decrement remaining elements counter",
+        "Now, write all elements in reverse order",
+        "Check if pointer is greater than 4",
+        "Decrement array pointer",
+        "Write the pointed element to tape"
+      ]
+    }
   }
 }

@@ -42,6 +42,7 @@
   /* outline: var(--generic-border); */
   box-sizing: border-box;
   transform: translateY(-2px);
+  z-index: 10;
 }
 
 #program-listing-table tr:nth-child(even):not(:has(.tile-part-comment.big)) {
@@ -78,7 +79,7 @@
   top: 0.15rem;
   right: 1rem;
   margin-right: -1rem;
-  z-index: -1;
+  z-index: 1;
 }
 
 .tile-part-comment.big {

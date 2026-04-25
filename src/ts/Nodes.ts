@@ -6,6 +6,7 @@ export namespace Nodes {
   }
 
   // Static elements
+  export const loadProgramButtons = element("#load-program-buttons");
   export const programListingTable = element("#program-listing-table");
   // export const programTextEditorBasic = element<HTMLTextAreaElement>("#program-text-editor-basic");
   export const programTextEditorContainer = element<HTMLElement>("#program-text-editor-container");

@@ -36,5 +36,62 @@
     "license": "Licencja:",
     "sourceCode": "Kod źródłowy:",
     "externalLibraries": "Zewnętrzne biblioteki:"
+  },
+  "examples": {
+    "addition": {
+      "title": "Proste dodawanie",
+      "description": [
+        "Oto przykładowy program\n; który dodaje dwie liczby do siebie.",
+        "Skompiluj go przy użyciu przycisku poniżej,\n; a następnie użyj przycisku \"Uruchom\" na górze,\n; aby wykonać program."
+      ],
+      "comments": [
+        "Załaduj pierwszą wartość z taśmy wejściowej do rejestru r₀",
+        "Załaduj drugą wartość z taśmy wejściowej do rejestru r₁",
+        "Dodaj wartość z rejestru r₁ do r₀ i zapisz wynik w r₀",
+        "Wypisz zawartość r₀ do taśmy wyjściowej",
+        "Zakończ działanie programu"
+      ]
+    },
+    "absoluteValue": {
+      "title": "Wartość bezwzględna",
+      "description": "Program obliczający wartość bezwzględną podanej liczby.",
+      "labels": {
+        "print": "wypisz"
+      },
+      "comments": [
+        "Wczytaj wartość z taśmy do r₀",
+        "Jeśli liczba jest większa niż 0, przeskocz do końca",
+        "Zapisz odczytaną wartość do r₁",
+        "Odejmij r₁ od 0",
+        "Wypisz r₀ na taśmę wyjściową"
+      ]
+    },
+    "reverseArray": {
+      "title": "Odwróć tablicę",
+      "registers": {
+        "r1": "długość tablicy",
+        "r2": "ilość pozostałych elementów do odczytania",
+        "r3": "wskaźnik na ostatni załadowany element + 1 (zaczyna się od wartości 4)",
+        "r4": "załadowana tablica"
+      },
+      "labels": {
+        "read_array_loop_check": "czyt_tab_warunek",
+        "read_next_element": "czytaj_element",
+        "read_array_end": "czyt_tab_koniec",
+        "write_array_loop_check": "pisz_tab_warunek",
+        "write_loop": "pisz_tab_pętla"
+      },
+      "comments": [
+        "Załaduj początkową wartość wskaźnika tablicy",
+        "Sprawdź czy długość > 0",
+        "Wczytaj element do *3",
+        "Zwiększ wskaźnik tablicy",
+        "Zmniejsz ilość pozostałych elementów",
+        "Teraz wypisz wszystkie elementy w odwrotnej kolejności",
+        "Sprawdź czy wskaźnik jest większy niż 4",
+        "Zmniejsz wskaźnik",
+        "Wypisz wskazany element na taśmę"
+      ]
+    }
   }
 }
