@@ -28,6 +28,13 @@
     "cellLabelEnd": "",
     "cellEmpty": "(empty)"
   },
+  "outputTape": {
+    "header": "Output tape (length: ",
+    "headerEnd": ")",
+    "cellLabel": "Cell #",
+    "cellLabelEnd": "",
+    "cellEmpty": "(empty)"
+  },
   "registers": {
     "header": "Registers:",
     "uninitialized": "uninitialized"

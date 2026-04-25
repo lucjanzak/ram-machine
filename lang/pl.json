@@ -28,6 +28,13 @@
     "cellLabelEnd": "",
     "cellEmpty": "(pusta)"
   },
+  "outputTape": {
+    "header": "Taśma wyjściowa (długość: ",
+    "headerEnd": ")",
+    "cellLabel": "Komórka #",
+    "cellLabelEnd": "",
+    "cellEmpty": "(pusta)"
+  },
   "registers": {
     "header": "Rejestry:",
     "uninitialized": "niezainicjalizowany"

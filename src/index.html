@@ -149,7 +149,9 @@
       <div>
         <section class="output-tape-pane">
           <!-- TODO: output tape here -->
-          <span class="centered-text">Output tape:</span>
+          <span class="centered-text">
+            <% print(t.outputTape.header + '<span id="output-tape-length">0</span>' + t.outputTape.headerEnd) %>
+          </span>
           <div id="output-tape-container">
             <div id="output-tape"></div>
           </div>
@@ -251,7 +253,7 @@
   <template id="output-tape-cell">
     <div class="output-tape-scroll-list-cell" id="output-tape-scroll-list-cell">
       <span class="output-tape-cell-index">
-        Cell #<span id="index"></span>
+        <% print(t.outputTape.cellLabel + '<span id="index">?</span>' + t.outputTape.cellLabelEnd) %>
       </span>
       <input type="text" id="value" class="output-tape-cell-value" value="0" step="1" disabled />
     </div>
