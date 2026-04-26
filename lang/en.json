@@ -51,7 +51,9 @@
     "author": "Author:",
     "license": "License:",
     "sourceCode": "Source code:",
-    "externalLibraries": "External libraries used:"
+    "externalLibraries": "External libraries used:",
+    "monacoEditorCredit": "by Microsoft, licensed under",
+    "vscodeCodiconsCredit": "font by Microsoft, licensed under"
   },
   "examples": {
     "ADDITION": {
