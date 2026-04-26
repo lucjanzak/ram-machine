@@ -31,7 +31,7 @@ export class Machine {
   ) {
     this.memory = new Memory(this.detachedMode ? null : Nodes.registerScrollList);
     this.inputTape = new InputTapeArray(this.detachedMode ? null : Nodes.inputTape, this.detachedMode ? null : Nodes.inputTapeLength);
-    this.outputTape = new OutputTapeArray(this.detachedMode ? null : Nodes.outputTape);
+    this.outputTape = new OutputTapeArray(this.detachedMode ? null : Nodes.outputTape, this.detachedMode ? null : Nodes.outputTapeLength);
   }
 
   getProgram() {

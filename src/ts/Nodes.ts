@@ -21,6 +21,7 @@ export namespace Nodes {
   export const inputTape = element<HTMLElement>("#input-tape");
   export const inputTapeLength = element("#input-tape-length");
   export const outputTape = element<HTMLElement>("#output-tape");
+  export const outputTapeLength = element("#output-tape-length");
   export const bigScrollListTest = element<HTMLElement>("#big-scroll-list-test");
 }
 

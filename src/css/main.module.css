@@ -48,7 +48,7 @@ main {
   flex-direction: column;
 }
 
-@import url(input-tape.module.css);
+@import url(tape.module.css);
 @import url(register-list.module.css);
 @import url(program-listing.module.css);
 @import url(editor.module.css);

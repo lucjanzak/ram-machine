@@ -1,11 +1,13 @@
-.input-tape-pane {
+.input-tape-pane,
+.output-tape-pane {
   display: flex;
   flex-direction: column;
   align-items: stretch;
   text-align: center;
 }
 
-#input-tape-container {
+#input-tape-container,
+#output-tape-container {
   display: flex;
   height: 70px;
   overflow: hidden;
@@ -15,11 +17,13 @@
   --grayout: #dfdfdf;
 }
 
-#input-tape {
+#input-tape,
+#output-tape {
   overflow-y: hidden;
 }
 
-.input-tape-scroll-list-cell {
+.input-tape-scroll-list-cell,
+.output-tape-scroll-list-cell {
   width: 120px;
   height: 70px;
   display: flex;
@@ -33,24 +37,29 @@
   transition: 0.2s color, 0.2s background-color;
 }
 
-.input-tape-scroll-list-cell.odd {
+.input-tape-scroll-list-cell.odd,
+.output-tape-scroll-list-cell.odd {
   background-color: var(--accent-color3);
 }
 
-.input-tape-scroll-list-cell.even {
+.input-tape-scroll-list-cell.even,
+.output-tape-scroll-list-cell.even {
   background-color: #ffffff;
 }
 
-.input-tape-scroll-list-cell.empty {
+.input-tape-scroll-list-cell.empty,
+.output-tape-scroll-list-cell.empty {
   color: #0000007f;
   background-color: var(--grayout);
 }
 
-.input-tape-scroll-list-cell .input-tape-cell-index {
+.input-tape-scroll-list-cell .input-tape-cell-index,
+.output-tape-scroll-list-cell .output-tape-cell-index {
   text-align: center;
 }
 
-.input-tape-scroll-list-cell .input-tape-cell-value {
+.input-tape-scroll-list-cell .input-tape-cell-value,
+.output-tape-scroll-list-cell .output-tape-cell-value {
   width: 80%;
   background-color: #ffffff;
   text-align: center;
