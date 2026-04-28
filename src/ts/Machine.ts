@@ -236,7 +236,7 @@ export class Machine {
       this.running = false;
       this.cancelled = true;
       stopTime(currentTime);
-      this.memory.sendUpdatesToAllQuietlyUpdatedRegisterRows();
+      this.memory.refreshAllQuietlyUpdatedRegisters();
       this.outputTape.refreshAllQuietlyUpdatedCells();
     };
 
@@ -275,7 +275,7 @@ export class Machine {
 
     // Normal stop - found a HALT instruction or errored out.
     stopTime(performance.now());
-    this.memory.sendUpdatesToAllQuietlyUpdatedRegisterRows();
+    this.memory.refreshAllQuietlyUpdatedRegisters();
     this.outputTape.refreshAllQuietlyUpdatedCells();
   }
 

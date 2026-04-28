@@ -31,6 +31,7 @@ export class OutputTapeArray implements OutputTape {
       this.updateDOMCellLater(this.currentIndex);
     } else {
       this.updateDOMCellNow(this.currentIndex, value);
+      this.updateDOMListLength();
     }
 
     this.currentIndex++;
@@ -51,7 +52,6 @@ export class OutputTapeArray implements OutputTape {
       if (cell !== null) {
         this.updateCellElement(cell, value);
       }
-      this.updateDOMListLength();
     }
   }
 
@@ -94,7 +94,7 @@ export class OutputTapeArray implements OutputTape {
   }
 
   private updateCellElement(cell: Element, value: bigint | undefined) {
-    console.log(`updateCellElement #${cell.parentElement?.dataset.elementIndex}`);
+    // console.log(`updateCellElement #${cell.parentElement?.dataset.elementIndex}`);
     const valueInput = select<HTMLInputElement>(cell, "#value");
     if (value === undefined) {
       valueInput.value = "";
@@ -107,7 +107,7 @@ export class OutputTapeArray implements OutputTape {
     }
   }
 
-  constructor(public hostElement: HTMLElement | null, public lengthElement: Element | null) {
+  constructor(hostElement: HTMLElement | null, public lengthElement: Element | null) {
     if (hostElement !== null) {
       this.scrollList = new BigScrollList(
         hostElement,
@@ -119,7 +119,6 @@ export class OutputTapeArray implements OutputTape {
 
           const cell = select(f, "#output-tape-scroll-list-cell");
           const indexSpan = select(f, "#index");
-          const valueInput = select<HTMLInputElement>(f, "#value");
 
           if (index % 2n === 0n) {
             cell.classList.add("even");
