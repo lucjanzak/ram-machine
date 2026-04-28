@@ -21,7 +21,7 @@ export class InputTapeArray implements InputTape {
   private currentIndex: bigint = 0n;
   private scrollList: BigScrollList | null = null;
 
-  // Minimum amount of cells to display on tape
+  // Minimum amount of cells to display on tape.
   static readonly MIN_ELEMENTS_ON_VISIBLE_TAPE = 3n as const;
 
   // Amount of "empty" tape cells displayed after the end of the input tape.
@@ -178,7 +178,7 @@ export class InputTapeArray implements InputTape {
                 if (index >= this.values.length()) {
                   this.values.setWithFill(index, value, 0n);
                   this.refreshExistingCells();
-                  this.scrollList?.updateElements();
+                  this.scrollList?.updateVisibleElements();
                   this.updateListLength();
                 } else {
                   this.values.update(index, value);

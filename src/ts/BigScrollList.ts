@@ -26,7 +26,7 @@ export class BigScrollList implements ElementManager {
       // console.log(`containerSizeUpdated ${this.containerAvailableSize}px -> ${newSize}px`);
       this.containerAvailableSize = newSize;
       this.updateHostElement();
-      this.updateElements();
+      this.updateVisibleElements();
     }
   }
 
@@ -35,7 +35,7 @@ export class BigScrollList implements ElementManager {
       // console.log(`itemCount updated: ${this.itemCount} -> ${newCount}`);
       this.itemCount = newCount;
       this.updateScrollStop();
-      this.updateElements();
+      this.updateVisibleElements();
     }
   }
 
@@ -46,7 +46,7 @@ export class BigScrollList implements ElementManager {
       this.itemSize = newSize;
       this.updateScrollStop();
       // TODO: all elements will have to be removed probably
-      this.updateElements();
+      this.updateVisibleElements();
     }
   }
 
@@ -72,7 +72,25 @@ export class BigScrollList implements ElementManager {
     }
   }
 
+  select(index: bigint): HTMLElement | null {
+    if (!this.isInView(index)) return null;
+
+    for (const listElement of this.hostElement.children) {
+      const htmlElement = listElement as HTMLElement;
+      const indexStr = htmlElement.dataset.elementIndex;
+      if (indexStr === undefined) {
+        continue;
+      }
+      const elementIndex = BigInt(indexStr);
+      if (elementIndex === index) {
+        return htmlElement;
+      }
+    }
+    return null;
+  }
+
   iterActive(callback: (element: HTMLElement, index: bigint) => void) {
+    console.log("iterActive");
     for (const listElement of this.hostElement.children) {
       const htmlElement = listElement as HTMLElement;
       const indexStr = htmlElement.dataset.elementIndex;
@@ -84,11 +102,15 @@ export class BigScrollList implements ElementManager {
     }
   }
 
-  updateElements() {
-    // console.log("updateElements", this);
+  updateVisibleElements() {
+    console.log("updateVisibleElements");
     // Analyze existing elements
     this.activeElements.clear();
-    for (const listElement of this.hostElement.children) {
+
+    // We need to copy the list of children, because the live list changes when we delete nodes inside this loop
+    const children = Array.from(this.hostElement.children);
+
+    for (const listElement of children) {
       const htmlElement = listElement as HTMLElement;
       const indexStr = htmlElement.dataset.elementIndex;
       if (indexStr === undefined) {
@@ -96,10 +118,12 @@ export class BigScrollList implements ElementManager {
         continue;
       }
       const index = BigInt(indexStr);
+      const itemStillExists = index >= 0 && index < this.itemCount;
 
-      if (this.isInView(index) || listElement.contains(document.activeElement)) {
+      if ((this.isInView(index) || listElement.contains(document.activeElement)) && itemStillExists) {
         this.activeElements.add(index);
       } else {
+        // Remove non-existent elements and elements out-of-view
         try {
           listElement.remove();
         } catch (e) {
@@ -223,11 +247,11 @@ export class BigScrollList implements ElementManager {
       } else {
         assertNever(this.direction);
       }
-      this.updateElements();
+      this.updateVisibleElements();
     };
 
     this.hostElement.addEventListener("scroll", this.scrollHandler);
-    this.updateElements();
+    this.updateVisibleElements();
 
     if (direction === "horizontal") {
       this.hostElement.style.overflowX = "scroll";
