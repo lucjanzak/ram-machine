@@ -82,7 +82,7 @@ export class Program {
   refreshListingWithAnimation() {
     const listingRows = this.createListingDOMFragment();
     // console.log(window.RAMMachine.machine, this, listingRows);
-    console.log("Refreshing listing:", listingRows);
+    // console.log("Refreshing listing:", listingRows);
     Nodes.programListing.textContent = "";
     Nodes.programListing.appendChild(listingRows);
     Nodes.programListingTable.animate(
@@ -97,7 +97,7 @@ export class Program {
   static fromAssembly(assemblyText: string, hideErrors = false): Program {
     const parser = new Parser(hideErrors);
     const tiles = parser.parseAssemblyProgram(assemblyText);
-    console.log("Program tiles:", tiles);
+    // console.log("Program tiles:", tiles);
     return new Program(tiles);
   }
 

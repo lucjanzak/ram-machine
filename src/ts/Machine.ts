@@ -16,6 +16,7 @@ type MachineConfig = {
 
 export class Machine {
   private running = false;
+  private cancelled = false;
   private killed = false;
   public inputTape: InputTape;
   public outputTape: OutputTape;
@@ -44,6 +45,7 @@ export class Machine {
 
   reset() {
     this.running = false;
+    this.cancelled = false;
     this.killed = false;
     this.inputTape.reset();
     this.outputTape.clearAndReset();
@@ -172,7 +174,7 @@ export class Machine {
       this.programCounter++;
     } else if (instruction.operation === "WRITE") {
       const value = this.readFromOperand(instruction.operand, quiet);
-      this.outputTape.write(value);
+      this.outputTape.write(value, quiet);
       this.programCounter++;
     } else if (instruction.operation === "JUMP") {
       this.jumpTo(instruction.label);
@@ -191,7 +193,7 @@ export class Machine {
         this.programCounter++;
       }
     } else if (instruction.operation === "HALT") {
-      console.log("program finished");
+      console.log("Program finished");
       this.running = false;
     } else {
       assertNever(instruction.operation);
@@ -225,15 +227,17 @@ export class Machine {
     let timeoutAlerted = false;
 
     const stopTime = (currentTime: DOMHighResTimeStamp) => {
-      console.log(this.stats);
+      // console.log(this.stats);
       this.stats.timeEnd(currentTime);
       this.stats.replaceStatisticsDOM();
     };
 
     const cancelRunning = (currentTime: DOMHighResTimeStamp) => {
       this.running = false;
+      this.cancelled = true;
       stopTime(currentTime);
       this.memory.sendUpdatesToAllQuietlyUpdatedRegisterRows();
+      this.outputTape.refreshAllQuietlyUpdatedCells();
     };
 
     this.stats.clear();
@@ -272,6 +276,7 @@ export class Machine {
     // Normal stop - found a HALT instruction or errored out.
     stopTime(performance.now());
     this.memory.sendUpdatesToAllQuietlyUpdatedRegisterRows();
+    this.outputTape.refreshAllQuietlyUpdatedCells();
   }
 
   static runSimulation(program: Program, input: bigint[], options: { timeout: number } = { timeout: 100 }): Machine {
