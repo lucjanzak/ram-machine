@@ -160,7 +160,7 @@ export class Machine {
       const value = this.readFromOperand(instruction.operand, quiet);
       this.setAccumulator(this.getAccumulator(quiet) - value, quiet);
       this.programCounter++;
-    } else if (instruction.operation === "MUL") {
+    } else if (instruction.operation === "MULT") {
       const value = this.readFromOperand(instruction.operand, quiet);
       this.setAccumulator(this.getAccumulator(quiet) * value, quiet);
       this.programCounter++;

@@ -84,6 +84,39 @@
         "Wypisz r₀ na taśmę wyjściową"
       ]
     },
+    "N_TO_THE_N": {
+      "title": "nⁿ",
+      "description": "Program obliczający wartość n do potęgi n.",
+      "labels": {
+        "positive": "dodatnia",
+        "loop": "pętla",
+        "loop_continue": "kontynuuj_pętlę",
+        "loop_end": "koniec_pętli"
+      },
+      "comments": [
+        "Odczytaj wartość n z taśmy.",
+        "Jeżeli n ≤ 0, wypisz 0 i zakończ program.",
+        "Jeżeli n > 0, wykonaj algorytm:",
+        "Ustaw wartość wynikową zawartą w r₂ na wartość n",
+        "Ustaw licznik pętli zawarty w r₃ na wartość n - 1",
+        "Warunek pętli: r₃ > 0",
+        "Wypisz wartość wynikową na taśmę"
+      ]
+    },
+    "FACTORIAL": {
+      "title": "n!",
+      "labels": {
+        "loop": "pętla",
+        "loop_end": "koniec_pętli"
+      },
+      "comments": [
+        "Wczytaj n z taśmy, zapisz do r₁",
+        "Ustaw zmienną wynikową (r₂) na wartość początkową (1)",
+        "Warunek pętli: r₁ != 0",
+        "Pomnóż zmienną wynikową przez aktualny licznik pętli (r₂ := r₁ * r₂)",
+        "Zmniejsz licznik pętli"
+      ]
+    },
     "REVERSE_ARRAY": {
       "title": "Odwróć tablicę",
       "registers": {

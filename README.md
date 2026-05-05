@@ -38,7 +38,7 @@ The RAM machine has 12 different simple instructions that can be used to create 
 | STORE    | operand | Store a value from r₀         | `op = r₀;`                 |
 | ADD      | operand | Increment r₀ by a value       | `r₀ += op;`                |
 | SUB      | operand | Decrement r₀ by a value       | `r₀ -= op;`                |
-| MUL      | operand | Multiply r₀ by a value        | `r₀ *= op;`                |
+| MULT     | operand | Multiply r₀ by a value        | `r₀ *= op;`                |
 | DIV      | operand | Divide r₀ by a value          | `r₀ /= op;`                |
 | READ     | operand | Read from the tape            | `op = input();`            |
 | WRITE    | operand | Write to the tape             | `output(op);`              |

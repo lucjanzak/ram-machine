@@ -10,7 +10,7 @@ function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage 
     defaultToken: "",
     tokenPostfix: ".ram",
 
-    readop_keywords: ["load", "add", "sub", "mul", "div", "write"],
+    readop_keywords: ["load", "add", "sub", "mult", "div", "write"],
     writeop_keywords: ["store", "read"],
     jump_keywords: ["jump", "jgtz", "jzero"],
     noop_keywords: ["halt"],
@@ -155,7 +155,7 @@ export function createEditor(): monaco.editor.IStandaloneCodeEditor {
           ["STORE", "Store a value from r₀"],
           ["ADD", "Increment r₀ by a value"],
           ["SUB", "Decrement r₀ by a value"],
-          ["MUL", "Multiply r₀ by a value"],
+          ["MULT", "Multiply r₀ by a value"],
           ["DIV", "Divide r₀ by a value"],
           ["READ", "Read from the tape"],
           ["WRITE", "Write to the tape"],

@@ -64,7 +64,7 @@ export function instructionComplexity(instruction: Instruction, c: (i: bigint) =
     return l(c(0n)) + t(instruction.operand);
   } else if (instruction.operation === "SUB") {
     return l(c(0n)) + t(instruction.operand);
-  } else if (instruction.operation === "MUL") {
+  } else if (instruction.operation === "MULT") {
     return l(c(0n)) + t(instruction.operand);
   } else if (instruction.operation === "DIV") {
     return l(c(0n)) + t(instruction.operand);

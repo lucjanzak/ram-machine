@@ -102,6 +102,7 @@ const config /*: webpack.Configuration*/ = {
         { from: "./public/**/*", to: "." },
       ],
     }),
+    new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 5 })
   ],
 };
 

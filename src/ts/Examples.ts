@@ -13,6 +13,8 @@ function rightpad(text: string, n: number, c: string = " ") {
 }
 const add = t.examples.ADDITION;
 const abs = t.examples.ABSOLUTE_VALUE;
+const ntn = t.examples.N_TO_THE_N;
+const fac = t.examples.FACTORIAL;
 const rev = t.examples.REVERSE_ARRAY;
 const str = t.examples.STRESS_TEST;
 
@@ -42,6 +44,67 @@ ${abs.labels.print}:
 WRITE 0       ; ${abs.comments[4]}
 HALT
   `,
+  N_TO_THE_N: `; ${ntn.title}
+; ${hdiv}
+; ${ntn.description}
+
+READ 1 ; ${ntn.comments[0]}
+LOAD 1
+JGTZ ${ntn.labels.positive}
+
+; ${ntn.comments[1]}
+WRITE =0
+HALT
+
+; ${ntn.comments[2]}
+${ntn.labels.positive}:
+LOAD 1
+STORE 2 ; ${ntn.comments[3]}
+SUB =1
+STORE 3 ; ${ntn.comments[4]}
+
+${ntn.labels.loop}:
+LOAD 3 ; ${ntn.comments[5]}
+JGTZ ${ntn.labels.loop_continue}
+JUMP ${ntn.labels.loop_end}
+
+${ntn.labels.loop_continue}:
+LOAD 2
+MULT 1
+STORE 2
+LOAD 3
+SUB =1
+STORE 3
+JUMP ${ntn.labels.loop}
+
+${ntn.labels.loop_end}:
+WRITE 2  ; ${ntn.comments[6]}
+HALT
+`,
+  FACTORIAL: `; ${fac.title}
+READ 1 ; ${fac.comments[0]}
+
+LOAD =1 
+STORE 2 ; ${fac.comments[1]}
+
+; ${fac.comments[2]}
+${fac.labels.loop}:
+LOAD 1
+JZERO ${fac.labels.loop_end}
+
+MULT 2 ; ${fac.comments[3]}
+STORE 2
+
+LOAD 1
+SUB =1  ; ${fac.comments[4]}
+STORE 1
+
+JUMP ${fac.labels.loop}
+
+${fac.labels.loop_end}:
+WRITE 2
+HALT
+`,
   REVERSE_ARRAY: `; ${rev.title}
 ; ${hdiv}
 ; r₁ - ${rev.registers.r1}
@@ -212,6 +275,7 @@ function initDOM() {
     btn.addEventListener("click", () => {
       window.RAMMachine.machine.loadAssemblyAndReset(programText);
     });
+    // TODO: get rid of this any. or check in runtime if the title key exists.
     const title: string = (t.examples as any)[programKey].title || programKey;
     btn.textContent = `${t.nav.load} '${title}'`;
     Nodes.loadProgramButtons.appendChild(btn);

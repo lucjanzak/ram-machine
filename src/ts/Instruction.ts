@@ -1,6 +1,6 @@
 import { assertNever } from "./Util";
 
-export const READABLE_OPERAND_INSTRUCTIONS = ["LOAD", "ADD", "SUB", "MUL", "DIV", "WRITE"] as const;
+export const READABLE_OPERAND_INSTRUCTIONS = ["LOAD", "ADD", "SUB", "MULT", "DIV", "WRITE"] as const;
 export const WRITEABLE_OPERAND_INSTRUCTIONS = ["STORE", "READ"] as const;
 export const JUMP_INSTRUCTIONS = ["JUMP", "JGTZ", "JZERO"] as const;
 export const NO_OPERAND_INSTRUCTIONS = ["HALT"] as const;
@@ -9,7 +9,7 @@ export const ALL_INSTRUCTIONS = [
   "STORE",
   "ADD",
   "SUB",
-  "MUL",
+  "MULT",
   "DIV",
   "READ",
   "WRITE",

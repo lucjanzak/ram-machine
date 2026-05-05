@@ -84,6 +84,39 @@
         "Write r₀ to the output tape"
       ]
     },
+    "N_TO_THE_N": {
+      "title": "nⁿ",
+      "description": "A program that calculates n to the power of n.",
+      "labels": {
+        "positive": "positive",
+        "loop": "loop",
+        "loop_continue": "loop_continue",
+        "loop_end": "loop_end"
+      },
+      "comments": [
+        "Read n from tape.",
+        "If n ≤ 0, write out 0 and end program execution.",
+        "If n > 0, execute the following algorithm:",
+        "Set the result variable contained in r₂ to n",
+        "Set the loop counter contained in r₃ to n - 1",
+        "Loop condition: r₃ > 0",
+        "Write the result to tape"
+      ]
+    },
+    "FACTORIAL": {
+      "title": "n!",
+      "labels": {
+        "loop": "loop",
+        "loop_end": "loop_end"
+      },
+      "comments": [
+        "Read n from tape, store into r₁",
+        "Set the result variable (r₂) to the initial value (1)",
+        "Loop condition: r₁ != 0",
+        "Multiply the result by the current loop counter (r₂ := r₁ * r₂)",
+        "Decrement the loop counter"
+      ]
+    },
     "REVERSE_ARRAY": {
       "title": "Reverse array",
       "registers": {
