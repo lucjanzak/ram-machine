@@ -15,6 +15,7 @@ const add = t.examples.ADDITION;
 const abs = t.examples.ABSOLUTE_VALUE;
 const ntn = t.examples.N_TO_THE_N;
 const fac = t.examples.FACTORIAL;
+const sum = t.examples.SUM;
 const rev = t.examples.REVERSE_ARRAY;
 const str = t.examples.STRESS_TEST;
 
@@ -103,6 +104,28 @@ JUMP ${fac.labels.loop}
 
 ${fac.labels.loop_end}:
 WRITE 2
+HALT
+`,
+  SUM: `; ${sum.title}
+; ${hdiv}
+; ${sum.description}
+
+LOAD =0 ; ${sum.comments[0]}
+STORE 1
+
+; ${sum.comments[1]}
+${sum.labels.loop}:
+READ 0
+JZERO ${sum.labels.loop_end} ; ${sum.comments[2]}
+
+; ${sum.comments[3]}
+ADD 1
+STORE 1
+JUMP ${sum.labels.loop}
+
+; ${sum.comments[4]}
+${sum.labels.loop_end}:
+WRITE 1
 HALT
 `,
   REVERSE_ARRAY: `; ${rev.title}

@@ -117,6 +117,21 @@
         "Decrement the loop counter"
       ]
     },
+    "SUM": {
+      "title": "Sum values",
+      "description": "A program that sums read values until a zero is encountered.",
+      "labels": {
+        "loop": "loop",
+        "loop_end": "loop_end"
+      },
+      "comments": [
+        "Load the initial value into r₁",
+        "Read a value from the input tape into r₀",
+        "Jump to the end of the program if the value read from tape is zero",
+        "Add the read value to r₁ and store the result in r₁",
+        "Write the result to tape"
+      ]
+    },
     "REVERSE_ARRAY": {
       "title": "Reverse array",
       "registers": {

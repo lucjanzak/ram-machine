@@ -117,6 +117,21 @@
         "Zmniejsz licznik pętli"
       ]
     },
+    "SUM": {
+      "title": "Suma wartości",
+      "description": "Program sumujący wartości na taśmie aż do napotkania zera.",
+      "labels": {
+        "loop": "pętla",
+        "loop_end": "koniec_pętli"
+      },
+      "comments": [
+        "Załaduj wartość początkową do r₁",
+        "Odczytaj wartość z taśmy wejściowej do r₀",
+        "Przeskocz do końca programu jeżeli odczytana wartość to zero",
+        "Dodaj odczytaną wartość do r₁ i zapisz wynik w r₁",
+        "Wypisz wynik na taśmę"
+      ]
+    },
     "REVERSE_ARRAY": {
       "title": "Odwróć tablicę",
       "registers": {
