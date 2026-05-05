@@ -42,7 +42,7 @@ function generateHtmlWebpackPlugin(languageCode) {
     title: "Development",
     template: "./src/index.html",
     templateParameters: getTemplateParametersForLanguage(languageCode),
-    filename: `${languageCode}.html`
+    filename: `app/${languageCode}.html`
   });
 }
 console.log("Creating template with parameters: ", templateParameters);
@@ -56,7 +56,7 @@ const config /*: webpack.Configuration*/ = {
   devtool: "source-map",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js",
+    filename: "app/bundle.js",
   },
   module: {
     rules: [
