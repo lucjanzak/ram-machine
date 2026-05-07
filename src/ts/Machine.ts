@@ -224,7 +224,7 @@ export class Machine {
 
     const stopTime = (currentTime: DOMHighResTimeStamp) => {
       // console.log(this.stats);
-      this.stats.timeEnd(currentTime);
+      this.stats.timerEnd(currentTime);
       this.stats.replaceStatisticsDOM();
     };
 
@@ -237,7 +237,7 @@ export class Machine {
     };
 
     this.stats.clear();
-    this.stats.timeStart();
+    this.stats.timerStart();
     while (this.running) {
       if (debug && this.debugBreakpoints.includes(this.programCounter)) {
         alert("breakpoint hit! @ line " + this.programCounter);

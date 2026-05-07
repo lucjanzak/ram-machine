@@ -29,7 +29,8 @@ export function lengthOfNumber(i: bigint) {
 }
 
 // t(a): operand complexity
-function operandComplexity(op: ReadableOperand, c: (i: bigint) => bigint) {
+function operandComplexity(op: ReadableOperand, contentsOfRegister: (i: bigint) => bigint) {
+  const c = contentsOfRegister;
   const l = lengthOfNumber;
   const i = op.value;
   if (op.type === "immediate") {
@@ -43,7 +44,8 @@ function operandComplexity(op: ReadableOperand, c: (i: bigint) => bigint) {
   }
 }
 
-export function instructionComplexity(instruction: Instruction, c: (i: bigint) => bigint, peekInputValue: () => bigint) {
+export function instructionComplexity(instruction: Instruction, contentsOfRegister: (i: bigint) => bigint, peekInputValue: () => bigint) {
+  const c = contentsOfRegister;
   const l = lengthOfNumber;
   const t = (op: ReadableOperand) => {
     return operandComplexity(op, c);
