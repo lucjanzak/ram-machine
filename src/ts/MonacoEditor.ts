@@ -7,6 +7,7 @@ const showSnippets = true; // TODO: add to config
 function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage {
   return {
     ignoreCase: true,
+    unicode: true,
     defaultToken: "",
     tokenPostfix: ".ram",
 
@@ -17,7 +18,7 @@ function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage 
 
     tokenizer: {
       root: [
-        [/\s*[a-zA-Z_][\w\s]*:/, "tag"], // "annotation"
+        [/\s*[\p{L}_][\p{L}_0-9\s]*:/u, "tag"], // "annotation"
 
         // keywords at the end of the line
         [
@@ -62,7 +63,7 @@ function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage 
 
       after_writeop_keyword: [{ include: "@whitespace" }, [/\d+/, "number", "root"], [/\*\d+/, "number", "root"], [/.*/, "invalid", "root"]],
       after_readop_keyword: [[/=\d+/, "number", "root"], { include: "@after_writeop_keyword" }],
-      after_jump_keyword: [{ include: "@whitespace" }, [/\s*[a-zA-Z_][\w\s]*/, "tag", "root"], [/.*/, "invalid", "root"]],
+      after_jump_keyword: [{ include: "@whitespace" }, [/\s*[\p{L}_][\p{L}_0-9\s]*/u, "tag", "root"], [/.*/, "invalid", "root"]],
       after_noop_keyword: [{ include: "@whitespace" }, [/.*/, "invalid", "root"]],
     },
   };
@@ -188,12 +189,12 @@ export function createEditor(): monaco.editor.IStandaloneCodeEditor {
     wordBasedSuggestions: "allDocuments",
   });
 
-  let timeout: NodeJS.Timeout | null = null;
+  let timeout: number | null = null;
   window.addEventListener("resize", () => {
     if (timeout !== null) {
-      clearTimeout(timeout);
+      window.clearTimeout(timeout);
     }
-    timeout = setTimeout(() => {
+    timeout = window.setTimeout(() => {
       editor.layout();
     }, 200);
   });
