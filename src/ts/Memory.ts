@@ -1,26 +1,26 @@
 import { SparseArray } from "./BigArray";
 import { BigScrollList } from "./BigScrollList";
-import { ManagedElement } from "./ElementManager";
 import { t } from "./Localization";
+import { UninitializedRegisterReadBehavior } from "./Machine";
 import { select, Templates, useTemplate } from "./Nodes";
-import { assertNever, unwrap } from "./Util";
+import { assertNever } from "./Util";
 
 export function randomBigint() {
-  return BigInt(Math.floor(Math.random() * 10000));
+  const rand = BigInt(Math.floor(Math.random() * 10000));
+  console.trace("randomBigint: ", rand);
+  return rand;
 }
-
-export type ReadUninitializedRegisterBehavior = "error" | "zero" | "random" | "superpositionCollapse";
 
 export class Memory {
   private registers = new SparseArray<bigint>();
   private scrollList: BigScrollList | null = null;
   private quietlyUpdatedRegisters = new Set<bigint>();
 
-  getAccumulator(config: ReadUninitializedRegisterBehavior, quiet: boolean): bigint {
+  getAccumulator(config: UninitializedRegisterReadBehavior, quiet: boolean): bigint {
     return this.getRegister(0n, config, quiet);
   }
 
-  getRegister(index: bigint, config: ReadUninitializedRegisterBehavior, quiet: boolean): bigint {
+  getRegister(index: bigint, config: UninitializedRegisterReadBehavior, quiet: boolean): bigint {
     const register = this.registers.get(index);
     if (register === undefined) {
       if (config === "error") {

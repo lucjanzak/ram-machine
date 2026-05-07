@@ -1,17 +1,21 @@
-import { InputTape, InputTapeArray, InputTapeUnderflowBehavior } from "./InputTape";
+import { InputTape, InputTapeArray } from "./InputTape";
 import { Instruction, ReadableOperand, WriteableOperand } from "./Instruction";
 import { t } from "./Localization";
-import { Memory, ReadUninitializedRegisterBehavior as UninitializedRegisterReadBehavior } from "./Memory";
+import { Memory } from "./Memory";
 import { Nodes } from "./Nodes";
 import { OutputTape, OutputTapeArray } from "./OutputTape";
 import { Program, ProgramCounter } from "./Program";
 import { Statistics } from "./Statistics";
 import { assertNever } from "./Util";
 
-type MachineConfig = {
+
+export type InputTapeUnderflowBehavior = "error" | "zero" | "random";
+export type UninitializedRegisterReadBehavior = "error" | "zero" | "random" | "superpositionCollapse";
+export type ProgramCounterOutOfBoundsBehavior = "error" | "actAsHalt";
+export type MachineSettings = {
   inputTapeUnderflow: InputTapeUnderflowBehavior;
   uninitializedRegisterRead: UninitializedRegisterReadBehavior;
-  programCounterOutOfBounds: "error" | "actAsHalt";
+  programCounterOutOfBounds: ProgramCounterOutOfBoundsBehavior;
 };
 
 export class Machine {
@@ -28,7 +32,7 @@ export class Machine {
   constructor(
     private program: Program = Program.EMPTY,
     private detachedMode = false,
-    private config: MachineConfig = { inputTapeUnderflow: "random", uninitializedRegisterRead: "zero", programCounterOutOfBounds: "error" }
+    public settings: MachineSettings = { inputTapeUnderflow: "random", uninitializedRegisterRead: "zero", programCounterOutOfBounds: "error" }
   ) {
     this.memory = new Memory(this.detachedMode ? null : Nodes.registerScrollList);
     this.inputTape = new InputTapeArray(this.detachedMode ? null : Nodes.inputTape, this.detachedMode ? null : Nodes.inputTapeLength);
@@ -72,15 +76,15 @@ export class Machine {
   }
 
   getRegister(index: bigint, quiet: boolean): bigint {
-    return this.memory.getRegister(index, this.config.uninitializedRegisterRead, quiet);
+    return this.memory.getRegister(index, this.settings.uninitializedRegisterRead, quiet);
   }
 
   getAccumulator(quiet: boolean): bigint {
-    return this.memory.getAccumulator(this.config.uninitializedRegisterRead, quiet);
+    return this.memory.getAccumulator(this.settings.uninitializedRegisterRead, quiet);
   }
 
   readInputTape(): bigint {
-    return this.inputTape.readOrDefault(this.config.inputTapeUnderflow);
+    return this.inputTape.readOrDefault(this.settings.inputTapeUnderflow);
   }
 
   setRegister(index: bigint, value: bigint, quiet: boolean) {
@@ -203,12 +207,12 @@ export class Machine {
   executeCurrentInstruction(quiet: boolean) {
     const instruction = this.program.getInstruction(this.programCounter);
     if (instruction === undefined) {
-      if (this.config.programCounterOutOfBounds === "error") {
+      if (this.settings.programCounterOutOfBounds === "error") {
         throw new Error("program counter outside of program bounds"); // TODO
-      } else if (this.config.programCounterOutOfBounds === "actAsHalt") {
+      } else if (this.settings.programCounterOutOfBounds === "actAsHalt") {
         this.executeInstruction({ operation: "HALT" }, quiet);
       } else {
-        assertNever(this.config.programCounterOutOfBounds);
+        assertNever(this.settings.programCounterOutOfBounds);
       }
     } else {
       this.executeInstruction(instruction, quiet);

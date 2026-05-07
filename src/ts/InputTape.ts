@@ -2,11 +2,10 @@ import { ContiguousArray } from "./BigArray";
 import { bigintMax, bigintParse } from "./BigIntUtils";
 import { BigScrollList } from "./BigScrollList";
 import { t } from "./Localization";
+import { InputTapeUnderflowBehavior } from "./Machine";
 import { randomBigint } from "./Memory";
 import { select, Templates, useTemplate } from "./Nodes";
 import { assertNever } from "./Util";
-
-export type InputTapeUnderflowBehavior = "error" | "zero" | "random";
 
 export interface InputTape {
   peek(): bigint | undefined;

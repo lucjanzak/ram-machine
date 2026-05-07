@@ -1,4 +1,5 @@
 import { t } from "./Localization";
+import { InputTapeUnderflowBehavior, MachineSettings as MachineSettings, ProgramCounterOutOfBoundsBehavior, UninitializedRegisterReadBehavior } from "./Machine";
 import { expect } from "./Util";
 
 export namespace Nodes {
@@ -12,6 +13,7 @@ export namespace Nodes {
   export const editInputTapeButton = element("#edit-input-tape-button");
   export const runAllButton = element("#run-all-button");
   export const resetButton = element("#reset-button");
+  export const settingsButton = element("#settings-button");
   export const loadProgramButtons = element("#load-program-buttons");
   export const programListingTable = element("#program-listing-table");
   // export const programTextEditorBasic = element<HTMLTextAreaElement>("#program-text-editor-basic");
@@ -24,6 +26,9 @@ export namespace Nodes {
   export const outputTape = element<HTMLElement>("#output-tape");
   export const outputTapeLength = element("#output-tape-length");
   export const bigScrollListTest = element<HTMLElement>("#big-scroll-list-test");
+
+  export const settingsForm = element<HTMLFormElement>("#settings-form");
+  export const closeSettingsDialogButton = element("#close-settings-dialog-button");
 }
 
 export namespace Templates {
@@ -40,12 +45,61 @@ export namespace Templates {
   export const bigScrollListTestRow = template("#big-scroll-list-test-row");
 }
 
+export namespace Dialogs {
+  function dialog(selector: string) {
+    return expect(document.querySelector<HTMLDialogElement>(`dialog${selector}`), `dialog with selector '${selector}' not found`);
+  }
+
+  export const settings = dialog("#settings");
+}
+
 export function useTemplate(instructionTile: HTMLTemplateElement) {
   return document.importNode(instructionTile.content, true);
 }
 
 export function select<T extends Element = Element>(f: ParentNode, selector: string) {
   return expect(f.querySelector<T>(selector), `element with selector '${selector}' not found in f: ${f}`);
+}
+
+export function initSettings() {
+  function updateSettingsInMachine(formData: FormData)  {
+    function parseITU(input: FormDataEntryValue | null): InputTapeUnderflowBehavior | null {
+      if (input === "error" || input === "zero" || input === "random") return input;
+      return null;
+    }
+
+    function parseURR(input: FormDataEntryValue | null): UninitializedRegisterReadBehavior | null {
+      if (input === "error" || input === "zero" || input === "random" || input === "superpositionCollapse") return input;
+      return null;
+    }
+
+    function parsePCOOB(input: FormDataEntryValue | null): ProgramCounterOutOfBoundsBehavior | null {
+      if (input === "error" || input === "actAsHalt") return input;
+      return null;
+    }
+
+    const settings: MachineSettings = {
+      inputTapeUnderflow: parseITU(formData.get("input-tape-underflow-behavior")) || "error",
+      uninitializedRegisterRead: parseURR(formData.get("uninitialized-register-read-behavior")) || "error",
+      programCounterOutOfBounds: parsePCOOB(formData.get("program-counter-out-of-bounds-behavior")) || "error",
+    };
+    window.RAMMachine.machine.settings = settings;
+  }
+
+  function updateSettingsDOM(settings: MachineSettings) {
+    select<HTMLInputElement>(Nodes.settingsForm, `#input-tape-underflow-${settings.inputTapeUnderflow}`).checked = true;
+    select<HTMLInputElement>(Nodes.settingsForm, `#uninitialized-register-read-${settings.uninitializedRegisterRead}`).checked = true;
+    select<HTMLInputElement>(Nodes.settingsForm, `#program-counter-out-of-bounds-${settings.programCounterOutOfBounds}`).checked = true;
+  }
+
+  updateSettingsDOM(window.RAMMachine.machine.settings);
+  Nodes.settingsForm.addEventListener("input", () => {
+    updateSettingsInMachine(new FormData(Nodes.settingsForm));
+  });
+
+  Nodes.closeSettingsDialogButton.addEventListener("click", () => {
+    Dialogs.settings.close();
+  });
 }
 
 export function initDOM() {
@@ -71,4 +125,9 @@ export function initDOM() {
   Nodes.resetButton.addEventListener("click", () => {
     window.RAMMachine.machine.reset();
   });
+  Nodes.settingsButton.addEventListener("click", () => {
+    Dialogs.settings.showModal();
+  });
+
+  initSettings();
 }

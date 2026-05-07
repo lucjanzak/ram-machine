@@ -29,8 +29,7 @@ nav {
   background-color: transparent;
   padding: 0.5rem 1rem;
   font-size: 12pt;
-  transition-property: background-color, color;
-  transition-duration: 0.2s;
+  transition: 0.2s color, 0.2s background-color;
   cursor: pointer;
   text-wrap: nowrap;
 }

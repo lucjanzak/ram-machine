@@ -46,4 +46,5 @@
 .register-scroll-list-row .register-value.uninitialized {
   color: gray;
   font-style: italic;
+  font-size: 8pt;
 }
