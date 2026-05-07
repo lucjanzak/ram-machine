@@ -31,6 +31,7 @@ const templateParameters = {
   gitCommitHashShort,
   displayedVersion
 };
+
 function getTemplateParametersForLanguage(lang) {
   if (!(lang in translations)) {
     throw new Error(`Unknown language: ${lang}`);
@@ -40,7 +41,7 @@ function getTemplateParametersForLanguage(lang) {
 function generateHtmlWebpackPlugin(languageCode) {
   return new HtmlWebpackPlugin({
     title: "Development",
-    template: "./src/index.html",
+    template: "./src/app.html",
     templateParameters: getTemplateParametersForLanguage(languageCode),
     filename: `app/${languageCode}.html`
   });
@@ -97,9 +98,10 @@ const config /*: webpack.Configuration*/ = {
     new MonacoWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
-        { from: "./src/index_redirect.html", to: "index.html" },
+        { from: "./src/index.html", to: "index.html" },
         { from: "./src/404.html", to: "404.html" },
         { from: "./public/**/*", to: "." },
+        { from: "./LICENSE.txt", to: "LICENSE.txt" },
       ],
     }),
   ],
