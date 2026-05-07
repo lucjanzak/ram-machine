@@ -20,11 +20,11 @@ A RAM machine consists of several components:
 - Output Tape
 - Registers
 
-The input tape is an arbitrarily long list of cells, each cell containing one integer. This tape contains the input data for the program. The input tape cannot be read in a random order; only one cell can be read at a time, in order. The act of reading from the input tape also advances the tape, such that the next read from the tape will result in a new value.
+The input tape is an arbitrarily long list of cells, each cell containing one integer. This tape contains the input data for the program. The input tape cannot be read or accessed in any order; only one cell can be read at a time, in order, from the first cell to the last. The act of reading from the input tape also advances the tape, such that the next read from the tape will result in a new value.
 
-The output tape is an arbitrarily long list of cells, starting out empty. This tape will contain the output of the program when the program finishes. Each cell may contain one integer. The output tape cannot be written to in a random order; only one cell can be written at a time, in order. The act of writing to the output tape also advances the tape, such that the next write to the tape will write a new value in the next cell over.
+The output tape is an arbitrarily long list of cells, starting out empty. This tape will contain the output of the program when the program finishes. Each cell may contain one integer. Similarly to the input tape, the output tape cannot be written to in any arbitrary order; only one cell can be written at a time, and all of the writes are ordered. Just like with the input tape, the act of writing to the output tape also advances the tape, such that the next write to the tape will write a new value in the next cell over.
 
-Registers are small memory cells that can each hold one integer. Registers can be reaad and written to arbitrarily, and they are usually used to hold multiple values for internal program calculations. The first register, called r₀, is called the accumulator, and is often used for atomic calculations and small tasks. Instructions often statically read from or write to r₀, without an option to change the target register.
+Registers are small memory cells that can each hold one integer. Registers can be read and written to arbitrarily, and they are usually used to hold multiple values for internal program calculations. The first register, called r₀, is called the accumulator, and is often used for atomic calculations and small tasks. Instructions often statically read from or write to r₀, without an option to change the target register.
 
 In the RAM machine, all memory cells (in the registers and on the tape) can contain one arbitrarily large integer.
 
@@ -62,13 +62,13 @@ Example:
 
 ```
 LOAD =4
-STORE 2
+STORE 2   ; Stores the number "4" at register r₂
 LOAD =7
-STORE 4
+STORE 4   ; Stores the number "7" at register r₄
 
-WRITE =2 ; Writes the number 2 to the tape
-WRITE 2  ; Writes the number 4 to the tape (the contents of the register r₂)
-WRITE *2 ; Writes the number 7 to the tape (the contents of the register r₄)
+WRITE =2  ; Writes the number "2" to the tape
+WRITE 2   ; Writes the number "4" to the tape (the contents of the register r₂)
+WRITE *2  ; Writes the number "7" to the tape (the contents of the register r₄)
 ```
 
 Some operand types are incompatible with certain instructions. For example, you cannot store values to literals; therefore, the `READ` and `STORE` instructions cannot take literal operands.
@@ -102,12 +102,22 @@ WRITE 0
 
 # Building the project
 
-1. Download the repository.
-2. Run the commands below:
+1. Download and install Node.js: https://nodejs.org/en/download
+2. Download or clone this repository using the green "Code" button at the top of this page.
+3. Enter the following commands in the project directory:
+
+Linux/Mac:
 
 ```
 npm i
 npm run start
 ```
 
-3. Your browser should open with the program running.
+Windows:
+
+```
+npm i
+npm run start-win
+```
+
+4. After a while, the application should build and your web browser should open with the program running.
