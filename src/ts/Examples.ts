@@ -300,7 +300,7 @@ function initDOM() {
     });
     // TODO: get rid of this any. or check in runtime if the title key exists.
     const title: string = (t.examples as any)[programKey].title || programKey;
-    btn.textContent = `${t.nav.load} '${title}'`;
+    btn.textContent = `${t.nav.open} '${title}'`;
     Nodes.loadProgramButtons.appendChild(btn);
   }
 }

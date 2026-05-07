@@ -12,7 +12,7 @@
   },
   "nav": {
     "new": "New",
-    "load": "Load",
+    "open": "Open",
     "save": "Save",
     "settings": "Settings",
     "clearInputTape": "Clear Tape",

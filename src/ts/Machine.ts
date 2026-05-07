@@ -18,7 +18,7 @@ export type MachineSettings = {
   programCounterOutOfBounds: ProgramCounterOutOfBoundsBehavior;
 }; 
 export function defaultMachineSettings(): MachineSettings {
-  return { inputTapeUnderflow: "random", uninitializedRegisterRead: "zero", programCounterOutOfBounds: "error" };
+  return { inputTapeUnderflow: "error", uninitializedRegisterRead: "zero", programCounterOutOfBounds: "error" };
 }
 
 export class Machine {
