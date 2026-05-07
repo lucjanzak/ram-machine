@@ -49,8 +49,8 @@
 
 .input-tape-scroll-list-cell.active,
 .output-tape-scroll-list-cell.active {
-  background-color: #ff00003f;
-  border: 2px solid #ff00007f;
+  background-color: #0000ff3f;
+  border: 2px solid #0000ff7f;
 }
 
 .input-tape-scroll-list-cell.empty,
