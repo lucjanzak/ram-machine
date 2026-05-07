@@ -1,6 +1,6 @@
 {
   "name": "ram-machine",
-  "version": "2.1.0-beta",
+  "version": "2.1.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,6 +13,8 @@
     "build-q-win": "powershell \"$found = [bool] (Get-Command -ErrorAction Ignore -Type Application git) ; if ( $found ) { $env:GIT_COMMIT_HASH=(git rev-parse HEAD); } else { $env:GIT_COMMIT_HASH='unknown'; }; npx webpack --mode development\"",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
+    "predeploy-win": "npm run build-win",
+    "deploy-win": "gh-pages -d dist",
     "watch": "export GIT_COMMIT_HASH=$(git rev-parse HEAD) && webpack --watch",
     "watch-win": "powershell \"$found = [bool] (Get-Command -ErrorAction Ignore -Type Application git) ; if ( $found ) { $env:GIT_COMMIT_HASH=(git rev-parse HEAD); } else { $env:GIT_COMMIT_HASH='unknown'; }; npx webpack --watch\"",
     "start": "export GIT_COMMIT_HASH=$(git rev-parse HEAD) && webpack serve --open",
