@@ -16,7 +16,10 @@ export type MachineSettings = {
   inputTapeUnderflow: InputTapeUnderflowBehavior;
   uninitializedRegisterRead: UninitializedRegisterReadBehavior;
   programCounterOutOfBounds: ProgramCounterOutOfBoundsBehavior;
-};
+}; 
+export function defaultMachineSettings(): MachineSettings {
+  return { inputTapeUnderflow: "random", uninitializedRegisterRead: "zero", programCounterOutOfBounds: "error" };
+}
 
 export class Machine {
   private running = false;
@@ -32,7 +35,7 @@ export class Machine {
   constructor(
     private program: Program = Program.EMPTY,
     private detachedMode = false,
-    public settings: MachineSettings = { inputTapeUnderflow: "random", uninitializedRegisterRead: "zero", programCounterOutOfBounds: "error" }
+    public settings: MachineSettings = defaultMachineSettings()
   ) {
     this.memory = new Memory(this.detachedMode ? null : Nodes.registerScrollList);
     this.inputTape = new InputTapeArray(this.detachedMode ? null : Nodes.inputTape, this.detachedMode ? null : Nodes.inputTapeLength);

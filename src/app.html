@@ -255,57 +255,58 @@
   </template>
 
   <dialog id="settings">
-    <h1>Settings</h1>
+    <h1><%= t.settings.title %></h1>
     <form id="settings-form">
       <fieldset>
-        <legend>What should happen when the machine reads an empty cell from the input tape?</legend>
+        <legend><%= t.settings.inputTapeUnderflow.legend %></legend>
         <div>
           <input type="radio" id="input-tape-underflow-error" name="input-tape-underflow-behavior" value="error" checked />
-          <label for="input-tape-underflow-error">Show an error</label>
+          <label for="input-tape-underflow-error"><%= t.settings.inputTapeUnderflow.error %></label>
         </div>
         <div>
           <input type="radio" id="input-tape-underflow-zero" name="input-tape-underflow-behavior" value="zero" />
-          <label for="input-tape-underflow-zero">Return zero</label>
+          <label for="input-tape-underflow-zero"><%= t.settings.inputTapeUnderflow.zero %></label>
         </div>
         <div>
           <input type="radio" id="input-tape-underflow-random" name="input-tape-underflow-behavior" value="random" />
-          <label for="input-tape-underflow-random">Return a random integer from 0 to 9999</label>
+          <label for="input-tape-underflow-random"><%= t.settings.inputTapeUnderflow.random %></label>
         </div>
       </fieldset>
 
       <fieldset>
-        <legend>What should happen when the machine reads from an uninitialized register?</legend>
+        <legend><%= t.settings.uninitializedRegisterRead.legend %></legend>
         <div>
           <input type="radio" id="uninitialized-register-read-error" name="uninitialized-register-read-behavior" value="error" checked />
-          <label for="uninitialized-register-read-error">Show an error</label>
+          <label for="uninitialized-register-read-error"><%= t.settings.uninitializedRegisterRead.error %></label>
         </div>
         <div>
           <input type="radio" id="uninitialized-register-read-zero" name="uninitialized-register-read-behavior" value="zero" />
-          <label for="uninitialized-register-read-zero">Return zero</label>
+          <label for="uninitialized-register-read-zero"><%= t.settings.uninitializedRegisterRead.zero %></label>
         </div>
         <div>
           <input type="radio" id="uninitialized-register-read-random" name="uninitialized-register-read-behavior" value="random" />
-          <label for="uninitialized-register-read-random">Return a new random integer from 0 to 9999</label>
+          <label for="uninitialized-register-read-random"><%= t.settings.uninitializedRegisterRead.random %></label>
         </div>
         <div>
           <input type="radio" id="uninitialized-register-read-superpositionCollapse" name="uninitialized-register-read-behavior" value="superpositionCollapse" />
-          <label for="uninitialized-register-read-superpositionCollapse">Stabilize the register at a random value from 0 to 9999</label>
+          <label for="uninitialized-register-read-superpositionCollapse"><%= t.settings.uninitializedRegisterRead.superpositionCollapse %></label>
         </div>
       </fieldset>
 
       <fieldset>
-        <legend>What should happen when the program counter exits program bounds?</legend>
+        <legend><%= t.settings.programCounterOutOfBounds.legend %></legend>
         <div>
           <input type="radio" id="program-counter-out-of-bounds-error" name="program-counter-out-of-bounds-behavior" value="error" checked />
-          <label for="program-counter-out-of-bounds-error">Show an error</label>
+          <label for="program-counter-out-of-bounds-error"><%= t.settings.programCounterOutOfBounds.error %></label>
         </div>
         <div>
           <input type="radio" id="program-counter-out-of-bounds-actAsHalt" name="program-counter-out-of-bounds-behavior" value="actAsHalt" />
-          <label for="program-counter-out-of-bounds-actAsHalt">Stop the machine normally (implicit HALT instruction)</label>
+          <label for="program-counter-out-of-bounds-actAsHalt"><%= t.settings.programCounterOutOfBounds.actAsHalt %></label>
         </div>
       </fieldset>
       <div style="text-align: right; margin-top: 1rem;">
-        <button type="button" id="close-settings-dialog-button">Save and Close</button>
+        <button type="button" id="reset-settings-button"><%= t.settings.reset %></button>
+        <button type="button" id="close-settings-button"><%= t.settings.close %></button>
       </div>
     </form>
   </dialog>

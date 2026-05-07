@@ -58,6 +58,29 @@
     "monacoEditorCredit": "stworzony przez Microsoft, z licencją:",
     "vscodeCodiconsCredit": "font stworzony przez Microsoft, z licencją:"
   },
+  "settings": {
+    "title": "Ustawienia",
+    "inputTapeUnderflow": {
+      "legend": "Co powinno się stać, gdy maszyna odczytuje pustą wartość z taśmy wejściowej?",
+      "error": "Wyświetl błąd",
+      "zero": "Zwróć zero",
+      "random": "Zwróć losową liczbnę całkowitą od 0 do 9999"
+    },
+    "uninitializedRegisterRead": {
+      "legend": "Co się powinno stać, gdy maszyna czyta z niezainicjalizowanego rejestru?",
+      "error": "Wyświetl błąd",
+      "zero": "Zwróć zero",
+      "random": "Zwróć nową losową liczbnę całkowitą od 0 do 9999",
+      "superpositionCollapse": "Stabilize the register at a random value from 0 to 9999"
+    },
+    "programCounterOutOfBounds": {
+      "legend": "Co powinno się stać, gdy licznik rozkazu opuści granice programu?",
+      "error": "Wyświetl błąd",
+      "actAsHalt": "Zatrzymaj wykonywanie programu (niejawna instrukcja HALT)"
+    },
+    "reset": "Przywróć ustawienia domyślne",
+    "close": "Zapisz i zamknij"
+  },
   "examples": {
     "ADDITION": {
       "title": "Dodawanie",

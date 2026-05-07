@@ -58,6 +58,29 @@
     "monacoEditorCredit": "by Microsoft, licensed under",
     "vscodeCodiconsCredit": "font by Microsoft, licensed under"
   },
+  "settings": {
+    "title": "Settings",
+    "inputTapeUnderflow": {
+      "legend": "What should happen when the machine reads an empty cell from the input tape?",
+      "error": "Show an error",
+      "zero": "Return zero",
+      "random": "Return a random integer from 0 to 9999"
+    },
+    "uninitializedRegisterRead": {
+      "legend": "What should happen when the machine reads from an uninitialized register?",
+      "error": "Show an error",
+      "zero": "Return zero",
+      "random": "Return a new random integer from 0 to 9999",
+      "superpositionCollapse": "Stabilize the register at a random value from 0 to 9999"
+    },
+    "programCounterOutOfBounds": {
+      "legend": "What should happen when the program counter exits program bounds?",
+      "error": "Show an error",
+      "actAsHalt": "Stop the machine normally (implicit HALT instruction)"
+    },
+    "reset": "Revert to Default Settings",
+    "close": "Save and Close"
+  },
   "examples": {
     "ADDITION": {
       "title": "Simple addition",

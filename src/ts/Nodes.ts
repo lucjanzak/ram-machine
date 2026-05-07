@@ -1,5 +1,5 @@
 import { t } from "./Localization";
-import { InputTapeUnderflowBehavior, MachineSettings as MachineSettings, ProgramCounterOutOfBoundsBehavior, UninitializedRegisterReadBehavior } from "./Machine";
+import { defaultMachineSettings, InputTapeUnderflowBehavior, MachineSettings as MachineSettings, ProgramCounterOutOfBoundsBehavior, UninitializedRegisterReadBehavior } from "./Machine";
 import { expect } from "./Util";
 
 export namespace Nodes {
@@ -28,7 +28,8 @@ export namespace Nodes {
   export const bigScrollListTest = element<HTMLElement>("#big-scroll-list-test");
 
   export const settingsForm = element<HTMLFormElement>("#settings-form");
-  export const closeSettingsDialogButton = element("#close-settings-dialog-button");
+  export const resetSettingsButton = element("#reset-settings-button");
+  export const closeSettingsButton = element("#close-settings-button");
 }
 
 export namespace Templates {
@@ -97,7 +98,12 @@ export function initSettings() {
     updateSettingsInMachine(new FormData(Nodes.settingsForm));
   });
 
-  Nodes.closeSettingsDialogButton.addEventListener("click", () => {
+  Nodes.resetSettingsButton.addEventListener("click", () => {
+    const defaultSettings = defaultMachineSettings();
+    window.RAMMachine.machine.settings = defaultSettings;
+    updateSettingsDOM(defaultSettings);
+  });
+  Nodes.closeSettingsButton.addEventListener("click", () => {
     Dialogs.settings.close();
   });
 }
@@ -125,6 +131,7 @@ export function initDOM() {
   Nodes.resetButton.addEventListener("click", () => {
     window.RAMMachine.machine.reset();
   });
+
   Nodes.settingsButton.addEventListener("click", () => {
     Dialogs.settings.showModal();
   });
