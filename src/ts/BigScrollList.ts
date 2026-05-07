@@ -89,7 +89,7 @@ export class BigScrollList implements ElementManager {
   }
 
   iterActive(callback: (element: HTMLElement, index: bigint) => void) {
-    console.log("iterActive");
+    // console.log("iterActive");
     for (const listElement of this.hostElement.children) {
       const htmlElement = listElement as HTMLElement;
       const indexStr = htmlElement.dataset.elementIndex;
@@ -102,7 +102,7 @@ export class BigScrollList implements ElementManager {
   }
 
   updateVisibleElements() {
-    console.log("updateVisibleElements");
+    // console.log("updateVisibleElements");
     // Analyze existing elements
     this.activeElements.clear();
 

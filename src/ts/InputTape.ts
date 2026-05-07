@@ -14,6 +14,7 @@ export interface InputTape {
   readOrDefault(config: InputTapeUnderflowBehavior): bigint;
   reset(): void;
   clearAndReset(): void;
+  asString(): string;
 }
 
 export class InputTapeArray implements InputTape {
@@ -97,7 +98,7 @@ export class InputTapeArray implements InputTape {
     }
   }
 
-  static fromText(text: string, hostElement: HTMLElement | null, lengthElement: Element | null): InputTape {
+  static fromString(text: string, hostElement: HTMLElement | null, lengthElement: Element | null): InputTape {
     if (text === "") {
       return InputTapeArray.fromValues([], hostElement, lengthElement);
     }
@@ -105,6 +106,9 @@ export class InputTapeArray implements InputTape {
     const split = text.split(/[\s,]+/);
     const values = split
       .map((x): bigint | undefined => {
+        if (x === "") {
+          return undefined;
+        }
         try {
           const value = BigInt(x);
           return value;
@@ -115,6 +119,10 @@ export class InputTapeArray implements InputTape {
       })
       .filter((x) => x !== undefined);
     return InputTapeArray.fromValues(values, hostElement, lengthElement);
+  }
+
+  asString(): string {
+    return this.values.asArray().join(",");
   }
 
   static fromValues(values: bigint[], hostElement: HTMLElement | null, lengthElement: Element | null) {

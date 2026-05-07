@@ -72,7 +72,7 @@ export class OutputTapeArray implements OutputTape {
 
   refreshAllQuietlyUpdatedCells() {
     if (this.scrollList !== null) {
-      console.log("refreshAllQuietlyUpdatedCells", this.quietlyUpdatedCells);
+      // console.log("refreshAllQuietlyUpdatedCells", this.quietlyUpdatedCells);
       this.scrollList.iterActive((listItem, index) => {
         if (this.quietlyUpdatedCells.has(index)) {
           const cell = select(listItem, "#output-tape-scroll-list-cell");
@@ -85,7 +85,7 @@ export class OutputTapeArray implements OutputTape {
 
   refreshExistingCells() {
     if (this.scrollList !== null) {
-      console.log("refreshExistingCells");
+      // console.log("refreshExistingCells");
       this.scrollList.iterActive((listItem, index) => {
         const cell = select(listItem, "#output-tape-scroll-list-cell");
         this.updateCellElement(cell, this.values.get(index));

@@ -8,7 +8,8 @@ export namespace Nodes {
 
   // Static elements
   export const newProgramButton = element("#new-program-button");
-  export const loadInputTapeButton = element("#load-input-tape-button");
+  export const clearInputTapeButton = element("#clear-input-tape-button");
+  export const editInputTapeButton = element("#edit-input-tape-button");
   export const runAllButton = element("#run-all-button");
   export const resetButton = element("#reset-button");
   export const loadProgramButtons = element("#load-program-buttons");
@@ -51,8 +52,15 @@ export function initDOM() {
   Nodes.newProgramButton.addEventListener("click", () => {
     window.RAMMachine.machine.loadAssemblyAndReset("");
   });
-  Nodes.loadInputTapeButton.addEventListener("click", () => {
-    const answer = prompt(t.nav.loadInputTapePrompt);
+  Nodes.clearInputTapeButton.addEventListener("click", () => {
+    const answer = confirm(t.nav.clearInputTapePrompt);
+    if (answer) {
+      window.RAMMachine.machine.loadTapeFromText("");
+    }
+  });
+  Nodes.editInputTapeButton.addEventListener("click", () => {
+    const currentTape = window.RAMMachine.machine.inputTape.asString();
+    const answer = prompt(t.nav.editInputTapePrompt, currentTape);
     if (answer !== null) {
       window.RAMMachine.machine.loadTapeFromText(answer);
     }

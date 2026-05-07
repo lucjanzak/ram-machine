@@ -78,7 +78,7 @@ export class Memory {
 
   refreshAllQuietlyUpdatedRegisters() {
     if (this.scrollList !== null) {
-      console.log("refreshAllQuietlyUpdatedRegisters", this.quietlyUpdatedRegisters);
+      // console.log("refreshAllQuietlyUpdatedRegisters", this.quietlyUpdatedRegisters);
       this.scrollList.iterActive((listItem, index) => {
         if (this.quietlyUpdatedRegisters.has(index)) {
           const row = select(listItem, "#register-scroll-list-row");
@@ -90,7 +90,7 @@ export class Memory {
 
   refreshExistingRows() {
     if (this.scrollList !== null) {
-      console.log("refreshExistingRows");
+      // console.log("refreshExistingRows");
       this.scrollList.iterActive((listItem, index) => {
         const row = select(listItem, "#register-scroll-list-row");
         this.updateRegisterRowElement(row, this.registers.get(index), true);
@@ -118,12 +118,13 @@ export class Memory {
       if (animate) {
         // TODO: maybe the color should stay blue until the next update?
         // that would require storing a list/set of all recently-updated registers, and also probably a css class, instead of an animation
+        // TODO: fix the background color becoming white instead of the default row color (depending on odd and even)
         row.animate(
           [
-            { color: "blue", transform: "scale(120%)" },
-            { color: "blue", transform: "scale(100%)" },
-            { color: "blue", transform: "scale(100%)" },
-            { color: "initial", transform: "scale(100%)" },
+            { backgroundColor: "#ff08", color: "blue", transform: "scale(120%)" },
+            { backgroundColor: "#ff08", color: "blue", transform: "scale(100%)" },
+            { backgroundColor: "#ff08", color: "blue", transform: "scale(100%)" },
+            { backgroundColor: "transparent", color: "initial", transform: "scale(100%)" },
           ],
           { duration: 2000, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
         );

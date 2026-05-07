@@ -68,7 +68,7 @@ export class Machine {
   }
 
   loadTapeFromText(text: string) {
-    this.inputTape = InputTapeArray.fromText(text, this.detachedMode ? null : Nodes.inputTape, this.detachedMode ? null : Nodes.inputTapeLength);
+    this.inputTape = InputTapeArray.fromString(text, this.detachedMode ? null : Nodes.inputTape, this.detachedMode ? null : Nodes.inputTapeLength);
   }
 
   getRegister(index: bigint, quiet: boolean): bigint {
