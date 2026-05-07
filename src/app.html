@@ -27,11 +27,7 @@
         <div>
           <%= t.header.language %>
             <ul>
-              <% _.forEach(languageInfo, function(lang) { %>
-                <li>
-                  <% print('<a href="' + lang.key + '.html">' + lang.displayName + '</a>') %>
-                </li>
-                <% }); %>
+              <% _.forEach(languageInfo, function(lang) { %> <li><% print('<a href="app_' + lang.key + '.html">' + lang.displayName + '</a>') %></li> <% }); %>
             </ul>
         </div>
         <div>
@@ -125,21 +121,6 @@
           </table>
         </section>
         <section id="program-text-editor-pane">
-          <!-- <textarea id="program-text-editor-basic" rows="30" cols="160" resize="false">
-  ; This is an example program 1
-  ; that sums two numbers together
-  ;
-  ; You can compile it using the button below,
-  ; and then use the "Run" button at the top of the page
-  ; to execute the program
-  READ 0  ; Load the first value from the input tape to r0
-  READ 1  ; Load the second value from the input tape to r1
-  ADD 1   ; Add the value from r1 to r0, and store the result to r0 
-  WRITE 0 ; Write the contents of r0 to the output tape
-  HALT    ; End program execution
-        
-        </textarea> -->
-          <!-- TODO: Add simple textarea mode as fallback -->
           <div id="program-text-editor-container"></div>
           <nav>
             <button class="nav-button nav-button-auto" onclick="RAMMachine.compileInput()">Compile</button>
@@ -187,7 +168,7 @@
     </span>
     <br>
     <span>
-      <%= t.footer.license %> <a href="./LICENSE.txt" target="_blank">GNU General Public License v3</a>
+      <%= t.footer.license %> <a href="LICENSE.txt" target="_blank">GNU General Public License v3</a>
     </span>
     <br>
     <span>
@@ -201,25 +182,17 @@
       <%= t.footer.externalLibraries %>
     </span>
     <br>
-    <a href="https://github.com/microsoft/monaco-editor" target="_blank">
-      monaco-editor
-    </a>
+    <a href="https://github.com/microsoft/monaco-editor" target="_blank">monaco-editor</a>
     <span>
       <%= t.footer.monacoEditorCredit %>
     </span>
-    <a href="https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt" target="_blank">
-      MIT License
-    </a>
+    <a href="https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt" target="_blank">MIT License</a>
     <br>
-    <a href="https://github.com/microsoft/vscode-codicons" target="_blank">
-      vscode-codicons
-    </a>
+    <a href="https://github.com/microsoft/vscode-codicons" target="_blank">vscode-codicons</a>
     <span>
       <%= t.footer.vscodeCodiconsCredit %>
     </span>
-    <a href="https://github.com/microsoft/vscode-codicons/blob/main/LICENSE" target="_blank">
-      CC-BY 4.0 International
-    </a>
+    <a href="https://github.com/microsoft/vscode-codicons/blob/main/LICENSE" target="_blank">CC-BY 4.0 International</a>
   </footer>
   <template id="instruction-tile">
     <tr>

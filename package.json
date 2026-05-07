@@ -5,8 +5,12 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf dist",
+    "clean-win": "powershell \"Remove-Item -Path dist\"",
     "build": "export GIT_COMMIT_HASH=$(git rev-parse HEAD) && webpack --mode production",
+    "build-q": "export GIT_COMMIT_HASH=$(git rev-parse HEAD) && webpack --mode development",
     "build-win": "powershell \"$found = [bool] (Get-Command -ErrorAction Ignore -Type Application git) ; if ( $found ) { $env:GIT_COMMIT_HASH=(git rev-parse HEAD); } else { $env:GIT_COMMIT_HASH='unknown'; }; npx webpack --mode production\"",
+    "build-q-win": "powershell \"$found = [bool] (Get-Command -ErrorAction Ignore -Type Application git) ; if ( $found ) { $env:GIT_COMMIT_HASH=(git rev-parse HEAD); } else { $env:GIT_COMMIT_HASH='unknown'; }; npx webpack --mode development\"",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "watch": "export GIT_COMMIT_HASH=$(git rev-parse HEAD) && webpack --watch",

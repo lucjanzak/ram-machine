@@ -7,15 +7,17 @@ import CopyWebpackPlugin from "copy-webpack-plugin";
 import packageJson from "./package.json" with { type: "json" };
 import process from "node:process";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 import en from "./lang/en.json" with { type: "json" };
 import pl from "./lang/pl.json" with { type: "json" };
 const translations = {en, pl};
-
 const languageInfo = Object.keys(translations).map(key => ({
   key,
   displayName: translations[key].languageName
 }));
-console.log(languageInfo);
+// console.log(languageInfo);
 
 const packageVersion = packageJson.version;
 const gitCommitHash = process.env.GIT_COMMIT_HASH;
@@ -25,31 +27,13 @@ if (gitCommitHash === undefined) {
 
 const gitCommitHashShort = gitCommitHash.substring(0, 7);
 const displayedVersion = ((packageVersion.includes("alpha") || packageVersion.includes("beta")) && gitCommitHash !== "") ? `${packageVersion}-${gitCommitHashShort}` : packageVersion;
-const templateParameters = {
+const commonTemplateParameters = {
   packageVersion,
   gitCommitHash,
   gitCommitHashShort,
   displayedVersion
 };
-
-function getTemplateParametersForLanguage(lang) {
-  if (!(lang in translations)) {
-    throw new Error(`Unknown language: ${lang}`);
-  }
-  return Object.assign({}, templateParameters, {lang, t: translations[lang], languageInfo}) 
-}
-function generateHtmlWebpackPlugin(languageCode) {
-  return new HtmlWebpackPlugin({
-    title: "Development",
-    template: "./src/app.html",
-    templateParameters: getTemplateParametersForLanguage(languageCode),
-    filename: `app/${languageCode}.html`
-  });
-}
-console.log("Creating template with parameters: ", templateParameters);
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+console.log("Creating template with parameters: ", commonTemplateParameters);
 
 const config /*: webpack.Configuration*/ = {
   mode: "development",
@@ -57,7 +41,7 @@ const config /*: webpack.Configuration*/ = {
   devtool: "source-map",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "app/bundle.js",
+    filename: "js/bundle.js",
   },
   module: {
     rules: [
@@ -94,14 +78,25 @@ const config /*: webpack.Configuration*/ = {
     extensions: [".js", ".jsx", ".ts", ".tsx"],
   },
   plugins: [
-    ...Object.keys(translations).map(lang => generateHtmlWebpackPlugin(lang)),
+    ...Object.keys(translations).map(lang => {
+      if (!(lang in translations)) {
+        throw new Error(`Unknown language: ${lang}`);
+      }
+      const templateParameters = Object.assign({}, commonTemplateParameters, {lang, t: translations[lang], languageInfo});
+      return new HtmlWebpackPlugin({
+        title: "Development",
+        template: "./src/app.html",
+        templateParameters,
+        filename: `app_${lang}.html`
+      });
+    }),
     new MonacoWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
-        { from: "./src/index.html", to: "index.html" },
-        { from: "./src/404.html", to: "404.html" },
-        { from: "./public/**/*", to: "." },
-        { from: "./LICENSE.txt", to: "LICENSE.txt" },
+        { from: "src/index.html", to: "index.html" },
+        // { from: "src/404.html", to: "404.html" },
+        { from: "public" },
+        { from: "LICENSE.txt" },
       ],
     }),
   ],
