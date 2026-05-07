@@ -15,6 +15,7 @@ export namespace Nodes {
   export const resetButton = element("#reset-button");
   export const settingsButton = element("#settings-button");
   export const loadProgramButtons = element("#load-program-buttons");
+  export const aboutButton = element("#about-button");
   export const programListingTable = element("#program-listing-table");
   // export const programTextEditorBasic = element<HTMLTextAreaElement>("#program-text-editor-basic");
   export const programTextEditorContainer = element<HTMLElement>("#program-text-editor-container");
@@ -52,6 +53,7 @@ export namespace Dialogs {
   }
 
   export const settings = dialog("#settings");
+  export const about = dialog("#about");
 }
 
 export function useTemplate(instructionTile: HTMLTemplateElement) {
@@ -88,6 +90,10 @@ export function initDOM() {
 
   Nodes.settingsButton.addEventListener("click", () => {
     Dialogs.settings.showModal();
+  });
+
+  Nodes.aboutButton.addEventListener("click", () => {
+    Dialogs.about.showPopover();
   });
 
   initSettingsDOM();

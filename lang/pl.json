@@ -22,7 +22,8 @@
     "run": "Wykonaj wszystko",
     "reset": "Reset",
     "debugContinue": "Kontynuuj",
-    "debugStep": "Wykonaj krok"
+    "debugStep": "Wykonaj krok",
+    "about": "O programie"
   },
   "inputTape": {
     "header": "Taśma wejściowa (długość: ",
@@ -50,14 +51,6 @@
       "comment": "Komentarz"
     }
   },
-  "footer": {
-    "author": "Autor:",
-    "license": "Licencja:",
-    "sourceCode": "Kod źródłowy:",
-    "externalLibraries": "Zewnętrzne biblioteki:",
-    "monacoEditorCredit": "stworzony przez Microsoft, z licencją:",
-    "vscodeCodiconsCredit": "font stworzony przez Microsoft, z licencją:"
-  },
   "settings": {
     "title": "Ustawienia",
     "inputTapeUnderflow": {
@@ -80,6 +73,15 @@
     },
     "reset": "Przywróć ustawienia domyślne",
     "close": "Zapisz i zamknij"
+  },
+  "about": {
+    "author": "Autor:",
+    "license": "Licencja:",
+    "sourceCode": "Kod źródłowy:",
+    "externalLibraries": "Zewnętrzne biblioteki:",
+    "monacoEditorCredit": "stworzony przez Microsoft, z licencją:",
+    "vscodeCodiconsCredit": "font stworzony przez Microsoft, z licencją:",
+    "close": "Close"
   },
   "examples": {
     "ADDITION": {

@@ -22,7 +22,8 @@
     "run": "Run All",
     "reset": "Reset",
     "debugContinue": "Continue",
-    "debugStep": "Step"
+    "debugStep": "Step",
+    "about": "About"
   },
   "inputTape": {
     "header": "Input tape (length: ",
@@ -50,14 +51,6 @@
       "comment": "Comment"
     }
   },
-  "footer": {
-    "author": "Author:",
-    "license": "License:",
-    "sourceCode": "Source code:",
-    "externalLibraries": "External libraries used:",
-    "monacoEditorCredit": "by Microsoft, licensed under",
-    "vscodeCodiconsCredit": "font by Microsoft, licensed under"
-  },
   "settings": {
     "title": "Settings",
     "inputTapeUnderflow": {
@@ -80,6 +73,15 @@
     },
     "reset": "Revert to Default Settings",
     "close": "Save and Close"
+  },
+  "about": {
+    "author": "Author:",
+    "license": "License:",
+    "sourceCode": "Source code:",
+    "externalLibraries": "External libraries used:",
+    "monacoEditorCredit": "by Microsoft, licensed under",
+    "vscodeCodiconsCredit": "font by Microsoft, licensed under",
+    "close": "Close"
   },
   "examples": {
     "ADDITION": {

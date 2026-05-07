@@ -31,6 +31,13 @@ body {
   box-sizing: border-box;
 }
 
+hr {
+  border-style: solid;
+  border-color: #0000003f;
+  border-width: 0;
+  border-bottom-width: 1px;
+}
+
 .centered-text {
   margin: auto;
   text-align: center;
@@ -40,5 +47,4 @@ body {
 @import url(header.module.css);
 @import url(nav.module.css);
 @import url(main.module.css);
-@import url(footer.module.css);
 @import url(dialog.module.css);
