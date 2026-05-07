@@ -4,6 +4,8 @@ RAM machine (Random-Access Machine / RA-Machine) emulator made with TypeScript.
 
 ### [Open the RAM machine emulator in your browser](https://lucjanzak.github.io/ram-machine/)
 
+### [Download the RAM machine emulator](https://github.com/lucjanzak/ram-machine/archive/refs/heads/gh-pages.zip)
+
 # The RAM machine
 
 Below is a short description of the RAM machine.
