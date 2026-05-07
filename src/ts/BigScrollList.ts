@@ -1,4 +1,3 @@
-import { assert, time } from "node:console";
 import { MixedNumber } from "./MixedNumber";
 import { assertNever } from "./Util";
 import { ElementManager, ManagedElement } from "./ElementManager";
@@ -216,7 +215,9 @@ export class BigScrollList implements ElementManager {
     public getDocumentFragmentFromIndex: (index: bigint) => DocumentFragment,
 
     // Available size of the container
-    private containerAvailableSize: number
+    private containerAvailableSize: number,
+
+    scrollBar: "scroll" | "auto" = "auto"
   ) {
     // Clear host node
     // console.log("Old manager object: ", hostElement.managerObject);
@@ -254,9 +255,9 @@ export class BigScrollList implements ElementManager {
     this.updateVisibleElements();
 
     if (direction === "horizontal") {
-      this.hostElement.style.overflowX = "scroll";
+      this.hostElement.style.overflowX = scrollBar;
     } else if (direction === "vertical") {
-      this.hostElement.style.overflowY = "scroll";
+      this.hostElement.style.overflowY = scrollBar;
     } else {
       assertNever(direction);
     }

@@ -13,7 +13,7 @@
   <div id="whole-screen">
     <header>
       <div>
-        <h1>
+        <h1 class="title-header">
           <%= t.header.title %>
         </h1>
         <h3 class="version-header">
@@ -30,9 +30,7 @@
               <% _.forEach(languageInfo, function(lang) { %> <li><% print('<a href="app_' + lang.key + '.html">' + lang.displayName + '</a>') %></li> <% }); %>
             </ul>
         </div>
-        <div>
-          <%= t.header.author %> <a href="https://lucjanzak.github.io" target=" _blank">Lucjan Żak</a>
-        </div>
+        <div style="display: none;"><%= t.header.author %> <a href="https://lucjanzak.github.io" target=" _blank">Lucjan Żak</a></div>
       </div>
     </header>
     <nav>

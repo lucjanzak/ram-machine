@@ -34,7 +34,7 @@ main {
   border-left: var(--generic-border);
 
   /* min-height: 0; */
-  overflow-x: scroll;
+  overflow-x: auto;
   overflow-y: scroll;
 }
 
