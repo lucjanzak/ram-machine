@@ -2,9 +2,9 @@ import { ContiguousArray } from "./BigArray";
 import { bigintMax, bigintParse } from "./BigIntUtils";
 import { BigScrollList } from "./BigScrollList";
 import { t } from "./Localization";
-import { InputTapeUnderflowBehavior } from "./Machine";
 import { randomBigint } from "./Memory";
 import { select, Templates, useTemplate } from "./Nodes";
+import { InputTapeUnderflowBehavior } from "./Settings";
 import { assertNever } from "./Util";
 
 export interface InputTape {

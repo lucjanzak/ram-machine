@@ -1,8 +1,8 @@
 import { SparseArray } from "./BigArray";
 import { BigScrollList } from "./BigScrollList";
 import { t } from "./Localization";
-import { UninitializedRegisterReadBehavior } from "./Machine";
 import { select, Templates, useTemplate } from "./Nodes";
+import { UninitializedRegisterReadBehavior } from "./Settings";
 import { assertNever } from "./Util";
 
 export function randomBigint() {

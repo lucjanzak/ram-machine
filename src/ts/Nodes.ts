@@ -1,5 +1,5 @@
 import { t } from "./Localization";
-import { defaultMachineSettings, InputTapeUnderflowBehavior, MachineSettings as MachineSettings, ProgramCounterOutOfBoundsBehavior, UninitializedRegisterReadBehavior } from "./Machine";
+import { initSettingsDOM, InputTapeUnderflowBehavior, MachineSettings, ProgramCounterOutOfBoundsBehavior, UninitializedRegisterReadBehavior } from "./Settings";
 import { expect } from "./Util";
 
 export namespace Nodes {
@@ -62,52 +62,6 @@ export function select<T extends Element = Element>(f: ParentNode, selector: str
   return expect(f.querySelector<T>(selector), `element with selector '${selector}' not found in f: ${f}`);
 }
 
-export function initSettings() {
-  function updateSettingsInMachine(formData: FormData)  {
-    function parseITU(input: FormDataEntryValue | null): InputTapeUnderflowBehavior | null {
-      if (input === "error" || input === "zero" || input === "random") return input;
-      return null;
-    }
-
-    function parseURR(input: FormDataEntryValue | null): UninitializedRegisterReadBehavior | null {
-      if (input === "error" || input === "zero" || input === "random" || input === "superpositionCollapse") return input;
-      return null;
-    }
-
-    function parsePCOOB(input: FormDataEntryValue | null): ProgramCounterOutOfBoundsBehavior | null {
-      if (input === "error" || input === "actAsHalt") return input;
-      return null;
-    }
-
-    const settings: MachineSettings = {
-      inputTapeUnderflow: parseITU(formData.get("input-tape-underflow-behavior")) || "error",
-      uninitializedRegisterRead: parseURR(formData.get("uninitialized-register-read-behavior")) || "error",
-      programCounterOutOfBounds: parsePCOOB(formData.get("program-counter-out-of-bounds-behavior")) || "error",
-    };
-    window.RAMMachine.machine.settings = settings;
-  }
-
-  function updateSettingsDOM(settings: MachineSettings) {
-    select<HTMLInputElement>(Nodes.settingsForm, `#input-tape-underflow-${settings.inputTapeUnderflow}`).checked = true;
-    select<HTMLInputElement>(Nodes.settingsForm, `#uninitialized-register-read-${settings.uninitializedRegisterRead}`).checked = true;
-    select<HTMLInputElement>(Nodes.settingsForm, `#program-counter-out-of-bounds-${settings.programCounterOutOfBounds}`).checked = true;
-  }
-
-  updateSettingsDOM(window.RAMMachine.machine.settings);
-  Nodes.settingsForm.addEventListener("input", () => {
-    updateSettingsInMachine(new FormData(Nodes.settingsForm));
-  });
-
-  Nodes.resetSettingsButton.addEventListener("click", () => {
-    const defaultSettings = defaultMachineSettings();
-    window.RAMMachine.machine.settings = defaultSettings;
-    updateSettingsDOM(defaultSettings);
-  });
-  Nodes.closeSettingsButton.addEventListener("click", () => {
-    Dialogs.settings.close();
-  });
-}
-
 export function initDOM() {
   Nodes.newProgramButton.addEventListener("click", () => {
     window.RAMMachine.machine.loadAssemblyAndReset("");
@@ -136,5 +90,5 @@ export function initDOM() {
     Dialogs.settings.showModal();
   });
 
-  initSettings();
+  initSettingsDOM();
 }

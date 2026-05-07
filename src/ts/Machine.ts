@@ -5,21 +5,10 @@ import { Memory } from "./Memory";
 import { Nodes } from "./Nodes";
 import { OutputTape, OutputTapeArray } from "./OutputTape";
 import { Program, ProgramCounter } from "./Program";
+import { MachineSettings } from "./Settings";
 import { Statistics } from "./Statistics";
 import { assertNever } from "./Util";
 
-
-export type InputTapeUnderflowBehavior = "error" | "zero" | "random";
-export type UninitializedRegisterReadBehavior = "error" | "zero" | "random" | "superpositionCollapse";
-export type ProgramCounterOutOfBoundsBehavior = "error" | "actAsHalt";
-export type MachineSettings = {
-  inputTapeUnderflow: InputTapeUnderflowBehavior;
-  uninitializedRegisterRead: UninitializedRegisterReadBehavior;
-  programCounterOutOfBounds: ProgramCounterOutOfBoundsBehavior;
-}; 
-export function defaultMachineSettings(): MachineSettings {
-  return { inputTapeUnderflow: "error", uninitializedRegisterRead: "zero", programCounterOutOfBounds: "error" };
-}
 
 export class Machine {
   private running = false;
@@ -35,7 +24,7 @@ export class Machine {
   constructor(
     private program: Program = Program.EMPTY,
     private detachedMode = false,
-    public settings: MachineSettings = defaultMachineSettings()
+    public settings: MachineSettings = new MachineSettings()
   ) {
     this.memory = new Memory(this.detachedMode ? null : Nodes.registerScrollList);
     this.inputTape = new InputTapeArray(this.detachedMode ? null : Nodes.inputTape, this.detachedMode ? null : Nodes.inputTapeLength);
@@ -140,8 +129,8 @@ export class Machine {
     if (quiet) {
       this.stats.processSilently(
         instruction,
-        (i) => this.getRegister(i, quiet),
-        () => this.inputTape.peek() || 0n
+        (i) => this.getRegister(i, quiet), // TODO: this may return a random value, which may be different from the random value used later in the program
+        () => this.inputTape.peek() || 0n // TODO: same for this
       );
     } else {
       this.stats.processAndUpdateDOM(
