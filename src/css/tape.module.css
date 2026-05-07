@@ -47,6 +47,12 @@
   background-color: #ffffff;
 }
 
+.input-tape-scroll-list-cell.active,
+.output-tape-scroll-list-cell.active {
+  background-color: #ff00003f;
+  border: 2px solid #ff00007f;
+}
+
 .input-tape-scroll-list-cell.empty,
 .output-tape-scroll-list-cell.empty {
   color: #0000007f;

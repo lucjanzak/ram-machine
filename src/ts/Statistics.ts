@@ -2,14 +2,14 @@ import { SparseArray } from "./BigArray";
 import { instructionComplexity, lengthOfNumber } from "./Complexity";
 import { ALL_INSTRUCTIONS, Instruction } from "./Instruction";
 import { Nodes, select, Templates, useTemplate } from "./Nodes";
+import { Timer } from "./Timer";
 
 export class Statistics {
   private timeComplexitySimple: bigint = 0n;
   private timeComplexityLog: bigint = 0n;
   public instructionCounters = Statistics.createEmptyCounters();
   private memoryTracker = new SparseArray<bigint>();
-  public startTime: DOMHighResTimeStamp | null = null;
-  public endTime: DOMHighResTimeStamp | null = null;
+  public timer: Timer = new Timer();
 
   processSilently(instruction: Instruction, contentsOfRegister: (i: bigint) => bigint, peekInput: () => bigint) {
     this.instructionCounters[instruction.operation] += 1n;
@@ -68,21 +68,11 @@ export class Statistics {
     this.memoryTracker.clear();
     this.timeComplexitySimple = 0n;
     this.timeComplexityLog = 0n;
-    this.startTime = null;
-    this.endTime = null;
+    this.timer = new Timer();
   }
 
-  timerStart() {
-    this.startTime = performance.now();
-  }
-
-  timerEnd(currentTime: DOMHighResTimeStamp = performance.now()) {
-    this.endTime = currentTime;
-  }
-
-  fetchRealTime(): number {
-    // TODO
-    return (this.endTime ?? 0) - (this.startTime ?? 0);
+  fetchRealTime(currentTimePrecise: DOMHighResTimeStamp = performance.now()): number {
+    return this.timer.time(currentTimePrecise);
   }
 
   replaceStatisticsDOM() {

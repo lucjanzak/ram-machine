@@ -9,11 +9,12 @@ import { assertNever } from "./Util";
 
 export interface InputTape {
   peek(): bigint | undefined;
-  read(): bigint | undefined;
-  readOrDefault(config: InputTapeUnderflowBehavior): bigint;
+  read(quiet: boolean): bigint | undefined;
+  readOrDefault(quiet: boolean, config: InputTapeUnderflowBehavior): bigint;
   reset(): void;
   clearAndReset(): void;
   asString(): string;
+  refreshActiveCell(): void;
 }
 
 export class InputTapeArray implements InputTape {
@@ -34,13 +35,18 @@ export class InputTapeArray implements InputTape {
   peek() {
     return this.values.get(this.currentIndex);
   }
-  read() {
+
+  read(quiet: boolean) {
     const value = this.values.get(this.currentIndex);
     this.currentIndex++;
+    if (!quiet) {
+      this.refreshActiveCell();
+    }
     return value;
   }
-  readOrDefault(config: InputTapeUnderflowBehavior) {
-    const value = this.read();
+
+  readOrDefault(quiet: boolean, config: InputTapeUnderflowBehavior) {
+    const value = this.read(quiet);
     if (value === undefined) {
       if (config === "error") {
         throw new Error(`tried to read from input tape, but there is no more cells to read`);
@@ -55,12 +61,31 @@ export class InputTapeArray implements InputTape {
       return value;
     }
   }
+  
   reset() {
     this.currentIndex = 0n;
+    this.refreshActiveCell();
   }
+
   clearAndReset() {
     this.values = new ContiguousArray();
-    this.currentIndex = 0n;
+    this.reset();
+  }
+
+  public refreshActiveCell() {
+    if (this.scrollList !== null) {
+      this.scrollList.iterActive((listItem, index) => {
+        const cell = select(listItem, "#input-tape-scroll-list-cell");
+        cell.classList.remove("active");
+      });
+      const listItem = this.scrollList.select(this.currentIndex);
+      if (listItem !== null) {
+        const cell = select(listItem, "#input-tape-scroll-list-cell");
+        if (cell !== null) {
+          cell.classList.add("active")
+        }
+      }
+    }
   }
 
   updateListLength() {
@@ -74,7 +99,7 @@ export class InputTapeArray implements InputTape {
     }
   }
 
-  private updateCellValue(cell: Element, value: bigint | undefined) {
+  private updateCellElement(cell: Element, value: bigint | undefined, active: boolean) {
     const valueInput = select<HTMLInputElement>(cell, "#value");
     if (value === undefined) {
       valueInput.value = "";
@@ -85,6 +110,12 @@ export class InputTapeArray implements InputTape {
       valueInput.placeholder = `${value}`;
       cell.classList.remove("empty");
     }
+
+    if (active) {
+      cell.classList.add("active");
+    } else {
+      cell.classList.remove("active");
+    }
     valueInput.classList.remove("invalid");
   }
 
@@ -92,7 +123,7 @@ export class InputTapeArray implements InputTape {
     if (this.scrollList !== null) {
       this.scrollList.iterActive((listItem, index) => {
         const cell = select(listItem, "#input-tape-scroll-list-cell");
-        this.updateCellValue(cell, this.values.get(index));
+        this.updateCellElement(cell, this.values.get(index), index === this.currentIndex);
       });
     }
   }
@@ -156,7 +187,7 @@ export class InputTapeArray implements InputTape {
           indexSpan.textContent = `${index + 1n}`;
 
           const value = this.values.get(index);
-          this.updateCellValue(cell, value);
+          this.updateCellElement(cell, value, index === this.currentIndex);
 
           const updateValue = (confirmed: boolean) => {
             const valueText = valueInput.value;
@@ -170,7 +201,7 @@ export class InputTapeArray implements InputTape {
               // Remove from tape if this is the last element
               if (index === this.values.length() - 1n) {
                 this.values.pop();
-                this.updateCellValue(cell, undefined);
+                this.updateCellElement(cell, undefined, index === this.currentIndex);
                 this.updateListLength();
               }
             } else if (value === undefined) {

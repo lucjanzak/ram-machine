@@ -33,7 +33,6 @@ export class OutputTapeArray implements OutputTape {
       this.updateDOMCellNow(this.currentIndex, value);
       this.updateDOMListLength();
     }
-
     this.currentIndex++;
   }
 

@@ -12,8 +12,7 @@ import { assertNever } from "./Util";
 
 export class Machine {
   private running = false;
-  private cancelled = false;
-  private killed = false;
+  private stopReason: "halt" | "error" | "kill" | "timeout" | null = null;
   public inputTape: InputTape;
   public outputTape: OutputTape;
   public memory: Memory;
@@ -36,13 +35,12 @@ export class Machine {
   }
 
   wasKilled() {
-    return this.killed;
+    return this.stopReason === "kill" || this.stopReason === "timeout";
   }
 
   reset() {
     this.running = false;
-    this.cancelled = false;
-    this.killed = false;
+    this.stopReason = null;
     this.inputTape.reset();
     this.outputTape.clearAndReset();
     this.memory.clear();
@@ -75,8 +73,8 @@ export class Machine {
     return this.memory.getAccumulator(this.settings.uninitializedRegisterRead, quiet);
   }
 
-  readInputTape(): bigint {
-    return this.inputTape.readOrDefault(this.settings.inputTapeUnderflow);
+  readInputTape(quiet: boolean): bigint {
+    return this.inputTape.readOrDefault(quiet, this.settings.inputTapeUnderflow);
   }
 
   setRegister(index: bigint, value: bigint, quiet: boolean) {
@@ -165,7 +163,7 @@ export class Machine {
       this.setAccumulator(this.getAccumulator(quiet) / value, quiet);
       this.programCounter++;
     } else if (instruction.operation === "READ") {
-      const value = this.readInputTape();
+      const value = this.readInputTape(quiet);
       this.writeToOperand(instruction.operand, value, quiet);
       this.programCounter++;
     } else if (instruction.operation === "WRITE") {
@@ -211,10 +209,17 @@ export class Machine {
     }
   }
 
+  updateDOMElements() {
+    this.stats.replaceStatisticsDOM();
+    this.inputTape.refreshActiveCell();
+    this.memory.refreshAllQuietlyUpdatedRegisters();
+    this.outputTape.refreshAllQuietlyUpdatedCells();
+  }
+
   // Run All - run all instructions as fast as possible
   runAll(
     debug: boolean,
-    options: { timeoutWarning?: number; timeoutAlert?: number; timeoutKill: number } = { timeoutWarning: 1000, timeoutAlert: 3000, timeoutKill: 20000 }
+    options: { timeoutPrintWarning?: number; timeoutUserKill?: number; timeoutAutoKill: number } = { timeoutPrintWarning: 1000, timeoutUserKill: 3000, timeoutAutoKill: 20000 }
   ) {
     this.running = true;
 
@@ -222,63 +227,65 @@ export class Machine {
     let timeoutWarned = false;
     let timeoutAlerted = false;
 
-    const stopTime = (currentTime: DOMHighResTimeStamp) => {
-      // console.log(this.stats);
-      this.stats.timerEnd(currentTime);
-      this.stats.replaceStatisticsDOM();
-    };
-
-    const cancelRunning = (currentTime: DOMHighResTimeStamp) => {
+    const stopMachine = (currentTime: DOMHighResTimeStamp, stopReason: typeof this.stopReason) => {
       this.running = false;
-      this.cancelled = true;
-      stopTime(currentTime);
-      this.memory.refreshAllQuietlyUpdatedRegisters();
-      this.outputTape.refreshAllQuietlyUpdatedCells();
-    };
-
-    this.stats.clear();
-    this.stats.timerStart();
-    while (this.running) {
-      if (debug && this.debugBreakpoints.includes(this.programCounter)) {
-        alert("breakpoint hit! @ line " + this.programCounter);
-      }
-
-      this.executeCurrentInstruction(true);
-
-      const currentTime = Date.now();
-      const timePassed = currentTime - timeStarted;
-      if (options.timeoutWarning && timePassed > options.timeoutWarning && !timeoutWarned) {
-        timeoutWarned = true;
-        console.warn(`Program running longer than ${options.timeoutWarning}ms...`);
-      }
-      if (options.timeoutAlert && timePassed > options.timeoutAlert && !timeoutAlerted) {
-        timeoutAlerted = true;
-        const currentTimePrecise = performance.now();
-        const answer = confirm(t.general.executionTimeoutAlert);
-        if (answer) {
-          // Machine run canceled by user.
-          cancelRunning(currentTimePrecise);
-          return;
-        }
-      }
-      if (options.timeoutKill && timePassed > options.timeoutKill) {
-        const currentTimePrecise = performance.now();
-        console.error(`Could not run the program in under ${options.timeoutKill}ms, terminating`);
-        this.killed = true;
-        cancelRunning(currentTimePrecise);
-      }
+      this.stats.timer.stop(currentTime);
+      this.stopReason = stopReason;
+      this.updateDOMElements();
     }
 
-    // Normal stop - found a HALT instruction or errored out.
-    stopTime(performance.now());
-    this.memory.refreshAllQuietlyUpdatedRegisters();
-    this.outputTape.refreshAllQuietlyUpdatedCells();
+    this.stats.clear();
+    this.stats.timer.start();
+
+    try {
+      while (this.running) {
+        const currentTimePrecise = performance.now();
+        const timePassed = this.stats.fetchRealTime(currentTimePrecise);
+
+        if (debug && this.debugBreakpoints.includes(this.programCounter)) {
+          alert("breakpoint hit! @ line " + this.programCounter);
+        }
+
+        this.executeCurrentInstruction(true);
+
+        if (options.timeoutPrintWarning && timePassed > options.timeoutPrintWarning && !timeoutWarned) {
+          timeoutWarned = true;
+          console.warn(`Program running longer than ${options.timeoutPrintWarning}ms...`);
+        }
+        if (options.timeoutUserKill && timePassed > options.timeoutUserKill && !timeoutAlerted) {
+          timeoutAlerted = true;
+
+          this.stats.timer.pause(currentTimePrecise);
+          const answer = confirm(t.general.executionTimeoutAlert);
+          const currentTimePreciseNew = performance.now();
+          this.stats.timer.resume(currentTimePreciseNew);
+
+          if (answer) {
+            // Machine killed by user
+            stopMachine(currentTimePreciseNew, "kill");
+            return;
+          }
+        }
+        if (options.timeoutAutoKill && timePassed > options.timeoutAutoKill) {
+          // Machine killed by timer
+          console.error(`Could not run the program in under ${options.timeoutAutoKill}ms, terminating`);
+          stopMachine(currentTimePrecise, "timeout");
+        }
+      }
+
+      // Normal stop - found a HALT instruction
+      stopMachine(performance.now(), "halt");
+    } catch {
+      
+      // Exception encountered - error stop
+      stopMachine(performance.now(), "error");
+    }
   }
 
   static runSimulation(program: Program, input: bigint[], options: { timeout: number } = { timeout: 100 }): Machine {
     const machine = new Machine(program, true);
     machine.inputTape = InputTapeArray.fromValues(input, null, null);
-    machine.runAll(false, { timeoutWarning: undefined, timeoutAlert: undefined, timeoutKill: options.timeout });
+    machine.runAll(false, { timeoutPrintWarning: undefined, timeoutUserKill: undefined, timeoutAutoKill: options.timeout });
     return machine;
   }
 }
