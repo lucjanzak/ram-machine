@@ -1,4 +1,8 @@
-import { DEFAULT_PROGRAM_ASSEMBLY, EXAMPLE_PROGRAMS, EXAMPLE_PROGRAMS_ASSEMBLY } from "./Examples";
+import {
+  DEFAULT_PROGRAM_ASSEMBLY,
+  EXAMPLE_PROGRAMS,
+  EXAMPLE_PROGRAMS_ASSEMBLY,
+} from "./Examples";
 import { Machine } from "./Machine";
 import { initDOM } from "./Nodes";
 import { Program } from "./Program";
@@ -7,7 +11,8 @@ import { t, translations } from "./Localization";
 import { testingArea } from "./testing";
 import * as monaco from "monaco-editor";
 import "../css/index.module.css";
-import Chart from "chart.js/auto";
+import { ComplexityChart, initChart } from "./Chart";
+import { Chart } from "chart.js";
 
 const machine = new Machine();
 const editor = createEditor();
@@ -23,9 +28,11 @@ declare global {
     RAMMachine: {
       machine: Machine;
       editor: monaco.editor.IStandaloneCodeEditor;
-      chart: Chart<"line", (number | undefined)[], number> | null;
+      chart: ComplexityChart;
       EXAMPLE_PROGRAMS: { [K in keyof typeof EXAMPLE_PROGRAMS]: Program };
-      EXAMPLE_PROGRAMS_ASSEMBLY: { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBLY]: string };
+      EXAMPLE_PROGRAMS_ASSEMBLY: {
+        [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBLY]: string;
+      };
       compileInput: () => void;
     };
     currentLanguage: keyof typeof translations;
@@ -39,7 +46,7 @@ declare global {
 window.RAMMachine = {
   machine,
   editor,
-  chart: null,
+  chart: initChart(),
   EXAMPLE_PROGRAMS: EXAMPLE_PROGRAMS,
   EXAMPLE_PROGRAMS_ASSEMBLY: EXAMPLE_PROGRAMS_ASSEMBLY,
   compileInput,

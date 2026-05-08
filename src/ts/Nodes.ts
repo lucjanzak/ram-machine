@@ -35,9 +35,12 @@ export namespace Nodes {
   export const closeSettingsButton = element("#close-settings-button");
   
   export const chartCanvas = element<HTMLCanvasElement>("#chart-canvas");
+  export const chartSettingsForm = element<HTMLFormElement>("#chart-settings-form");
   export const generatePointsInput = element<HTMLInputElement>("#generate-points-input");
   export const generatePointsButton = element("#generate-points-button");
+  export const executionTimeoutInput = element<HTMLInputElement>("#execution-timeout-input");
   export const toggleRealTimeAxis = element<HTMLInputElement>("#toggle-realtime-axis");
+  export const clearChartButton = element("#clear-chart-button");
   export const closeChartButton = element("#close-chart-button");
   
   export const bigScrollListTest = element<HTMLElement>("#big-scroll-list-test");

@@ -69,6 +69,7 @@ export class Machine {
 
   loadProgramAndReset(program: Program) {
     this.program = program;
+    window.RAMMachine.chart.clearDataAndUpdate();
     this.reset();
     this.program.refreshListingWithAnimation();
   }

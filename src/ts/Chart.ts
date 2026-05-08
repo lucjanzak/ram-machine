@@ -1,170 +1,14 @@
-import { Chart } from "chart.js/auto";
+import { Chart, ScaleOptions } from "chart.js/auto";
 import { Dialogs, Nodes } from "./Nodes";
 import { Machine } from "./Machine";
 import { assertNever, unwrap } from "./Util";
-import annotationPlugin from 'chartjs-plugin-annotation';
+import annotationPlugin from "chartjs-plugin-annotation";
 Chart.register(annotationPlugin);
 
-export type DataPoint = {
-  n: number,
-  memoryComplexity: number | undefined,
-  memoryComplexityLog: number | undefined,
-  timeComplexity: number | undefined,
-  timeComplexityLog: number | undefined,
-  realTime: number,
-};
-
-function initChart(data: DataPoint[], timeoutMs: number, displayRealTime: boolean) {
-  currentTimeoutMs = timeoutMs;
-  window.RAMMachine.chart = new Chart(
-    Nodes.chartCanvas,
-    {
-      type: "line",
-      data: {
-        labels: data.map(row => row.n),
-        datasets: [
-          {
-            label: "Memory complexity",
-            data: data.map(row => row.memoryComplexity),
-            yAxisID: "complexityScale"
-          },
-          {
-            label: "Memory complexity (log)",
-            data: data.map(row => row.memoryComplexityLog),
-            yAxisID: "complexityScale"
-          },
-          {
-            label: "Time complexity",
-            data: data.map(row => row.timeComplexity),
-            yAxisID: "complexityScale"
-          },
-          {
-            label: "Time complexity (log)",
-            data: data.map(row => row.timeComplexityLog),
-            yAxisID: "complexityScale"
-          },
-          {
-            label: "Real time (ms)",
-            data: data.map(row => row.realTime),
-            yAxisID: "realTimeScale",
-            hidden: !displayRealTime
-          }
-        ]
-      },
-      options: {
-        maintainAspectRatio: false,
-        scales: {
-          complexityScale: {
-            type: "linear",
-            position: "left"
-          },
-          realTimeScale: {
-            type: "linear",
-            display: displayRealTime,
-            position: "right",
-            title: {
-              display: true,
-              text: "Real Time (ms)",
-            },
-            ticks: {
-              callback: (value) => `${value} ms`
-            },
-            grid: {
-              display: false
-            }
-          }
-        },
-        plugins: {
-          annotation: {
-            annotations: {
-              timeoutThreshold: {
-                adjustScaleRange: false,
-                display: displayRealTime,
-                type: "line",
-                scaleID: "realTimeScale",
-                value: timeoutMs,
-                endValue: timeoutMs,
-                borderColor: "red",
-                borderDash: [10, 3],
-                borderWidth: 2,
-                label: {
-                  display: true,
-                  content: "Timeout",
-                  yAdjust: -20,
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  );
-}
-
-export function addDataPointWithoutUpdate(dataPoint: DataPoint) {
-  const chart = window.RAMMachine.chart;
-  if (chart === null) return;
-  chart.data.labels?.push(dataPoint.n);
-  chart.data.datasets[0].data.push(dataPoint.memoryComplexity);
-  chart.data.datasets[1].data.push(dataPoint.memoryComplexityLog);
-  chart.data.datasets[2].data.push(dataPoint.timeComplexity);
-  chart.data.datasets[3].data.push(dataPoint.timeComplexityLog);
-  chart.data.datasets[4].data.push(dataPoint.realTime);
-}
-
-export function updateChart() {
-  const chart = window.RAMMachine.chart;
-  if (chart === null) return;
-  chart.update();
-}
-
-let currentTimeoutMs = 0;
-function changeRealTimeAxisVisibility(displayRealTime: boolean) {
-  const chart = window.RAMMachine.chart;
-  if (chart === null) return;
-  chart.options.scales = {
-    complexityScale: {
-      type: "linear",
-      position: "left"
-    },
-    realTimeScale: {
-      type: "linear",
-      display: displayRealTime,
-      position: "right",
-      title: {
-        display: true,
-        text: "Real Time (ms)",
-      },
-      ticks: {
-        callback: (value) => `${value} ms`
-      },
-      grid: {
-        display: false
-      }
-    }
-  };
-  unwrap(chart.options.plugins?.annotation).annotations = {
-  timeoutThreshold: {
-    adjustScaleRange: false,
-    display: displayRealTime,
-    type: "line",
-    scaleID: "realTimeScale",
-    value: currentTimeoutMs,
-    endValue: currentTimeoutMs,
-    borderColor: "red",
-    borderDash: [10, 3],
-    borderWidth: 2,
-    label: {
-      display: true,
-      content: "Timeout",
-      yAdjust: -20,
-    }
-  }};
-  chart.setDatasetVisibility(4, displayRealTime);
-  chart.update();
-}
-
-function createSimulationInputData(n: bigint, sequence: "natural" | "positive" | "singleValue" | "constant"): bigint[] {
+function createSimulationInputData(
+  n: bigint,
+  sequence: "natural" | "positive" | "singleValue" | "constant",
+): bigint[] {
   if (sequence === "natural") {
     let naturalNumbers = [];
     for (let i = 0n; i < n; i++) {
@@ -186,28 +30,181 @@ function createSimulationInputData(n: bigint, sequence: "natural" | "positive" |
   }
 }
 
-let howManyDataPoints = 0n;
-export function initChartDOM() {
-  initChart([], 100, false);
-  Nodes.generatePointsButton.addEventListener("click", () => {
-    const newPointsToGenerate = Nodes.generatePointsInput.valueAsNumber;
+export type DataPoint = {
+  n: number;
+  memoryComplexity: number | undefined;
+  memoryComplexityLog: number | undefined;
+  timeComplexity: number | undefined;
+  timeComplexityLog: number | undefined;
+  realTime: number;
+};
+
+export class ComplexityChart {
+  public chart: Chart<"line", (number | undefined)[], number>;
+  private currentXPosition = 0n;
+
+  private genScales(): {
+    [key: string]: ScaleOptions<"linear">;
+  } {
+    return {
+      complexityScale: {
+        type: "linear",
+        position: "left",
+      },
+      realTimeScale: {
+        type: "linear",
+        display: this.showRealTimeAxis,
+        position: "right",
+        title: {
+          display: true,
+          text: "Real Time (ms)",
+        },
+        ticks: {
+          callback: (value) => `${value} ms`,
+        },
+        grid: {
+          display: false,
+        },
+      },
+    };
+  }
+
+  // TODO: define a type of this
+  private genAnnotations(): any {
+    return {
+      timeoutThreshold: {
+        adjustScaleRange: false,
+        display: this.showRealTimeAxis,
+        type: "line",
+        scaleID: "realTimeScale",
+        value: this.timeoutMs,
+        endValue: this.timeoutMs,
+        borderColor: "red",
+        borderDash: [10, 3],
+        borderWidth: 2,
+        label: {
+          display: true,
+          content: "Timeout",
+          yAdjust: -20,
+        },
+      },
+    };
+  }
+
+  constructor(
+    private timeoutMs: number,
+    private showRealTimeAxis: boolean,
+    data: DataPoint[] = [],
+  ) {
+    this.chart = new Chart(Nodes.chartCanvas, {
+      type: "line",
+      data: {
+        labels: data.map((row) => row.n),
+        datasets: [
+          {
+            label: "Memory complexity",
+            data: data.map((row) => row.memoryComplexity),
+            yAxisID: "complexityScale",
+          },
+          {
+            label: "Memory complexity (log)",
+            data: data.map((row) => row.memoryComplexityLog),
+            yAxisID: "complexityScale",
+          },
+          {
+            label: "Time complexity",
+            data: data.map((row) => row.timeComplexity),
+            yAxisID: "complexityScale",
+          },
+          {
+            label: "Time complexity (log)",
+            data: data.map((row) => row.timeComplexityLog),
+            yAxisID: "complexityScale",
+          },
+          {
+            label: "Real time (ms)",
+            data: data.map((row) => row.realTime),
+            yAxisID: "realTimeScale",
+            hidden: !this.showRealTimeAxis,
+          },
+        ],
+      },
+      options: {
+        maintainAspectRatio: false,
+        scales: this.genScales(),
+        plugins: {
+          annotation: {
+            annotations: this.genAnnotations(),
+          },
+        },
+      },
+    });
+  }
+  
+
+  changeRealTimeAxisVisibility(displayRealTime: boolean) {
+    this.showRealTimeAxis = displayRealTime;
+    this.chart.options.scales = this.genScales();
+    unwrap(this.chart.options.plugins?.annotation).annotations = this.genAnnotations();
+    this.chart.setDatasetVisibility(4, displayRealTime);
+    this.chart.update();
+  }
+  
+
+  changeTimeoutMs(timeoutMs: number) {
+    this.timeoutMs = timeoutMs;
+    unwrap(this.chart.options.plugins?.annotation).annotations = this.genAnnotations();
+    this.chart.update();
+  }
+
+  updateChart() {
+    this.chart.update();
+  }
+
+  addDataPointWithoutUpdate(dataPoint: DataPoint) {
+    this.chart.data.labels?.push(dataPoint.n);
+    this.chart.data.datasets[0].data.push(dataPoint.memoryComplexity);
+    this.chart.data.datasets[1].data.push(dataPoint.memoryComplexityLog);
+    this.chart.data.datasets[2].data.push(dataPoint.timeComplexity);
+    this.chart.data.datasets[3].data.push(dataPoint.timeComplexityLog);
+    this.chart.data.datasets[4].data.push(dataPoint.realTime);
+  }
+
+  clearDataAndUpdate() {
+    this.currentXPosition = 0n;
+    this.chart.data.labels = [];
+    this.chart.data.datasets.forEach((dataset) => {
+      dataset.data = [];
+    });
+    this.chart.update();
+  }
+
+  generateMorePoints(newPointsToGenerate: number) {
     const startTime = Date.now();
     const loopTimeout = 3000;
     for (let i = 0; i < newPointsToGenerate; i++) {
       const timePassed = Date.now() - startTime;
       if (timePassed > loopTimeout) {
-        console.warn(`Could not generate all desired points - the process was taking more than ${loopTimeout}ms`)
+        console.warn(
+          `Could not generate all desired points - the process was taking more than ${loopTimeout}ms`,
+        );
         break;
       }
 
-
-      howManyDataPoints++;
-      const inputData = createSimulationInputData(howManyDataPoints, "singleValue");
-      const machine = Machine.runSimulation(window.RAMMachine.machine.getProgram(), inputData, { timeout: 100 });
+      this.currentXPosition++;
+      const inputData = createSimulationInputData(
+        this.currentXPosition,
+        "singleValue",
+      );
+      const machine = Machine.runSimulation(
+        window.RAMMachine.machine.getProgram(),
+        inputData,
+        { timeout: this.timeoutMs },
+      );
       // console.log(inputData, machine);
       if (machine.getStopReason() !== "halt") {
-        addDataPointWithoutUpdate({
-          n: Number(howManyDataPoints),
+        this.addDataPointWithoutUpdate({
+          n: Number(this.currentXPosition),
           memoryComplexity: undefined,
           memoryComplexityLog: undefined,
           timeComplexity: undefined,
@@ -215,13 +212,38 @@ export function initChartDOM() {
           realTime: machine.stats.fetchRealTime(),
         });
       } else {
-        addDataPointWithoutUpdate(machine.stats.asDataPoint(howManyDataPoints));
+        this.addDataPointWithoutUpdate(
+          machine.stats.asDataPoint(this.currentXPosition),
+        );
       }
+      // this.updateChart();
     }
-    updateChart();
+
+    this.updateChart();
+  }
+}
+
+export function initChart(): ComplexityChart {
+  return new ComplexityChart(Nodes.executionTimeoutInput.valueAsNumber, Nodes.toggleRealTimeAxis.checked);
+}
+
+export function initChartDOM() {
+  Nodes.generatePointsButton.addEventListener("click", () => {
+    const newPointsToGenerate = Nodes.generatePointsInput.valueAsNumber;
+    window.RAMMachine.chart.generateMorePoints(newPointsToGenerate);
+  });
+  Nodes.executionTimeoutInput.addEventListener("change", () => {
+    window.RAMMachine.chart.changeTimeoutMs(Nodes.executionTimeoutInput.valueAsNumber);
   });
   Nodes.toggleRealTimeAxis.addEventListener("change", () => {
-    changeRealTimeAxisVisibility(Nodes.toggleRealTimeAxis.checked);
+    window.RAMMachine.chart.changeRealTimeAxisVisibility(Nodes.toggleRealTimeAxis.checked);
+  });
+  Nodes.chartSettingsForm.addEventListener("reset", () => {
+    window.RAMMachine.chart.changeTimeoutMs(parseInt(Nodes.executionTimeoutInput.defaultValue));
+    window.RAMMachine.chart.changeRealTimeAxisVisibility(Nodes.toggleRealTimeAxis.defaultChecked);
+  });
+  Nodes.clearChartButton.addEventListener("click", () => {
+    window.RAMMachine.chart.clearDataAndUpdate();
   });
   Nodes.closeChartButton.addEventListener("click", () => {
     Dialogs.chartWindow.close();
