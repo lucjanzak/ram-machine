@@ -11,8 +11,23 @@ export interface OutputTape {
 }
 
 export class OutputTapeArray implements OutputTape {
-  private values = new ContiguousArray<bigint>();
-  private currentIndex: bigint = 0n;
+  protected values = new ContiguousArray<bigint>();
+  protected currentIndex: bigint = 0n;
+  
+  write(value: bigint, quiet: boolean) {
+    this.values.push(value);
+    this.currentIndex++;
+  }
+
+  clearAndReset() {
+    this.values = new ContiguousArray();
+    this.currentIndex = 0n;
+  }
+
+  refreshAllQuietlyUpdatedCells() {}
+}
+
+export class OutputTapeArrayDOM extends OutputTapeArray {
   private scrollList: BigScrollList | null = null;
   private quietlyUpdatedCells: Set<bigint> = new Set(); // TODO: this can be reduced to two integers (range start and range end) instead of a set
 
@@ -25,7 +40,8 @@ export class OutputTapeArray implements OutputTape {
   getValues(): readonly bigint[] {
     return this.values.asArray();
   }
-  write(value: bigint, quiet: boolean) {
+  
+  override write(value: bigint, quiet: boolean) {
     this.values.push(value);
     if (quiet) {
       this.updateDOMCellLater(this.currentIndex);
@@ -37,9 +53,8 @@ export class OutputTapeArray implements OutputTape {
   }
 
   // this is never quiet
-  clearAndReset() {
-    this.values = new ContiguousArray();
-    this.currentIndex = 0n;
+  override clearAndReset() {
+    super.clearAndReset();
     this.quietlyUpdatedCells = new Set();
     this.updateDOMListLength();
     this.refreshExistingCells();
@@ -63,7 +78,7 @@ export class OutputTapeArray implements OutputTape {
   updateDOMListLength() {
     if (this.scrollList !== null) {
       this.scrollList.setItemCount(
-        bigintMax(this.values.length() + OutputTapeArray.EXTRA_ELEMENTS_ON_VISIBLE_TAPE, OutputTapeArray.MIN_ELEMENTS_ON_VISIBLE_TAPE)
+        bigintMax(this.values.length() + OutputTapeArrayDOM.EXTRA_ELEMENTS_ON_VISIBLE_TAPE, OutputTapeArrayDOM.MIN_ELEMENTS_ON_VISIBLE_TAPE)
       );
     }
     if (this.lengthElement !== null) {
@@ -71,7 +86,7 @@ export class OutputTapeArray implements OutputTape {
     }
   }
 
-  refreshAllQuietlyUpdatedCells() {
+  override refreshAllQuietlyUpdatedCells() {
     if (this.scrollList === null) return;
 
     this.scrollList.iterActive((listItem, index) => {
@@ -107,6 +122,7 @@ export class OutputTapeArray implements OutputTape {
   }
 
   constructor(hostElement: HTMLElement | null, public lengthElement: Element | null) {
+    super();
     if (hostElement !== null) {
       this.scrollList = new BigScrollList(
         hostElement,

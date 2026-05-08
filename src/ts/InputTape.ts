@@ -17,34 +17,43 @@ export interface InputTape {
   refreshActiveCell(): void;
 }
 
+function valuesFromString(text: string) {
+  if (text === "") {
+    return [];
+  }
+
+  const split = text.split(/[\s,]+/);
+  const values = split
+    .map((x): bigint | undefined => {
+      if (x === "") {
+        return undefined;
+      }
+      try {
+        const value = BigInt(x);
+        return value;
+      } catch (e) {
+        console.warn(`Could not convert string '${x}' to bigint: `, e);
+        return undefined;
+      }
+    })
+    .filter((x) => x !== undefined);
+  return values;
+}
+
 export class InputTapeArray implements InputTape {
-  private values = new ContiguousArray<bigint>();
-  private currentIndex: bigint = 0n;
-  private scrollList: BigScrollList | null = null;
-
-  // Minimum amount of cells to display on tape.
-  static readonly MIN_ELEMENTS_ON_VISIBLE_TAPE = 3n as const;
-
-  // Amount of "empty" tape cells displayed after the end of the input tape.
-  // 0n => no empty cells; it is impossible to extend the tape beyond the size that it already is.
-  // 1n => one empty cell; if focused, pressing Tab will skip to the next section instead of the next cell (because there is no 2nd empty cell)
-  // 2n => two empty cells is the bare minimum; it fixes the Tab issue partially, but sometimes it can still happen
-  // 3n => three empty cells is the recommended minimum; it fixes the Tab issue fully
-  static readonly EXTRA_ELEMENTS_ON_VISIBLE_TAPE = 3n as const;
+  protected values = new ContiguousArray<bigint>();
+  protected currentIndex: bigint = 0n;
 
   peek() {
     return this.values.get(this.currentIndex);
   }
 
-  readAndIncrement(quiet: boolean) {
+  readAndIncrement(_quiet: boolean) {
     const value = this.values.get(this.currentIndex);
     this.currentIndex++;
-    if (!quiet) {
-      this.refreshActiveCell();
-    }
     return value;
   }
-
+  
   readOrDefault(quiet: boolean, config: InputTapeUnderflowBehavior) {
     const peek = this.peek();
 
@@ -81,9 +90,51 @@ export class InputTapeArray implements InputTape {
     this.reset();
   }
 
-  public refreshActiveCell() {
+  asString(): string {
+    return this.values.asArray().join(",");
+  }
+
+  refreshActiveCell() {  }
+  
+  static fromString(text: string): InputTapeArray {
+    const values = valuesFromString(text);
+    return InputTapeArray.fromValues(values);
+  }
+
+  static fromValues(values: bigint[]): InputTapeArray {
+    const tape = new InputTapeArray();
+    // tape.values.push(...values); <-- this does not work for a very large amount of values
+    for (const value of values) {
+      tape.values.push(value);
+    }
+    return tape;
+  }
+}
+
+export class InputTapeArrayDOM extends InputTapeArray {
+  private scrollList: BigScrollList | null = null;
+
+  // Minimum amount of cells to display on tape.
+  static readonly MIN_ELEMENTS_ON_VISIBLE_TAPE = 3n as const;
+
+  // Amount of "empty" tape cells displayed after the end of the input tape.
+  // 0n => no empty cells; it is impossible to extend the tape beyond the size that it already is.
+  // 1n => one empty cell; if focused, pressing Tab will skip to the next section instead of the next cell (because there is no 2nd empty cell)
+  // 2n => two empty cells is the bare minimum; it fixes the Tab issue partially, but sometimes it can still happen
+  // 3n => three empty cells is the recommended minimum; it fixes the Tab issue fully
+  static readonly EXTRA_ELEMENTS_ON_VISIBLE_TAPE = 3n as const;
+
+  override readAndIncrement(quiet: boolean) {
+    const value = super.readAndIncrement(quiet);
+    if (!quiet) {
+      this.refreshActiveCell();
+    }
+    return value;
+  }
+
+  override refreshActiveCell() {
     if (this.scrollList !== null) {
-      this.scrollList.iterActive((listItem, index) => {
+      this.scrollList.iterActive((listItem, _index) => {
         const cell = select(listItem, "#input-tape-scroll-list-cell");
         cell.classList.remove("active");
       });
@@ -100,7 +151,7 @@ export class InputTapeArray implements InputTape {
   updateListLength() {
     if (this.scrollList !== null) {
       this.scrollList.setItemCount(
-        bigintMax(this.values.length() + InputTapeArray.EXTRA_ELEMENTS_ON_VISIBLE_TAPE, InputTapeArray.MIN_ELEMENTS_ON_VISIBLE_TAPE)
+        bigintMax(this.values.length() + InputTapeArrayDOM.EXTRA_ELEMENTS_ON_VISIBLE_TAPE, InputTapeArrayDOM.MIN_ELEMENTS_ON_VISIBLE_TAPE)
       );
     }
     if (this.lengthElement !== null) {
@@ -136,45 +187,25 @@ export class InputTapeArray implements InputTape {
       });
     }
   }
-
-  static fromString(text: string, hostElement: HTMLElement | null, lengthElement: Element | null): InputTape {
-    if (text === "") {
-      return InputTapeArray.fromValues([], hostElement, lengthElement);
-    }
-
-    const split = text.split(/[\s,]+/);
-    const values = split
-      .map((x): bigint | undefined => {
-        if (x === "") {
-          return undefined;
-        }
-        try {
-          const value = BigInt(x);
-          return value;
-        } catch (e) {
-          console.warn(`Could not convert string '${x}' to bigint: `, e);
-          return undefined;
-        }
-      })
-      .filter((x) => x !== undefined);
-    return InputTapeArray.fromValues(values, hostElement, lengthElement);
+  
+  static fromStringDOM(text: string, hostElement: HTMLElement | null, lengthElement: Element | null): InputTapeArrayDOM {
+    const values = valuesFromString(text);
+    return InputTapeArrayDOM.fromValuesDOM(values, hostElement, lengthElement);
   }
 
-  asString(): string {
-    return this.values.asArray().join(",");
-  }
-
-  static fromValues(values: bigint[], hostElement: HTMLElement | null, lengthElement: Element | null) {
-    const tape = new InputTapeArray(hostElement, lengthElement);
+  static fromValuesDOM(values: bigint[], hostElement: HTMLElement | null, lengthElement: Element | null): InputTapeArrayDOM {
+    const tape = new InputTapeArrayDOM(hostElement, lengthElement);
+    // tape.values.push(...values); <-- this does not work for a very large amount of values
     for (const value of values) {
-      // tape.values.push(...values); <-- this does not work for a very large amount of values
       tape.values.push(value);
     }
     tape.updateListLength();
     tape.refreshExistingCells();
     return tape;
   }
+  
   constructor(hostElement: HTMLElement | null, public lengthElement: Element | null) {
+    super();
     if (hostElement !== null) {
       this.scrollList = new BigScrollList(
         hostElement,

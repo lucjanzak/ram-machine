@@ -1,9 +1,9 @@
-import { InputTape, InputTapeArray } from "./InputTape";
+import { InputTape, InputTapeArray, InputTapeArrayDOM } from "./InputTape";
 import { Instruction, ReadableOperand, WriteableOperand } from "./Instruction";
 import { t } from "./Localization";
 import { Memory } from "./Memory";
 import { Nodes } from "./Nodes";
-import { OutputTape, OutputTapeArray } from "./OutputTape";
+import { OutputTape, OutputTapeArray, OutputTapeArrayDOM } from "./OutputTape";
 import { Program, ProgramCounter } from "./Program";
 import { MachineSettings } from "./Settings";
 import { Statistics } from "./Statistics";
@@ -29,8 +29,8 @@ export class Machine {
     public settings: MachineSettings = new MachineSettings()
   ) {
     this.memory = new Memory(this.detachedMode ? null : Nodes.registerScrollList);
-    this.inputTape = new InputTapeArray(this.detachedMode ? null : Nodes.inputTape, this.detachedMode ? null : Nodes.inputTapeLength);
-    this.outputTape = new OutputTapeArray(this.detachedMode ? null : Nodes.outputTape, this.detachedMode ? null : Nodes.outputTapeLength);
+    this.inputTape = this.detachedMode ? new InputTapeArray() : new InputTapeArrayDOM(Nodes.inputTape, Nodes.inputTapeLength);
+    this.outputTape = this.detachedMode ? new OutputTapeArray() : new OutputTapeArrayDOM(Nodes.outputTape, Nodes.outputTapeLength);
   }
 
   getProgram() {
@@ -75,7 +75,7 @@ export class Machine {
   }
 
   loadTapeFromText(text: string) {
-    this.inputTape = InputTapeArray.fromString(text, this.detachedMode ? null : Nodes.inputTape, this.detachedMode ? null : Nodes.inputTapeLength);
+    this.inputTape = this.detachedMode ? InputTapeArray.fromString(text) : InputTapeArrayDOM.fromStringDOM(text, Nodes.inputTape, Nodes.inputTapeLength);
   }
 
   getRegister(index: bigint, quiet: boolean): bigint {
@@ -325,9 +325,9 @@ export class Machine {
     this.paused = true;
   }
 
-  static runSimulation(program: Program, input: bigint[], options: { timeout: number } = { timeout: 100 }): Machine {
-    const machine = new Machine(program, true);
-    machine.inputTape = InputTapeArray.fromValues(input, null, null);
+  static runSimulation(program: Program, input: bigint[], options: { timeout: number } = { timeout: 100 }, settings: MachineSettings = MachineSettings.simulationDefaults()): Machine {
+    const machine = new Machine(program, true, settings);
+    machine.inputTape = InputTapeArray.fromValues(input);
     machine.runAll(false, { timeoutPrintWarning: undefined, timeoutUserKill: undefined, timeoutAutoKill: options.timeout });
     return machine;
   }

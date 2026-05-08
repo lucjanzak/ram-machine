@@ -31,6 +31,14 @@ export class MachineSettings {
       programCounterOutOfBounds: MachineSettings.parseProgramCounterOutOfBoundsBehavior(formData.get("program-counter-out-of-bounds-behavior")) || "error",
     };
   }
+
+  static simulationDefaults(): MachineSettings {
+    const settings = new MachineSettings();
+    settings.inputTapeUnderflow = "zero";
+    settings.programCounterOutOfBounds = "actAsHalt";
+    settings.uninitializedRegisterRead = "zero";
+    return settings;
+  }
 }
 
 
