@@ -10,9 +10,12 @@ import { Statistics } from "./Statistics";
 import { assertNever } from "./Util";
 
 
+export type StopReason = "halt" | "error" | "kill" | "timeout";
+
 export class Machine {
-  private running = false;
-  private stopReason: "halt" | "error" | "kill" | "timeout" | null = null;
+  private running = false; // Indicates that the machine is currently in the runAll loop
+  private paused = false; // Indicates that the machine is paused inbetween steps
+  private stopReason: StopReason | null = null;
   public inputTape: InputTape;
   public outputTape: OutputTape;
   public memory: Memory;
@@ -38,8 +41,13 @@ export class Machine {
     return this.stopReason === "kill" || this.stopReason === "timeout";
   }
 
+  isFinished() {
+    return this.stopReason !== null;
+  }
+
   reset() {
     this.running = false;
+    this.paused = false;
     this.stopReason = null;
     this.inputTape.reset();
     this.outputTape.clearAndReset();
@@ -122,7 +130,8 @@ export class Machine {
 
   // 'quiet' -- suppresses any DOM updates that may be caused by that instruction
   // getRegister instructions can also cause DOM updates
-  executeInstruction(instruction: Instruction, quiet: boolean) {
+  // Returns `true` if the machine should stop running
+  executeInstruction(instruction: Instruction, quiet: boolean): boolean {
     // console.log("executing ", instruction, ` @ line ${this.programCounter}`);
     if (quiet) {
       this.stats.processSilently(
@@ -188,24 +197,26 @@ export class Machine {
       }
     } else if (instruction.operation === "HALT") {
       console.log("Program finished");
-      this.running = false;
+      return true;
     } else {
       assertNever(instruction.operation);
     }
+    return false;
   }
 
-  executeCurrentInstruction(quiet: boolean) {
+  // Returns `true` if the machine should stop running
+  executeCurrentInstruction(quiet: boolean): boolean {
     const instruction = this.program.getInstruction(this.programCounter);
     if (instruction === undefined) {
       if (this.settings.programCounterOutOfBounds === "error") {
         throw new Error("program counter outside of program bounds"); // TODO
       } else if (this.settings.programCounterOutOfBounds === "actAsHalt") {
-        this.executeInstruction({ operation: "HALT" }, quiet);
+        return this.executeInstruction({ operation: "HALT" }, quiet);
       } else {
         assertNever(this.settings.programCounterOutOfBounds);
       }
     } else {
-      this.executeInstruction(instruction, quiet);
+      return this.executeInstruction(instruction, quiet);
     }
   }
 
@@ -216,42 +227,37 @@ export class Machine {
     this.outputTape.refreshAllQuietlyUpdatedCells();
   }
 
+  private stopMachine(currentTime: DOMHighResTimeStamp, stopReason: StopReason) {
+    this.running = false;
+    this.stats.timer.stop(currentTime);
+    this.stopReason = stopReason;
+    this.updateDOMElements();
+  }
+
   // Run All - run all instructions as fast as possible
   runAll(
     debug: boolean,
     options: { timeoutPrintWarning?: number; timeoutUserKill?: number; timeoutAutoKill: number } = { timeoutPrintWarning: 1000, timeoutUserKill: 3000, timeoutAutoKill: 20000 }
   ) {
-    this.running = true;
+    if (this.isFinished()) return;
 
-    const timeStarted = Date.now();
     let timeoutWarned = false;
     let timeoutAlerted = false;
 
-    const stopMachine = (currentTime: DOMHighResTimeStamp, stopReason: typeof this.stopReason) => {
-      this.running = false;
-      this.stats.timer.stop(currentTime);
-      this.stopReason = stopReason;
-      this.updateDOMElements();
-    }
-
     this.stats.clear();
     this.stats.timer.start();
+    this.running = true;
 
     try {
       while (this.running) {
         const currentTimePrecise = performance.now();
         const timePassed = this.stats.fetchRealTime(currentTimePrecise);
 
-        if (debug && this.debugBreakpoints.includes(this.programCounter)) {
-          alert("breakpoint hit! @ line " + this.programCounter);
-        }
-
-        this.executeCurrentInstruction(true);
-
         if (options.timeoutPrintWarning && timePassed > options.timeoutPrintWarning && !timeoutWarned) {
           timeoutWarned = true;
           console.warn(`Program running longer than ${options.timeoutPrintWarning}ms...`);
         }
+        
         if (options.timeoutUserKill && timePassed > options.timeoutUserKill && !timeoutAlerted) {
           timeoutAlerted = true;
 
@@ -262,24 +268,56 @@ export class Machine {
 
           if (answer) {
             // Machine killed by user
-            stopMachine(currentTimePreciseNew, "kill");
+            this.stopMachine(currentTimePreciseNew, "kill");
             return;
           }
         }
+
         if (options.timeoutAutoKill && timePassed > options.timeoutAutoKill) {
           // Machine killed by timer
           console.error(`Could not run the program in under ${options.timeoutAutoKill}ms, terminating`);
-          stopMachine(currentTimePrecise, "timeout");
+          this.stopMachine(currentTimePrecise, "timeout");
+        }
+
+        // TODO
+        if (debug && this.debugBreakpoints.includes(this.programCounter)) {
+          alert("breakpoint hit! @ line " + this.programCounter);
+        }
+
+        const shouldStop = this.executeCurrentInstruction(true);
+        if (shouldStop) {
+          // Normal stop - found a HALT instruction
+          this.stopMachine(performance.now(), "halt");
         }
       }
-
-      // Normal stop - found a HALT instruction
-      stopMachine(performance.now(), "halt");
-    } catch {
-      
+    } catch (e) {
+      console.error("machine exec error:", e);
       // Exception encountered - error stop
-      stopMachine(performance.now(), "error");
+      this.stopMachine(performance.now(), "error");
     }
+  }
+
+  // Step - run one instruction
+  step() {
+    if (this.isFinished()) return;
+
+    this.stats.timer.resume();
+    this.paused = false;
+
+    try {
+      const shouldStop = this.executeCurrentInstruction(false);
+      if (shouldStop) {
+        // Normal stop - found a HALT instruction
+        this.stopMachine(performance.now(), "halt");
+      }
+    } catch (e) {
+      console.error("machine exec error:", e);
+      // Exception encountered - error stop
+      this.stopMachine(performance.now(), "error");
+    }
+
+    this.stats.timer.pause();
+    this.paused = true;
   }
 
   static runSimulation(program: Program, input: bigint[], options: { timeout: number } = { timeout: 100 }): Machine {

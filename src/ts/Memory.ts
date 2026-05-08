@@ -63,13 +63,15 @@ export class Memory {
   }
 
   updateDOMCellNow(index: bigint, value: bigint | undefined) {
-    // console.log("updateRegisterRow", index, value);
-    if (this.scrollList !== null) {
-      const row = this.scrollList.select(index);
-      if (row !== null) {
-        this.updateRegisterRowElement(row, value, true);
-      }
-    }
+    if (this.scrollList === null) return;
+
+    const listItem = this.scrollList.selectListItem(index);
+    if (listItem === null) return;
+
+    const row = select(listItem, "#register-scroll-list-row");
+    if (row === null) return;
+    
+    this.updateRegisterRowElement(row, value, true);
   }
 
   updateDOMCellLater(index: bigint) {
@@ -77,25 +79,23 @@ export class Memory {
   }
 
   refreshAllQuietlyUpdatedRegisters() {
-    if (this.scrollList !== null) {
-      // console.log("refreshAllQuietlyUpdatedRegisters", this.quietlyUpdatedRegisters);
-      this.scrollList.iterActive((listItem, index) => {
-        if (this.quietlyUpdatedRegisters.has(index)) {
-          const row = select(listItem, "#register-scroll-list-row");
-          this.updateRegisterRowElement(row, this.registers.get(index), true);
-        }
-      });
-    }
+    if (this.scrollList === null) return;
+
+    this.scrollList.iterActive((listItem, index) => {
+      if (this.quietlyUpdatedRegisters.has(index)) {
+        const row = select(listItem, "#register-scroll-list-row");
+        this.updateRegisterRowElement(row, this.registers.get(index), true);
+      }
+    });
   }
 
   refreshExistingRows() {
-    if (this.scrollList !== null) {
-      // console.log("refreshExistingRows");
-      this.scrollList.iterActive((listItem, index) => {
-        const row = select(listItem, "#register-scroll-list-row");
-        this.updateRegisterRowElement(row, this.registers.get(index), true);
-      });
-    }
+    if (this.scrollList === null) return;
+
+    this.scrollList.iterActive((listItem, index) => {
+      const row = select(listItem, "#register-scroll-list-row");
+      this.updateRegisterRowElement(row, this.registers.get(index), true);
+    });
   }
 
   private updateRegisterRowElement(row: Element, value: bigint | undefined, animate: boolean) {

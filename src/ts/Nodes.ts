@@ -9,11 +9,12 @@ export namespace Nodes {
 
   // Static elements
   export const newProgramButton = element("#new-program-button");
+  export const settingsButton = element("#settings-button");
   export const clearInputTapeButton = element("#clear-input-tape-button");
   export const editInputTapeButton = element("#edit-input-tape-button");
   export const runAllButton = element("#run-all-button");
   export const resetButton = element("#reset-button");
-  export const settingsButton = element("#settings-button");
+  export const stepButton = element("#step-button");
   export const loadProgramButtons = element("#load-program-buttons");
   export const aboutButton = element("#about-button");
   export const programListingTable = element("#program-listing-table");
@@ -68,6 +69,9 @@ export function initDOM() {
   Nodes.newProgramButton.addEventListener("click", () => {
     window.RAMMachine.machine.loadAssemblyAndReset("");
   });
+  Nodes.settingsButton.addEventListener("click", () => {
+    Dialogs.settings.showModal();
+  });
   Nodes.clearInputTapeButton.addEventListener("click", () => {
     const answer = confirm(t.nav.clearInputTapePrompt);
     if (answer) {
@@ -87,11 +91,9 @@ export function initDOM() {
   Nodes.resetButton.addEventListener("click", () => {
     window.RAMMachine.machine.reset();
   });
-
-  Nodes.settingsButton.addEventListener("click", () => {
-    Dialogs.settings.showModal();
+  Nodes.stepButton.addEventListener("click", () => {
+    window.RAMMachine.machine.step();
   });
-
   Nodes.aboutButton.addEventListener("click", () => {
     Dialogs.about.showPopover();
   });

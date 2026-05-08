@@ -41,7 +41,7 @@
         <button id="run-all-button" class="nav-button nav-button-auto"><%= t.nav.run %></button>
         <button id="reset-button" class="nav-button nav-button-auto"><%= t.nav.reset %></button>
         <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>"><%= t.nav.debugContinue %></button>
-        <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>"><%= t.nav.debugStep %></button>
+        <button id="step-button" class="nav-button nav-button-auto"><%= t.nav.debugStep %></button>
       </div>
 
       <div class="nav-buttons" id="load-program-buttons"></div>
@@ -52,7 +52,6 @@
     <main>
       <div>
         <section class="input-tape-pane">
-          <!-- input tape here -->
           <span class="centered-text"><% print(t.inputTape.header + '<span id="input-tape-length">0</span>' + t.inputTape.headerEnd) %></span>
           <div id="input-tape-container">
             <div id="input-tape"></div>
@@ -68,7 +67,7 @@
             <div id="register-scroll-list"></div>
           </div>
         </section>
-        <!-- TODO: make into tabs -->
+        <!-- TODO: make into tabs (?) -->
         <section id="program-listing-pane">
           <table id="program-listing-table">
             <colgroup>
@@ -85,9 +84,7 @@
                 <th><%= t.programListing.tableHeader.comment %></th>
               </tr>
             </thead>
-            <tbody id="program-listing">
-
-            </tbody>
+            <tbody id="program-listing"></tbody>
           </table>
         </section>
         <section id="program-text-editor-pane">
@@ -99,7 +96,6 @@
       </div>
       <div>
         <section class="output-tape-pane">
-          <!-- TODO: output tape here -->
           <span class="centered-text"><% print(t.outputTape.header + '<span id="output-tape-length">0</span>' + t.outputTape.headerEnd) %></span>
           <div id="output-tape-container">
             <div id="output-tape"></div>

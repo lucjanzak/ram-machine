@@ -46,12 +46,14 @@ export class OutputTapeArray implements OutputTape {
   }
 
   updateDOMCellNow(index: bigint, value: bigint) {
-    if (this.scrollList !== null) {
-      const cell = this.scrollList.select(index);
-      if (cell !== null) {
-        this.updateCellElement(cell, value);
-      }
-    }
+    if (this.scrollList === null) return;
+      
+    const listItem = this.scrollList.selectListItem(index);
+    if (listItem === null) return;
+
+    const cell = select(listItem, "#output-tape-scroll-list-cell");
+    if (cell === null) return;
+    this.updateCellElement(cell, value);
   }
 
   updateDOMCellLater(index: bigint) {
@@ -70,26 +72,24 @@ export class OutputTapeArray implements OutputTape {
   }
 
   refreshAllQuietlyUpdatedCells() {
-    if (this.scrollList !== null) {
-      // console.log("refreshAllQuietlyUpdatedCells", this.quietlyUpdatedCells);
-      this.scrollList.iterActive((listItem, index) => {
-        if (this.quietlyUpdatedCells.has(index)) {
-          const cell = select(listItem, "#output-tape-scroll-list-cell");
-          this.updateCellElement(cell, this.values.get(index));
-        }
-      });
-      this.updateDOMListLength();
-    }
+    if (this.scrollList === null) return;
+
+    this.scrollList.iterActive((listItem, index) => {
+      if (this.quietlyUpdatedCells.has(index)) {
+        const cell = select(listItem, "#output-tape-scroll-list-cell");
+        this.updateCellElement(cell, this.values.get(index));
+      }
+    });
+    this.updateDOMListLength();
   }
 
   refreshExistingCells() {
-    if (this.scrollList !== null) {
-      // console.log("refreshExistingCells");
-      this.scrollList.iterActive((listItem, index) => {
-        const cell = select(listItem, "#output-tape-scroll-list-cell");
-        this.updateCellElement(cell, this.values.get(index));
-      });
-    }
+    if (this.scrollList === null) return;
+    
+    this.scrollList.iterActive((listItem, index) => {
+      const cell = select(listItem, "#output-tape-scroll-list-cell");
+      this.updateCellElement(cell, this.values.get(index));
+    });
   }
 
   private updateCellElement(cell: Element, value: bigint | undefined) {

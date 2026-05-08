@@ -15,3 +15,7 @@ export function expect<T>(value: T | null | undefined, msg: string): T {
   }
   return value;
 }
+
+export function unreachable(msg?: string): never {
+  throw new Error(msg ?? "unreachable code block reached");
+}

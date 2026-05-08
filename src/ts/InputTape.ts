@@ -5,11 +5,11 @@ import { t } from "./Localization";
 import { randomBigint } from "./Memory";
 import { select, Templates, useTemplate } from "./Nodes";
 import { InputTapeUnderflowBehavior } from "./Settings";
-import { assertNever } from "./Util";
+import { assertNever, unreachable } from "./Util";
 
 export interface InputTape {
   peek(): bigint | undefined;
-  read(quiet: boolean): bigint | undefined;
+  readAndIncrement(quiet: boolean): bigint | undefined;
   readOrDefault(quiet: boolean, config: InputTapeUnderflowBehavior): bigint;
   reset(): void;
   clearAndReset(): void;
@@ -36,7 +36,7 @@ export class InputTapeArray implements InputTape {
     return this.values.get(this.currentIndex);
   }
 
-  read(quiet: boolean) {
+  readAndIncrement(quiet: boolean) {
     const value = this.values.get(this.currentIndex);
     this.currentIndex++;
     if (!quiet) {
@@ -46,10 +46,19 @@ export class InputTapeArray implements InputTape {
   }
 
   readOrDefault(quiet: boolean, config: InputTapeUnderflowBehavior) {
-    const value = this.read(quiet);
-    if (value === undefined) {
+    const peek = this.peek();
+
+    // Report an error before incrementing the currentIndex
+    if (peek === undefined) {
       if (config === "error") {
         throw new Error(`tried to read from input tape, but there is no more cells to read`);
+      }
+    }
+
+    const value = this.readAndIncrement(quiet);
+    if (value === undefined) {
+      if (config === "error") {
+        unreachable(`tried to read from input tape, but there is no more cells to read`);
       } else if (config === "zero") {
         return 0n;
       } else if (config === "random") {
@@ -78,11 +87,11 @@ export class InputTapeArray implements InputTape {
         const cell = select(listItem, "#input-tape-scroll-list-cell");
         cell.classList.remove("active");
       });
-      const listItem = this.scrollList.select(this.currentIndex);
+      const listItem = this.scrollList.selectListItem(this.currentIndex);
       if (listItem !== null) {
         const cell = select(listItem, "#input-tape-scroll-list-cell");
         if (cell !== null) {
-          cell.classList.add("active")
+          cell.classList.add("active");
         }
       }
     }

@@ -71,7 +71,7 @@ export class BigScrollList implements ElementManager {
     }
   }
 
-  select(index: bigint): HTMLElement | null {
+  selectListItem(index: bigint): HTMLElement | null {
     if (!this.isInView(index)) return null;
 
     for (const listElement of this.hostElement.children) {

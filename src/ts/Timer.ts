@@ -40,8 +40,9 @@ export class Timer {
   }
 
   resume(currentTime: DOMHighResTimeStamp = performance.now()) {
-    if (this.state === "paused") {
-      // console.warn(currentTime, this.pauseStartTime, this.totalPauseDuration);
+    if (this.state === "stopped") {
+      this.start(currentTime);
+    } else if (this.state === "paused") {
       this.totalPauseDuration += currentTime - unwrap(this.pauseStartTime);
       this.pauseStartTime = null;
       this.state = "running";
