@@ -75,8 +75,26 @@
     "reset": "Revert to Default Settings",
     "close": "Save and Close"
   },
-  "chart": {
+  "chartScreen": {
     "title": "Chart",
+    "chart": {
+      "legend": {
+        "memoryComplexity": "Memory Complexity",
+        "memoryComplexityLog": "Memory Complexity (log)",
+        "timeComplexity": "Time Complexity",
+        "timeComplexityLog": "Time Complexity (log)",
+        "realTime": "Real Time (ms)"
+      },
+      "realTimeAxis": "Real Time",
+      "realTimeAxisUnits": " ms"
+    },
+    "generateMorePoints": "Generate more points:",
+    "generate": "Generate",
+    "executionTimeoutInput": "Execution timeout:",
+    "executionTimeoutInputMs": "ms",
+    "showRealTimeAxis": "Show real-time axis",
+    "reset": "Reset to defaults",
+    "clear": "Clear",
     "close": "Close"
   },
   "about": {

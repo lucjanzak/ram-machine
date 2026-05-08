@@ -239,7 +239,7 @@
   </dialog>
 
   <dialog id="chart-window">
-    <h1><%= t.chart.title %></h1>
+    <h1><%= t.chartScreen.title %></h1>
     
     <div id="chart-container">
       <canvas id="chart-canvas"></canvas>
@@ -247,18 +247,18 @@
 
     <div>
       <form id="chart-settings-form">
-        <label for="generate-points-input">Generate more points:</label>
+        <label for="generate-points-input"><%= t.chartScreen.generateMorePoints %></label>
         <input type="number" id="generate-points-input" value="5" size="3" />
-        <button type="button" id="generate-points-button">Generate</button>
+        <button type="button" id="generate-points-button"><%= t.chartScreen.generate %></button>
         <br>
-        <label for="execution-timeout-input">Execution timeout:</label>
-        <input type="number" id="execution-timeout-input" value="100" size="6" /> ms
+        <label for="execution-timeout-input"><%= t.chartScreen.executionTimeoutInput %></label>
+        <input type="number" id="execution-timeout-input" value="100" size="6" /> <%= t.chartScreen.executionTimeoutInputMs %>
         <input type="checkbox" id="toggle-realtime-axis">
-        <label for="toggle-realtime-axis">Show real-time axis</label>
+        <label for="toggle-realtime-axis"><%= t.chartScreen.showRealTimeAxis %></label>
         <br>
-        <button type="reset">Reset to defaults</button>
-        <button type="button" id="clear-chart-button">Clear</button>
-        <button type="button" id="close-chart-button"><%= t.chart.close %></button>
+        <button type="reset"><%= t.chartScreen.reset %></button>
+        <button type="button" id="clear-chart-button"><%= t.chartScreen.clear %></button>
+        <button type="button" id="close-chart-button"><%= t.chartScreen.close %></button>
       </form>
     </div>
   </dialog>

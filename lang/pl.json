@@ -75,8 +75,26 @@
     "reset": "Przywróć ustawienia domyślne",
     "close": "Zapisz i zamknij"
   },
-  "chart": {
+  "chartScreen": {
     "title": "Wykres",
+    "chart": {
+      "legend": {
+        "memoryComplexity": "Złożoność pamięciowa",
+        "memoryComplexityLog": "Złożoność pamięciowa (log)",
+        "timeComplexity": "Złożoność czasowa",
+        "timeComplexityLog": "Złożoność czasowa (log)",
+        "realTime": "Czas rzeczywisty (ms)"
+      },
+      "realTimeAxis": "Czas rzeczywisty",
+      "realTimeAxisUnits": " ms"
+    },
+    "generateMorePoints": "Wygeneruj więcej punktów:",
+    "generate": "Generuj",
+    "executionTimeoutInput": "Limit czasu wykonywania:",
+    "executionTimeoutInputMs": "ms",
+    "showRealTimeAxis": "Pokaż oś czasu rzeczywistego",
+    "reset": "Przywróć ustawienia domyślne",
+    "clear": "Wyczyść",
     "close": "Zamknij"
   },
   "about": {

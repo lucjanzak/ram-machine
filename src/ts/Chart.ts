@@ -3,6 +3,7 @@ import { Dialogs, Nodes } from "./Nodes";
 import { Machine } from "./Machine";
 import { assertNever, unwrap } from "./Util";
 import annotationPlugin from "chartjs-plugin-annotation";
+import { t } from "./Localization";
 Chart.register(annotationPlugin);
 
 function createSimulationInputData(
@@ -57,10 +58,10 @@ export class ComplexityChart {
         position: "right",
         title: {
           display: true,
-          text: "Real Time (ms)",
+          text: t.chartScreen.chart.realTimeAxis
         },
         ticks: {
-          callback: (value) => `${value} ms`,
+          callback: (value) => `${value}${t.chartScreen.chart.realTimeAxisUnits}`,
         },
         grid: {
           display: false,
@@ -102,27 +103,27 @@ export class ComplexityChart {
         labels: data.map((row) => row.n),
         datasets: [
           {
-            label: "Memory complexity",
+            label: t.chartScreen.chart.legend.memoryComplexity,
             data: data.map((row) => row.memoryComplexity),
             yAxisID: "complexityScale",
           },
           {
-            label: "Memory complexity (log)",
+            label: t.chartScreen.chart.legend.memoryComplexityLog,
             data: data.map((row) => row.memoryComplexityLog),
             yAxisID: "complexityScale",
           },
           {
-            label: "Time complexity",
+            label: t.chartScreen.chart.legend.timeComplexity,
             data: data.map((row) => row.timeComplexity),
             yAxisID: "complexityScale",
           },
           {
-            label: "Time complexity (log)",
+            label: t.chartScreen.chart.legend.timeComplexityLog,
             data: data.map((row) => row.timeComplexityLog),
             yAxisID: "complexityScale",
           },
           {
-            label: "Real time (ms)",
+            label: t.chartScreen.chart.legend.realTime,
             data: data.map((row) => row.realTime),
             yAxisID: "realTimeScale",
             hidden: !this.showRealTimeAxis,
