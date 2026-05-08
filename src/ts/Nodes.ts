@@ -35,7 +35,8 @@ export namespace Nodes {
   export const closeSettingsButton = element("#close-settings-button");
   
   export const chartCanvas = element<HTMLCanvasElement>("#chart-canvas");
-  export const generateChartButton = element("#generate-chart-button");
+  export const generatePointsInput = element<HTMLInputElement>("#generate-points-input");
+  export const generatePointsButton = element("#generate-points-button");
   export const toggleRealTimeAxis = element<HTMLInputElement>("#toggle-realtime-axis");
   export const closeChartButton = element("#close-chart-button");
   

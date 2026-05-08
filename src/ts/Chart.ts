@@ -101,7 +101,7 @@ function initChart(data: DataPoint[], timeoutMs: number, displayRealTime: boolea
   );
 }
 
-export function addDataPointAndUpdate(dataPoint: DataPoint) {
+export function addDataPointWithoutUpdate(dataPoint: DataPoint) {
   const chart = window.RAMMachine.chart;
   if (chart === null) return;
   chart.data.labels?.push(dataPoint.n);
@@ -110,6 +110,11 @@ export function addDataPointAndUpdate(dataPoint: DataPoint) {
   chart.data.datasets[2].data.push(dataPoint.timeComplexity);
   chart.data.datasets[3].data.push(dataPoint.timeComplexityLog);
   chart.data.datasets[4].data.push(dataPoint.realTime);
+}
+
+export function updateChart() {
+  const chart = window.RAMMachine.chart;
+  if (chart === null) return;
   chart.update();
 }
 
@@ -184,23 +189,36 @@ function createSimulationInputData(n: bigint, sequence: "natural" | "positive" |
 let howManyDataPoints = 0n;
 export function initChartDOM() {
   initChart([], 100, false);
-  Nodes.generateChartButton.addEventListener("click", () => {
-    howManyDataPoints++;
-    const inputData = createSimulationInputData(howManyDataPoints, "singleValue");
-    const machine = Machine.runSimulation(window.RAMMachine.machine.getProgram(), inputData, { timeout: 100 });
-    // console.log(inputData, machine);
-    if (machine.getStopReason() !== "halt") {
-      addDataPointAndUpdate({
-        n: Number(howManyDataPoints),
-        memoryComplexity: undefined,
-        memoryComplexityLog: undefined,
-        timeComplexity: undefined,
-        timeComplexityLog: undefined,
-        realTime: machine.stats.fetchRealTime(),
-      });
-    } else {
-      addDataPointAndUpdate(machine.stats.asDataPoint(howManyDataPoints));
+  Nodes.generatePointsButton.addEventListener("click", () => {
+    const newPointsToGenerate = Nodes.generatePointsInput.valueAsNumber;
+    const startTime = Date.now();
+    const loopTimeout = 3000;
+    for (let i = 0; i < newPointsToGenerate; i++) {
+      const timePassed = Date.now() - startTime;
+      if (timePassed > loopTimeout) {
+        console.warn(`Could not generate all desired points - the process was taking more than ${loopTimeout}ms`)
+        break;
+      }
+
+
+      howManyDataPoints++;
+      const inputData = createSimulationInputData(howManyDataPoints, "singleValue");
+      const machine = Machine.runSimulation(window.RAMMachine.machine.getProgram(), inputData, { timeout: 100 });
+      // console.log(inputData, machine);
+      if (machine.getStopReason() !== "halt") {
+        addDataPointWithoutUpdate({
+          n: Number(howManyDataPoints),
+          memoryComplexity: undefined,
+          memoryComplexityLog: undefined,
+          timeComplexity: undefined,
+          timeComplexityLog: undefined,
+          realTime: machine.stats.fetchRealTime(),
+        });
+      } else {
+        addDataPointWithoutUpdate(machine.stats.asDataPoint(howManyDataPoints));
+      }
     }
+    updateChart();
   });
   Nodes.toggleRealTimeAxis.addEventListener("change", () => {
     changeRealTimeAxisVisibility(Nodes.toggleRealTimeAxis.checked);

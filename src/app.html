@@ -241,13 +241,13 @@
   <dialog id="chart-window">
     <h1><%= t.chart.title %></h1>
     
-    <div style="width: 800px;" id="chart-container">
+    <div id="chart-container">
       <canvas id="chart-canvas"></canvas>
     </div>
 
     <div>
-      From 1 to <input type="number" /> 
-      <button id="generate-chart-button">Generate</button>
+      Generate more points: <input type="number" id="generate-points-input" /> 
+      <button id="generate-points-button">Generate</button>
       <button id="close-chart-button"><%= t.chart.close %></button>
       <input type="checkbox" id="toggle-realtime-axis">
       <label for="toggle-realtime-axis">Show real-time axis</label>
