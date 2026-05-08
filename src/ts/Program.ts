@@ -1,3 +1,4 @@
+import { prefersReducedMotion } from "./app";
 import { Instruction, instructionToString } from "./Instruction";
 import { Nodes, select, Templates, useTemplate } from "./Nodes";
 import { Parser } from "./Parser";
@@ -85,13 +86,15 @@ export class Program {
     // console.log("Refreshing listing:", listingRows);
     Nodes.programListing.textContent = "";
     Nodes.programListing.appendChild(listingRows);
-    Nodes.programListingTable.animate(
-      [
-        { opacity: 0, transform: "scale(0%) rotateX(90deg)" },
-        { opacity: 1, transform: "scale(100%) rotateX(0deg)" },
-      ],
-      { duration: 500, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
-    );
+    if (!prefersReducedMotion) {
+      Nodes.programListingTable.animate(
+        [
+          { opacity: 0, transform: "scale(0%) rotateX(90deg)" },
+          { opacity: 1, transform: "scale(100%) rotateX(0deg)" },
+        ],
+        { duration: 500, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
+      );
+    }
   }
 
   static fromAssembly(assemblyText: string, hideErrors = false): Program {

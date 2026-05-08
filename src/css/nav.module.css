@@ -29,9 +29,14 @@ nav {
   background-color: transparent;
   padding: 0.5rem 1rem;
   font-size: 12pt;
-  transition: 0.2s color, 0.2s background-color;
   cursor: pointer;
   text-wrap: nowrap;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nav-button {
+    transition: 0.2s color, 0.2s background-color; 
+  }
 }
 
 .nav-button:disabled {

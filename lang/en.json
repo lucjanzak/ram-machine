@@ -72,7 +72,7 @@
       "error": "Show an error",
       "actAsHalt": "Stop the machine normally (implicit HALT instruction)"
     },
-    "reset": "Revert to Default Settings",
+    "reset": "Revert to defaults",
     "close": "Save and Close"
   },
   "chartScreen": {
@@ -93,7 +93,7 @@
     "executionTimeoutInput": "Execution timeout:",
     "executionTimeoutInputMs": "ms",
     "showRealTimeAxis": "Show real-time axis",
-    "reset": "Reset to defaults",
+    "reset": "Revert to defaults",
     "clear": "Clear",
     "close": "Close"
   },

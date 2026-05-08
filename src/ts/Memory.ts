@@ -1,3 +1,4 @@
+import { prefersReducedMotion } from "./app";
 import { SparseArray } from "./BigArray";
 import { BigScrollList } from "./BigScrollList";
 import { t } from "./Localization";
@@ -103,7 +104,7 @@ export class Memory {
     if (value === undefined) {
       valueSpan.textContent = t.registers.uninitialized;
       valueSpan.classList.add("uninitialized");
-      if (animate) {
+      if (animate && !prefersReducedMotion) {
         row.animate(
           [
             { opacity: 0, transform: "scaleX(0%)" },
@@ -121,7 +122,7 @@ export class Memory {
         // TODO: fix the background color becoming white instead of the default row color (depending on odd and even)
         row.animate(
           [
-            { backgroundColor: "#ff08", color: "blue", transform: "scale(120%)" },
+            { backgroundColor: "#ff08", color: "blue", transform: prefersReducedMotion ? "scale(100%)" : "scale(120%)" },
             { backgroundColor: "#ff08", color: "blue", transform: "scale(100%)" },
             { backgroundColor: "#ff08", color: "blue", transform: "scale(100%)" },
             { backgroundColor: "transparent", color: "initial", transform: "scale(100%)" },
