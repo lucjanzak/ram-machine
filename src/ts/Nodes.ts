@@ -1,3 +1,4 @@
+import { initChartDOM } from "./Chart";
 import { t } from "./Localization";
 import { initSettingsDOM, InputTapeUnderflowBehavior, MachineSettings, ProgramCounterOutOfBoundsBehavior, UninitializedRegisterReadBehavior } from "./Settings";
 import { expect } from "./Util";
@@ -16,6 +17,7 @@ export namespace Nodes {
   export const resetButton = element("#reset-button");
   export const stepButton = element("#step-button");
   export const loadProgramButtons = element("#load-program-buttons");
+  export const chartsButton = element("#charts-button");
   export const aboutButton = element("#about-button");
   export const programListingTable = element("#program-listing-table");
   // export const programTextEditorBasic = element<HTMLTextAreaElement>("#program-text-editor-basic");
@@ -27,11 +29,17 @@ export namespace Nodes {
   export const inputTapeLength = element("#input-tape-length");
   export const outputTape = element<HTMLElement>("#output-tape");
   export const outputTapeLength = element("#output-tape-length");
-  export const bigScrollListTest = element<HTMLElement>("#big-scroll-list-test");
 
   export const settingsForm = element<HTMLFormElement>("#settings-form");
   export const resetSettingsButton = element("#reset-settings-button");
   export const closeSettingsButton = element("#close-settings-button");
+  
+  export const chartCanvas = element<HTMLCanvasElement>("#chart-canvas");
+  export const generateChartButton = element("#generate-chart-button");
+  export const toggleRealTimeAxis = element<HTMLInputElement>("#toggle-realtime-axis");
+  export const closeChartButton = element("#close-chart-button");
+  
+  export const bigScrollListTest = element<HTMLElement>("#big-scroll-list-test");
 }
 
 export namespace Templates {
@@ -54,6 +62,7 @@ export namespace Dialogs {
   }
 
   export const settings = dialog("#settings");
+  export const chartWindow = dialog("#chart-window");
   export const about = dialog("#about");
 }
 
@@ -94,9 +103,13 @@ export function initDOM() {
   Nodes.stepButton.addEventListener("click", () => {
     window.RAMMachine.machine.step();
   });
+  Nodes.chartsButton.addEventListener("click", () => {
+    Dialogs.chartWindow.showModal();
+  });
   Nodes.aboutButton.addEventListener("click", () => {
     Dialogs.about.showPopover();
   });
 
+  initChartDOM();
   initSettingsDOM();
 }

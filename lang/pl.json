@@ -23,6 +23,7 @@
     "reset": "Reset",
     "debugContinue": "Kontynuuj",
     "debugStep": "Wykonaj krok",
+    "charts": "Wykresy",
     "about": "O programie"
   },
   "inputTape": {
@@ -73,6 +74,10 @@
     },
     "reset": "Przywróć ustawienia domyślne",
     "close": "Zapisz i zamknij"
+  },
+  "chart": {
+    "title": "Wykres",
+    "close": "Zamknij"
   },
   "about": {
     "author": "Autor:",

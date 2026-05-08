@@ -43,9 +43,9 @@
         <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>"><%= t.nav.debugContinue %></button>
         <button id="step-button" class="nav-button nav-button-auto"><%= t.nav.debugStep %></button>
       </div>
-
       <div class="nav-buttons" id="load-program-buttons"></div>
-      <div>
+      <div class="nav-buttons">
+        <button id="charts-button" class="nav-button nav-button-auto"><%= t.nav.charts %></button>
         <button id="about-button" class="nav-button nav-button-auto"><%= t.nav.about %></button>
       </div>
     </nav>
@@ -236,6 +236,22 @@
         <button type="button" id="close-settings-button"><%= t.settings.close %></button>
       </div>
     </form>
+  </dialog>
+
+  <dialog id="chart-window">
+    <h1><%= t.chart.title %></h1>
+    
+    <div style="width: 800px;" id="chart-container">
+      <canvas id="chart-canvas"></canvas>
+    </div>
+
+    <div>
+      From 1 to <input type="number" /> 
+      <button id="generate-chart-button">Generate</button>
+      <button id="close-chart-button"><%= t.chart.close %></button>
+      <input type="checkbox" id="toggle-realtime-axis">
+      <label for="toggle-realtime-axis">Show real-time axis</label>
+    </div>
   </dialog>
 
   <dialog id="about" popover="auto">

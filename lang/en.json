@@ -23,6 +23,7 @@
     "reset": "Reset",
     "debugContinue": "Continue",
     "debugStep": "Step",
+    "charts": "Charts",
     "about": "About"
   },
   "inputTape": {
@@ -73,6 +74,10 @@
     },
     "reset": "Revert to Default Settings",
     "close": "Save and Close"
+  },
+  "chart": {
+    "title": "Chart",
+    "close": "Close"
   },
   "about": {
     "author": "Author:",

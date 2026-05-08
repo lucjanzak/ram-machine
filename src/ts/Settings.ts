@@ -15,12 +15,12 @@ export class MachineSettings {
   }
 
   static parseUninitializedRegisterReadBehavior(input: FormDataEntryValue | null): UninitializedRegisterReadBehavior | null {
-      if (input === "error" || input === "zero" || input === "random" || input === "superpositionCollapse") return input;
+    if (input === "error" || input === "zero" || input === "random" || input === "superpositionCollapse") return input;
     return null;
   }
 
   static parseProgramCounterOutOfBoundsBehavior(input: FormDataEntryValue | null): ProgramCounterOutOfBoundsBehavior | null {
-      if (input === "error" || input === "actAsHalt") return input;
+    if (input === "error" || input === "actAsHalt") return input;
     return null;
   }
 

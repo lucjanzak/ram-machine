@@ -1,4 +1,5 @@
 import { SparseArray } from "./BigArray";
+import { DataPoint } from "./Chart";
 import { instructionComplexity, lengthOfNumber } from "./Complexity";
 import { ALL_INSTRUCTIONS, Instruction } from "./Instruction";
 import { Nodes, select, Templates, useTemplate } from "./Nodes";
@@ -40,7 +41,7 @@ export class Statistics {
   }
 
   fetchMemoryComplexitySimple() {
-    return this.memoryTracker.size();
+    return BigInt(this.memoryTracker.size());
   }
 
   fetchMemoryComplexityLog() {
@@ -53,6 +54,17 @@ export class Statistics {
 
   fetchCounter(instruction: (typeof ALL_INSTRUCTIONS)[number]) {
     return this.instructionCounters[instruction];
+  }
+
+  asDataPoint(label: bigint): DataPoint {
+    return {
+      n: Number(label),
+      memoryComplexity: Number(this.fetchMemoryComplexitySimple()),
+      memoryComplexityLog: Number(this.fetchMemoryComplexityLog()),
+      timeComplexity: Number(this.fetchTimeComplexitySimple()),
+      timeComplexityLog: Number(this.fetchTimeComplexityLog()),
+      realTime: this.fetchRealTime(),
+    }
   }
 
   static createEmptyCounters(): { [key in (typeof ALL_INSTRUCTIONS)[number]]: bigint } {

@@ -45,6 +45,10 @@ export class Machine {
     return this.stopReason !== null;
   }
 
+  getStopReason() {
+    return this.stopReason;
+  }
+
   reset() {
     this.running = false;
     this.paused = false;
