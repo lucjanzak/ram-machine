@@ -62,7 +62,7 @@ function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage 
       ],
 
       after_writeop_keyword: [{ include: "@whitespace" }, [/\d+/, "number", "root"], [/\*\d+/, "number", "root"], [/.*/, "invalid", "root"]],
-      after_readop_keyword: [[/=\d+/, "number", "root"], { include: "@after_writeop_keyword" }],
+      after_readop_keyword: [[/=-?\d+/, "number", "root"], { include: "@after_writeop_keyword" }],
       after_jump_keyword: [{ include: "@whitespace" }, [/\s*[\p{L}_][\p{L}_0-9\s]*/u, "tag", "root"], [/.*/, "invalid", "root"]],
       after_noop_keyword: [{ include: "@whitespace" }, [/.*/, "invalid", "root"]],
     },

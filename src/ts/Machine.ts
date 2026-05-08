@@ -325,9 +325,9 @@ export class Machine {
     this.paused = true;
   }
 
-  static runSimulation(program: Program, input: bigint[], options: { timeout: number } = { timeout: 100 }, settings: MachineSettings = MachineSettings.simulationDefaults()): Machine {
+  static runSimulation(program: Program, inputTape: InputTape, options: { timeout: number } = { timeout: 100 }, settings: MachineSettings = MachineSettings.simulationDefaults()): Machine {
     const machine = new Machine(program, true, settings);
-    machine.inputTape = InputTapeArray.fromValues(input);
+    machine.inputTape = inputTape;
     machine.runAll(false, { timeoutPrintWarning: undefined, timeoutUserKill: undefined, timeoutAutoKill: options.timeout });
     return machine;
   }

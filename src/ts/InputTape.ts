@@ -7,14 +7,40 @@ import { select, Templates, useTemplate } from "./Nodes";
 import { InputTapeUnderflowBehavior } from "./Settings";
 import { assertNever, unreachable } from "./Util";
 
-export interface InputTape {
-  peek(): bigint | undefined;
-  readAndIncrement(quiet: boolean): bigint | undefined;
-  readOrDefault(quiet: boolean, config: InputTapeUnderflowBehavior): bigint;
-  reset(): void;
-  clearAndReset(): void;
-  asString(): string;
-  refreshActiveCell(): void;
+export abstract class InputTape {
+  abstract peek(): bigint | undefined;
+  abstract read(quiet: boolean): bigint | undefined;
+  readOrDefault(quiet: boolean, config: InputTapeUnderflowBehavior): bigint {
+    const peek = this.peek();
+
+    // Report an error before incrementing the currentIndex
+    if (peek === undefined) {
+      if (config === "error") {
+        throw new Error(`tried to read from input tape, but there is no more cells to read`);
+      }
+    }
+
+    const value = this.read(quiet);
+    if (value === undefined) {
+      if (config === "error") {
+        unreachable(`tried to read from input tape, but there is no more cells to read`);
+      } else if (config === "zero") {
+        return 0n;
+      } else if (config === "random") {
+        return randomBigint();
+      } else {
+        assertNever(config);
+      }
+    } else {
+      return value;
+    }
+  }
+  abstract reset(): void;
+  clearAndReset(): void {
+    this.reset();
+  }
+  abstract asString(): string;
+  refreshActiveCell(): void {}
 }
 
 function valuesFromString(text: string) {
@@ -40,7 +66,7 @@ function valuesFromString(text: string) {
   return values;
 }
 
-export class InputTapeArray implements InputTape {
+export class InputTapeArray extends InputTape {
   protected values = new ContiguousArray<bigint>();
   protected currentIndex: bigint = 0n;
 
@@ -48,36 +74,10 @@ export class InputTapeArray implements InputTape {
     return this.values.get(this.currentIndex);
   }
 
-  readAndIncrement(_quiet: boolean) {
+  read(_quiet: boolean) {
     const value = this.values.get(this.currentIndex);
     this.currentIndex++;
     return value;
-  }
-  
-  readOrDefault(quiet: boolean, config: InputTapeUnderflowBehavior) {
-    const peek = this.peek();
-
-    // Report an error before incrementing the currentIndex
-    if (peek === undefined) {
-      if (config === "error") {
-        throw new Error(`tried to read from input tape, but there is no more cells to read`);
-      }
-    }
-
-    const value = this.readAndIncrement(quiet);
-    if (value === undefined) {
-      if (config === "error") {
-        unreachable(`tried to read from input tape, but there is no more cells to read`);
-      } else if (config === "zero") {
-        return 0n;
-      } else if (config === "random") {
-        return randomBigint();
-      } else {
-        assertNever(config);
-      }
-    } else {
-      return value;
-    }
   }
   
   reset() {
@@ -85,7 +85,7 @@ export class InputTapeArray implements InputTape {
     this.refreshActiveCell();
   }
 
-  clearAndReset() {
+  override clearAndReset() {
     this.values = new ContiguousArray();
     this.reset();
   }
@@ -94,8 +94,6 @@ export class InputTapeArray implements InputTape {
     return this.values.asArray().join(",");
   }
 
-  refreshActiveCell() {  }
-  
   static fromString(text: string): InputTapeArray {
     const values = valuesFromString(text);
     return InputTapeArray.fromValues(values);
@@ -124,8 +122,8 @@ export class InputTapeArrayDOM extends InputTapeArray {
   // 3n => three empty cells is the recommended minimum; it fixes the Tab issue fully
   static readonly EXTRA_ELEMENTS_ON_VISIBLE_TAPE = 3n as const;
 
-  override readAndIncrement(quiet: boolean) {
-    const value = super.readAndIncrement(quiet);
+  override read(quiet: boolean) {
+    const value = super.read(quiet);
     if (!quiet) {
       this.refreshActiveCell();
     }
@@ -287,6 +285,196 @@ export class InputTapeArrayDOM extends InputTapeArray {
     this.updateListLength();
   }
 }
+
+export class InputTapeGenerator extends InputTape {
+  private activeGenerator: Generator<bigint, void, void>;
+  private nextValue: null | bigint | undefined = null;
+
+  private getNextValueFromGenerator(): bigint | undefined {
+    if (this.nextValue === null) {
+      const it = this.activeGenerator.next();
+      if (it.done) {
+        this.nextValue = undefined;
+      } else {
+        this.nextValue = it.value;
+      }
+      return this.nextValue;
+    } else {
+      return this.nextValue;
+    }
+  }
+
+  peek(): bigint | undefined {
+    return this.getNextValueFromGenerator();
+  }
+
+  read(quiet: boolean): bigint | undefined {
+    const nextValue = this.getNextValueFromGenerator();
+    if (this.nextValue !== undefined) {
+      this.nextValue = null;
+    }
+    return nextValue;
+  }
+
+  reset(): void {
+    this.activeGenerator = this.createGenerator();
+  }
+
+  asString(): string {
+    const newGenerator = this.createGenerator();
+    return newGenerator.take(10000).toArray().join(",");
+  }
+
+  constructor(private createGenerator: () => Generator<bigint, void, void>) {
+    super();
+    this.activeGenerator = this.createGenerator();
+    const a = function* (a: number, b: number) {
+      yield 1n;
+      yield 2n;
+      yield 3n;
+      return;
+    }
+  }
+}
+
+export type SimulationInputTapeSettings = {
+  type: "natural" | "positive" | "negative" | "singleValue" | "constant" | "prime" | "composite"
+} | {
+  type: "arithmetic" | "geometric",
+  from: bigint,
+  step: bigint
+} | {
+  type: "random",
+  minInclusive: bigint,
+  maxExclusive: bigint,
+} | {
+  type: "custom",
+  tapeList: bigint[][]
+}
+
+export function createSimulationInputTape(
+  x: bigint,
+  sequence: SimulationInputTapeSettings,
+): InputTape {
+  function genRange(from: bigint, to: bigint | undefined, step: bigint = 1n) {
+    if (step > 0n) {
+      return function*() {
+        for (let i = from; to === undefined || i <= to; i += step) {
+          yield i;
+        }
+      }
+    } else {
+      return function*() {
+        for (let i = from; to === undefined || i >= to; i += step) {
+          yield i;
+        }
+      }
+    }
+  }
+
+  function genArithmeticSeq(from: bigint, step: bigint, length: bigint | undefined) {
+    return function*() {
+      let value = from;
+      for (let i = 0; length === undefined || i < length; i++) {
+        yield value;
+        value += step;
+      }
+    }
+  }
+
+  function genGeometricSeq(from: bigint, step: bigint, length: bigint | undefined) {
+    return function*() {
+      let value = from;
+      for (let i = 0; length === undefined || i < length; i++) {
+        yield value;
+        value *= step;
+      }
+    }
+  }
+
+  function genConst(num: bigint, length: bigint | undefined) {
+    return function*() {
+      for (let i = 0; length === undefined || i < length; i++) {
+        yield num;
+      }
+    }
+  }
+
+  function genRandom(minRandValue: bigint, maxRandValue: bigint, length: bigint | undefined) {
+    return function*() {
+      for (let i = 0; length === undefined || i < length; i++) {
+        yield minRandValue + randomBigint(maxRandValue - minRandValue);
+      }
+    }
+  }
+
+  function isPrime(i: bigint) {
+    for (let j = 2n, sqrt = Math.sqrt(Number(i)); j <= sqrt; j++) {
+      if (i % j === 0n) {
+        return false;
+      }
+    }
+    return i > 1;
+  }
+
+  function genPrime(length: bigint | undefined) {
+    return function*() {
+      let x = 2n;
+      for (let i = 0; length === undefined || i < length; i++) {
+        while (!isPrime(x)) {
+          x++;
+        }
+        yield x;
+        x++;
+      }
+    }
+  }
+
+  function genComposite(length: bigint | undefined) {
+    return function*() {
+      let x = 2n;
+      for (let i = 0; length === undefined || i < length; i++) {
+        while (isPrime(x)) {
+          x++;
+        }
+        yield x;
+        x++;
+      }
+    }
+  }
+
+  if (sequence.type === "natural") {
+    return new InputTapeGenerator(genRange(0n, x));
+  } else if (sequence.type === "positive") {
+    return new InputTapeGenerator(genRange(1n, x));
+  } else if (sequence.type === "negative") {
+    return new InputTapeGenerator(genRange(-1n, -x, -1n));
+  } else if (sequence.type === "singleValue") {
+    return new InputTapeGenerator(genConst(x, 1n));
+  } else if (sequence.type === "constant") {
+    return new InputTapeGenerator(genConst(x, undefined));
+  } else if (sequence.type === "prime") {
+    return new InputTapeGenerator(genPrime(x));
+  } else if (sequence.type === "composite") {
+    return new InputTapeGenerator(genComposite(x));
+  } else if (sequence.type === "arithmetic") {
+    return new InputTapeGenerator(genArithmeticSeq(sequence.from, sequence.step, x));
+  } else if (sequence.type === "geometric") {
+    return new InputTapeGenerator(genGeometricSeq(sequence.from, sequence.step, x));
+  } else if (sequence.type === "random") {
+    return new InputTapeGenerator(genRandom(sequence.minInclusive, sequence.maxExclusive, x));
+  } else if (sequence.type === "custom") {
+    const values = sequence.tapeList.at(Number(x));
+    if (values === undefined) {
+      return InputTapeArray.fromValues([]);
+    } else {
+      return InputTapeArray.fromValues(values);
+    }
+  } else {
+    assertNever(sequence.type);
+  }
+}
+
 
 // export class InputTapeMock implements InputTape {
 //   private currentIndex: bigint = 0n;

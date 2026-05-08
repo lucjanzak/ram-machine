@@ -4,32 +4,9 @@ import { Machine } from "./Machine";
 import { assertNever, unwrap } from "./Util";
 import annotationPlugin from "chartjs-plugin-annotation";
 import { t } from "./Localization";
+import { createSimulationInputTape, InputTape, InputTapeGenerator } from "./InputTape";
+import { randomBigint } from "./Memory";
 Chart.register(annotationPlugin);
-
-function createSimulationInputData(
-  n: bigint,
-  sequence: "natural" | "positive" | "singleValue" | "constant",
-): bigint[] {
-  if (sequence === "natural") {
-    let naturalNumbers = [];
-    for (let i = 0n; i < n; i++) {
-      naturalNumbers.push(i);
-    }
-    return naturalNumbers;
-  } else if (sequence === "positive") {
-    let positiveNumbers = [];
-    for (let i = 1n; i <= n; i++) {
-      positiveNumbers.push(i);
-    }
-    return positiveNumbers;
-  } else if (sequence === "singleValue") {
-    return [n];
-  } else if (sequence === "constant") {
-    return Array(1000).fill(n);
-  } else {
-    assertNever(sequence);
-  }
-}
 
 export type DataPoint = {
   n: number;
@@ -193,13 +170,12 @@ export class ComplexityChart {
       }
 
       this.currentXPosition++;
-      const inputData = createSimulationInputData(
-        this.currentXPosition,
-        "singleValue",
-      );
+      // TODO: make it possible to put the sequence (of prime numbers for example) as a singlevalue sequence.
+      const inputTape = createSimulationInputTape(this.currentXPosition, {type: "prime"});
+      // console.log(inputTape);
       const machine = Machine.runSimulation(
         window.RAMMachine.machine.getProgram(),
-        inputData,
+        inputTape,
         { timeout: this.timeoutMs },
       );
       // console.log(inputData, machine);

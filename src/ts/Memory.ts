@@ -5,8 +5,8 @@ import { select, Templates, useTemplate } from "./Nodes";
 import { UninitializedRegisterReadBehavior } from "./Settings";
 import { assertNever } from "./Util";
 
-export function randomBigint() {
-  const rand = BigInt(Math.floor(Math.random() * 10000));
+export function randomBigint(to: bigint = 10000n) {
+  const rand = BigInt(Math.floor(Math.random() * Number(to)));
   console.trace("randomBigint: ", rand);
   return rand;
 }

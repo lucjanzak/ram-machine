@@ -21,7 +21,10 @@ export class Parser {
   parseAnyOperand(operand: string): ReadableOperand {
     if (operand.startsWith("=")) {
       const value = this.parseBigInt(operand.slice(1));
-      // if (value < 0) throw new Error("immediate value cannot be negative"); // TODO
+
+      // TODO: I don't know if it should be allowed to use negative literals, or if it should report an error. For now, this is allowed.
+      // If this is ever changed, it also needs to be changed in the Monaco language definition.
+      // if (value < 0) throw new Error("immediate value cannot be negative");
       return {
         type: "immediate",
         value,
@@ -106,7 +109,7 @@ export class Parser {
     });
     const [mnemonicSegment, ...operandSegments] = lineWithoutLabel.trim().split(/\s+/);
     const mnemonic = mnemonicSegment.trim().toUpperCase();
-    const operand = operandSegments.join(" ").trim(); // TODO: this doesn't preserve the operand exactly; the original operand could've been separated by tabs for example
+    const operand = operandSegments.join(" ").trim(); // TODO: this doesn't preserve the operand exactly; the original operand could've been separated by tabs for example, or varying levels of spaces.
     const instruction = mnemonic.length > 0 ? this.parseInstruction(mnemonic, operand) : null;
     return {
       labels,
