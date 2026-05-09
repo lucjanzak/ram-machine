@@ -2,7 +2,7 @@ import { SparseArray } from "./BigArray";
 import { BigScrollList } from "./BigScrollList";
 import { t } from "./Localization";
 import { select, Templates, useTemplate } from "./Nodes";
-import { animationsEnabled, UninitializedRegisterReadBehavior } from "./Settings";
+import { preferences, UninitializedRegisterReadBehavior } from "./Settings";
 import { assertNever } from "./Util";
 
 export function randomBigint(to: bigint = 10000n) {
@@ -103,7 +103,7 @@ export class Memory {
     if (value === undefined) {
       valueSpan.textContent = t.registers.uninitialized;
       valueSpan.classList.add("uninitialized");
-      if (animate && animationsEnabled()) {
+      if (animate && preferences.getAnimationsEnabled()) {
         row.animate(
           [
             { opacity: 0, transform: "scaleX(0%)" },
@@ -121,7 +121,7 @@ export class Memory {
         // TODO: fix the background color becoming white instead of the default row color (depending on odd and even)
         row.animate(
           [
-            { backgroundColor: "#ff08", color: "blue", transform: animationsEnabled() ? "scale(120%)" : "scale(100%)" },
+            { backgroundColor: "#ff08", color: "blue", transform: preferences.getAnimationsEnabled() ? "scale(120%)" : "scale(100%)" },
             { backgroundColor: "#ff08", color: "blue", transform: "scale(100%)" },
             { backgroundColor: "#ff08", color: "blue", transform: "scale(100%)" },
             { backgroundColor: "transparent", color: "initial", transform: "scale(100%)" },

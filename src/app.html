@@ -267,8 +267,8 @@
       <canvas id="chart-canvas"></canvas>
     </div>
 
-    <div>
-      <form id="chart-settings-form">
+    <form id="chart-settings-form">
+      <div>
         <label for="generate-points-input"><%= t.chartScreen.generateMorePoints %></label>
         <input type="number" id="generate-points-input" value="5" size="3" />
         <button type="button" id="generate-points-button"><%= t.chartScreen.generate %></button>
@@ -277,12 +277,13 @@
         <input type="number" id="execution-timeout-input" value="100" size="6" /> <%= t.chartScreen.executionTimeoutInputMs %>
         <input type="checkbox" id="toggle-realtime-axis">
         <label for="toggle-realtime-axis"><%= t.chartScreen.showRealTimeAxis %></label>
-        <br>
+      </div>
+      <div>
         <button type="reset"><%= t.chartScreen.reset %></button>
         <button type="button" id="clear-chart-button"><%= t.chartScreen.clear %></button>
         <button type="button" id="close-chart-button"><%= t.chartScreen.close %></button>
-      </form>
-    </div>
+      </div>
+    </form>
   </dialog>
 
   <dialog id="about" popover="auto">

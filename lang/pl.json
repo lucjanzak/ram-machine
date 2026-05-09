@@ -55,7 +55,7 @@
   "settings": {
     "title": "Ustawienia",
     "sections": {
-      "machineEmulation": "Emulacja maszyny",
+      "machineEmulation": "Ustawienia emulacji",
       "preferences": "Preferencje"
     },
     "inputTapeUnderflow": {

@@ -12,7 +12,6 @@ import { testingArea } from "./testing";
 import * as monaco from "monaco-editor";
 import "../css/index.module.css";
 import { ComplexityChart, initChart } from "./Chart";
-import { Chart } from "chart.js";
 
 const machine = new Machine();
 const editor = createEditor();

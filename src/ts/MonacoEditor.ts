@@ -1,8 +1,7 @@
 import * as monaco from "monaco-editor";
 import { Nodes } from "./Nodes";
 import { DEFAULT_PROGRAM_ASSEMBLY } from "./Examples";
-
-const showSnippets = true; // TODO: add to config
+import { preferences } from "./Settings";
 
 function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage {
   return {
@@ -135,7 +134,7 @@ export function createEditor(): monaco.editor.IStandaloneCodeEditor {
         endColumn: word.endColumn,
       };
 
-      const snippets: monaco.languages.CompletionItem[] = showSnippets
+      const snippets: monaco.languages.CompletionItem[] = preferences.getCodeSnippetsEnabled()
         ? [
             ...snippetsSource.map(
               ([label, detail, insertText]): monaco.languages.CompletionItem => ({

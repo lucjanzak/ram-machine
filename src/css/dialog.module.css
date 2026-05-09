@@ -12,8 +12,13 @@ dialog:open::backdrop {
   background-color: #0000003f;
 }
 
-dialog > h1 {
-  margin-block-start: 0.5rem;
+dialog h1 {
+  margin-block: 0.5rem;
+}
+
+dialog h3 {
+  color: gray;
+  font-weight: 400;
 }
 
 #about {
@@ -36,4 +41,11 @@ dialog > h1 {
   height: 0;
   flex-grow: 1;
   position: relative;
+}
+
+#chart-settings-form {
+  display: flex;
+  margin-top: 1rem;
+  justify-content: space-between;
+  align-items: flex-end;
 }

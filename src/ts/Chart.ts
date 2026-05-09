@@ -5,7 +5,7 @@ import { unwrap } from "./Util";
 import annotationPlugin from "chartjs-plugin-annotation";
 import { t } from "./Localization";
 import { createSimulationInputTape } from "./InputTape";
-import { animationsEnabled } from "./Settings";
+import { preferences } from "./Settings";
 Chart.register(annotationPlugin);
 
 export type DataPoint = {
@@ -118,10 +118,10 @@ export class ComplexityChart {
       },
     });
 
-    this.changeAnimationEnabled(animationsEnabled());
+    this.setAnimationsEnabled(preferences.getAnimationsEnabled());
   }
 
-  changeAnimationEnabled(enabled: boolean) {
+  setAnimationsEnabled(enabled: boolean) {
     const activeTransition = this.chart.options.transitions?.active?.animation;
     if (activeTransition !== undefined) {
       activeTransition.duration = enabled ? 200 : 0;

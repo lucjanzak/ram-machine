@@ -41,35 +41,60 @@ export class MachineSettings {
   }
 }
 
-
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-export function updateSettingsDOM(settings: MachineSettings, animations: boolean) {
-  select<HTMLInputElement>(Nodes.settingsForm, `#input-tape-underflow-${settings.inputTapeUnderflow}`).checked = true;
-  select<HTMLInputElement>(Nodes.settingsForm, `#uninitialized-register-read-${settings.uninitializedRegisterRead}`).checked = true;
-  select<HTMLInputElement>(Nodes.settingsForm, `#program-counter-out-of-bounds-${settings.programCounterOutOfBounds}`).checked = true;
-  if (animations) {
-    select<HTMLInputElement>(Nodes.settingsForm, `#animations-enable`).checked = true;
-  } else {
-    select<HTMLInputElement>(Nodes.settingsForm, `#animations-disable`).checked = true;
-  }
-}
+export class Preferences {
+  // Placeholder values, defaults are in revertToDefaults();
+  private animationsEnabled = false;
+  private codeSnippetsEnabled = false;
 
-export function updateDefaultSettingsDOM(defaultSettings: MachineSettings, animations: boolean) {
-  select<HTMLInputElement>(Nodes.settingsForm, `#input-tape-underflow-${defaultSettings.inputTapeUnderflow}`).defaultChecked = true;
-  select<HTMLInputElement>(Nodes.settingsForm, `#uninitialized-register-read-${defaultSettings.uninitializedRegisterRead}`).defaultChecked = true;
-  select<HTMLInputElement>(Nodes.settingsForm, `#program-counter-out-of-bounds-${defaultSettings.programCounterOutOfBounds}`).defaultChecked = true;
-  if (animations) {
-    select<HTMLInputElement>(Nodes.settingsForm, `#animations-enable`).defaultChecked = true;
-  } else {
-    select<HTMLInputElement>(Nodes.settingsForm, `#animations-disable`).defaultChecked = true;
+  static loadOrNew() {
+    const item = localStorage.getItem("RAMMachine.preferences");
+    if (item === null) {
+      return new Preferences();
+    } else {
+      return Preferences.loadFromJSON(item);
+    }
   }
-}
 
-let _animationsEnabled = false;
-function changeAnimationEnabled(enabled: boolean) {
-    _animationsEnabled = enabled;
-    if (_animationsEnabled) {
+  static loadFromJSON(jsonText: string) {
+    const preferences = new Preferences();
+    const json = JSON.parse(jsonText);
+    if (typeof json.animationsEnabled === "boolean") {
+      preferences.setAnimationsEnabled(json.animationsEnabled);
+    }
+    if (typeof json.codeSnippetsEnabled === "boolean") {
+      preferences.setCodeSnippetsEnabled(json.codeSnippetsEnabled);
+    }
+    return preferences;
+  }
+
+  saveToLocalStorage() {
+    localStorage.setItem("RAMMachine.preferences", JSON.stringify({
+      animationsEnabled: (this.animationsEnabled === !prefersReducedMotion) ? undefined : this.animationsEnabled,
+      codeSnippetsEnabled: this.codeSnippetsEnabled
+    }));
+    console.trace("save", localStorage.getItem("RAMMachine.preferences"));
+  }
+
+  constructor() {
+    this.revertToDefaults();
+  }
+
+  setFromForm(formData: FormData) {
+    this.setAnimationsEnabled(formData.get("animations-toggle") === "enable");
+    this.setCodeSnippetsEnabled(formData.get("monaco-editor-snippets-toggle") === "on");
+    this.saveToLocalStorage();
+  }
+
+  revertToDefaults() {
+    this.setAnimationsEnabled(!prefersReducedMotion);
+    this.setCodeSnippetsEnabled(false);
+  }
+
+  setAnimationsEnabled(enabled: boolean) {
+    this.animationsEnabled = enabled;
+    if (this.animationsEnabled) {
       document.body.classList.add("animations-enabled");
       document.body.classList.add("monaco-enable-motion");
       document.body.classList.remove("animations-disabled");
@@ -80,29 +105,69 @@ function changeAnimationEnabled(enabled: boolean) {
       document.body.classList.remove("animations-enabled");
       document.body.classList.remove("monaco-enable-motion");
     }
-    window.RAMMachine.chart.changeAnimationEnabled(enabled);
+
+    // This function may get called before window.RAMMachine is initialized
+    if (window.RAMMachine !== undefined) {
+      window.RAMMachine.chart.setAnimationsEnabled(enabled);
+    }
+  }
+
+  getAnimationsEnabled() {
+    return this.animationsEnabled;
+  }
+
+  setCodeSnippetsEnabled(enabled: boolean) {
+    this.codeSnippetsEnabled = enabled;
+  }
+
+  getCodeSnippetsEnabled() {
+    return this.codeSnippetsEnabled;
+  }
 }
 
-export function animationsEnabled() {
-  return _animationsEnabled;
+
+export function updateSettingsDOM(settings: MachineSettings, preferences: Preferences) {
+  select<HTMLInputElement>(Nodes.settingsForm, `#input-tape-underflow-${settings.inputTapeUnderflow}`).checked = true;
+  select<HTMLInputElement>(Nodes.settingsForm, `#uninitialized-register-read-${settings.uninitializedRegisterRead}`).checked = true;
+  select<HTMLInputElement>(Nodes.settingsForm, `#program-counter-out-of-bounds-${settings.programCounterOutOfBounds}`).checked = true;
+  if (preferences.getAnimationsEnabled()) {
+    select<HTMLInputElement>(Nodes.settingsForm, `#animations-enable`).checked = true;
+  } else {
+    select<HTMLInputElement>(Nodes.settingsForm, `#animations-disable`).checked = true;
+  }
+  select<HTMLInputElement>(Nodes.settingsForm, `#monaco-editor-snippets-checkbox`).checked = preferences.getCodeSnippetsEnabled();
 }
 
+export function updateDefaultSettingsDOM(defaultSettings: MachineSettings, defaultPreferences: Preferences) {
+  select<HTMLInputElement>(Nodes.settingsForm, `#input-tape-underflow-${defaultSettings.inputTapeUnderflow}`).defaultChecked = true;
+  select<HTMLInputElement>(Nodes.settingsForm, `#uninitialized-register-read-${defaultSettings.uninitializedRegisterRead}`).defaultChecked = true;
+  select<HTMLInputElement>(Nodes.settingsForm, `#program-counter-out-of-bounds-${defaultSettings.programCounterOutOfBounds}`).defaultChecked = true;
+  if (preferences.getAnimationsEnabled()) {
+    select<HTMLInputElement>(Nodes.settingsForm, `#animations-enable`).defaultChecked = true;
+  } else {
+    select<HTMLInputElement>(Nodes.settingsForm, `#animations-disable`).defaultChecked = true;
+  }
+  select<HTMLInputElement>(Nodes.settingsForm, `#monaco-editor-snippets-checkbox`).defaultChecked = preferences.getCodeSnippetsEnabled();
+}
+
+export const preferences = Preferences.loadOrNew();
 export function initSettingsDOM() {
   const defaultSettings = new MachineSettings();
+  const defaultPreferences = new Preferences();
+  updateDefaultSettingsDOM(defaultSettings, defaultPreferences);
 
-  changeAnimationEnabled(!prefersReducedMotion);
-  updateSettingsDOM(window.RAMMachine.machine.settings, animationsEnabled());
-  updateDefaultSettingsDOM(defaultSettings, animationsEnabled());
+  updateSettingsDOM(window.RAMMachine.machine.settings, preferences);
 
   Nodes.settingsForm.addEventListener("input", () => {
     const formData = new FormData(Nodes.settingsForm);
     window.RAMMachine.machine.settings = MachineSettings.fromForm(formData);
-    changeAnimationEnabled(formData.get("animations-toggle") === "enable");
+    preferences.setFromForm(formData);
   });
   Nodes.settingsForm.addEventListener("reset", () => {
     window.RAMMachine.machine.settings = defaultSettings;
-    changeAnimationEnabled(!prefersReducedMotion);
-    updateSettingsDOM(defaultSettings, animationsEnabled());
+    preferences.revertToDefaults();
+    preferences.saveToLocalStorage();
+    updateSettingsDOM(defaultSettings, preferences);
   });
   Nodes.settingsForm.addEventListener("submit", (e) => {
     Dialogs.settings.close();
