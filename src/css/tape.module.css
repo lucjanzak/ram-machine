@@ -38,7 +38,7 @@
 
 body.animations-enabled .input-tape-scroll-list-cell,
 body.animations-enabled .output-tape-scroll-list-cell {
-  transition: 0.2s color, 0.2s background-color;
+  transition: 0.5s color var(--ease-out-expo), 0.5s background-color var(--ease-out-expo);
 }
 
 .input-tape-scroll-list-cell.odd,
@@ -80,7 +80,7 @@ body.animations-enabled .output-tape-scroll-list-cell {
 
 body.animations-enabled .input-tape-scroll-list-cell .input-tape-cell-value,
 body.animations-enabled .output-tape-scroll-list-cell .output-tape-cell-value {
-  transition: 0.2s background-color;
+  transition: 0.5s background-color var(--ease-out-expo);
 }
 
 .input-tape-scroll-list-cell .input-tape-cell-value.invalid {

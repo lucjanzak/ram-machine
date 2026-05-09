@@ -22,7 +22,7 @@
 }
 
 body.animations-enabled .register-scroll-list-row {
-  transition: 0.2s background-color;
+  transition: 0.5s background-color var(--ease-out-expo);
 }
 
 .register-scroll-list-row.odd {

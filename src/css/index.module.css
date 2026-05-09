@@ -7,6 +7,7 @@
   --accent-color3-hover: #d2e0e0;
   --generic-border-color: #7f7f7f7f;
   --generic-border: 1px solid var(--generic-border-color);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html,

@@ -1,5 +1,17 @@
+@keyframes scale-down {
+  to {
+    transform: scale(75%)
+  }
+}
+
+@keyframes slide-in-up {
+  0% {
+    transform: translateY(100%)
+  }
+}
 
 dialog {
+  display: block;
   /* margin: 2rem; */
   padding: 1rem 2rem;
   box-sizing: border-box;
@@ -8,8 +20,31 @@ dialog {
   user-select: none;
 }
 
-dialog:open::backdrop {
+body.animations-enabled dialog {
+  transition: opacity 0.5s var(--ease-out-expo);
+}
+
+body.animations-enabled dialog:not(:open) {
+  animation: scale-down 0.5s var(--ease-out-expo) forwards;
+}
+
+dialog:open {
+  animation: slide-in-up 0.0s var(--ease-out-expo) forwards;
+}
+
+body.animations-enabled dialog:open {
+  animation-duration: 0.5s;
+}
+
+
+dialog:not(:open) {
+  pointer-events: none;
+  opacity: 0;
+}
+
+dialog::backdrop {
   background-color: #0000003f;
+  backdrop-filter: blur(0.25rem);
 }
 
 dialog h1 {
