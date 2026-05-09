@@ -114,6 +114,7 @@
     "externalLibraries": "External libraries used:",
     "monacoEditorCredit": "by Microsoft, licensed under",
     "vscodeCodiconsCredit": "font by Microsoft, licensed under",
+    "chartJsCredit": "library by many contributors, licensed under",
     "close": "Close"
   },
   "examples": {
