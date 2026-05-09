@@ -36,11 +36,9 @@
   box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .input-tape-scroll-list-cell,
-  .output-tape-scroll-list-cell {
-    transition: 0.2s color, 0.2s background-color;
-  }
+body.animations-enabled .input-tape-scroll-list-cell,
+body.animations-enabled .output-tape-scroll-list-cell {
+  transition: 0.2s color, 0.2s background-color;
 }
 
 .input-tape-scroll-list-cell.odd,
@@ -80,11 +78,9 @@
   border-style: inset;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .input-tape-scroll-list-cell .input-tape-cell-value,
-  .output-tape-scroll-list-cell .output-tape-cell-value {
-    transition: 0.2s background-color;
-  }
+body.animations-enabled .input-tape-scroll-list-cell .input-tape-cell-value,
+body.animations-enabled .output-tape-scroll-list-cell .output-tape-cell-value {
+  transition: 0.2s background-color;
 }
 
 .input-tape-scroll-list-cell .input-tape-cell-value.invalid {

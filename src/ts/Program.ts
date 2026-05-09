@@ -1,7 +1,7 @@
-import { prefersReducedMotion } from "./app";
 import { Instruction, instructionToString } from "./Instruction";
 import { Nodes, select, Templates, useTemplate } from "./Nodes";
 import { Parser } from "./Parser";
+import { animationsEnabled } from "./Settings";
 
 export type ParsedLine = {
   labels: string[];
@@ -86,7 +86,7 @@ export class Program {
     // console.log("Refreshing listing:", listingRows);
     Nodes.programListing.textContent = "";
     Nodes.programListing.appendChild(listingRows);
-    if (!prefersReducedMotion) {
+    if (animationsEnabled()) {
       Nodes.programListingTable.animate(
         [
           { opacity: 0, transform: "scale(0%) rotateX(90deg)" },

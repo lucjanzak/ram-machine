@@ -182,58 +182,80 @@
   </template>
 
   <dialog id="settings">
-    <h1><%= t.settings.title %></h1>
     <form id="settings-form">
-      <fieldset>
-        <legend><%= t.settings.inputTapeUnderflow.legend %></legend>
+      <h1><%= t.settings.title %></h1>
+      <div style="display: flex;">
         <div>
-          <input type="radio" id="input-tape-underflow-error" name="input-tape-underflow-behavior" value="error" checked />
-          <label for="input-tape-underflow-error"><%= t.settings.inputTapeUnderflow.error %></label>
-        </div>
-        <div>
-          <input type="radio" id="input-tape-underflow-zero" name="input-tape-underflow-behavior" value="zero" />
-          <label for="input-tape-underflow-zero"><%= t.settings.inputTapeUnderflow.zero %></label>
-        </div>
-        <div>
-          <input type="radio" id="input-tape-underflow-random" name="input-tape-underflow-behavior" value="random" />
-          <label for="input-tape-underflow-random"><%= t.settings.inputTapeUnderflow.random %></label>
-        </div>
-      </fieldset>
+          <h3>Machine emulation</h3>
+          <fieldset>
+            <legend><%= t.settings.inputTapeUnderflow.legend %></legend>
+            <div>
+              <input type="radio" id="input-tape-underflow-error" name="input-tape-underflow-behavior" value="error" />
+              <label for="input-tape-underflow-error"><%= t.settings.inputTapeUnderflow.error %></label>
+            </div>
+            <div>
+              <input type="radio" id="input-tape-underflow-zero" name="input-tape-underflow-behavior" value="zero" />
+              <label for="input-tape-underflow-zero"><%= t.settings.inputTapeUnderflow.zero %></label>
+            </div>
+            <div>
+              <input type="radio" id="input-tape-underflow-random" name="input-tape-underflow-behavior" value="random" />
+              <label for="input-tape-underflow-random"><%= t.settings.inputTapeUnderflow.random %></label>
+            </div>
+          </fieldset>
 
-      <fieldset>
-        <legend><%= t.settings.uninitializedRegisterRead.legend %></legend>
-        <div>
-          <input type="radio" id="uninitialized-register-read-error" name="uninitialized-register-read-behavior" value="error" checked />
-          <label for="uninitialized-register-read-error"><%= t.settings.uninitializedRegisterRead.error %></label>
-        </div>
-        <div>
-          <input type="radio" id="uninitialized-register-read-zero" name="uninitialized-register-read-behavior" value="zero" />
-          <label for="uninitialized-register-read-zero"><%= t.settings.uninitializedRegisterRead.zero %></label>
-        </div>
-        <div>
-          <input type="radio" id="uninitialized-register-read-random" name="uninitialized-register-read-behavior" value="random" />
-          <label for="uninitialized-register-read-random"><%= t.settings.uninitializedRegisterRead.random %></label>
-        </div>
-        <div>
-          <input type="radio" id="uninitialized-register-read-superpositionCollapse" name="uninitialized-register-read-behavior" value="superpositionCollapse" />
-          <label for="uninitialized-register-read-superpositionCollapse"><%= t.settings.uninitializedRegisterRead.superpositionCollapse %></label>
-        </div>
-      </fieldset>
+          <fieldset>
+            <legend><%= t.settings.uninitializedRegisterRead.legend %></legend>
+            <div>
+              <input type="radio" id="uninitialized-register-read-error" name="uninitialized-register-read-behavior" value="error" />
+              <label for="uninitialized-register-read-error"><%= t.settings.uninitializedRegisterRead.error %></label>
+            </div>
+            <div>
+              <input type="radio" id="uninitialized-register-read-zero" name="uninitialized-register-read-behavior" value="zero" />
+              <label for="uninitialized-register-read-zero"><%= t.settings.uninitializedRegisterRead.zero %></label>
+            </div>
+            <div>
+              <input type="radio" id="uninitialized-register-read-random" name="uninitialized-register-read-behavior" value="random" />
+              <label for="uninitialized-register-read-random"><%= t.settings.uninitializedRegisterRead.random %></label>
+            </div>
+            <div>
+              <input type="radio" id="uninitialized-register-read-superpositionCollapse" name="uninitialized-register-read-behavior" value="superpositionCollapse" />
+              <label for="uninitialized-register-read-superpositionCollapse"><%= t.settings.uninitializedRegisterRead.superpositionCollapse %></label>
+            </div>
+          </fieldset>
 
-      <fieldset>
-        <legend><%= t.settings.programCounterOutOfBounds.legend %></legend>
-        <div>
-          <input type="radio" id="program-counter-out-of-bounds-error" name="program-counter-out-of-bounds-behavior" value="error" checked />
-          <label for="program-counter-out-of-bounds-error"><%= t.settings.programCounterOutOfBounds.error %></label>
+          <fieldset>
+            <legend><%= t.settings.programCounterOutOfBounds.legend %></legend>
+            <div>
+              <input type="radio" id="program-counter-out-of-bounds-error" name="program-counter-out-of-bounds-behavior" value="error" />
+              <label for="program-counter-out-of-bounds-error"><%= t.settings.programCounterOutOfBounds.error %></label>
+            </div>
+            <div>
+              <input type="radio" id="program-counter-out-of-bounds-actAsHalt" name="program-counter-out-of-bounds-behavior" value="actAsHalt" />
+              <label for="program-counter-out-of-bounds-actAsHalt"><%= t.settings.programCounterOutOfBounds.actAsHalt %></label>
+            </div>
+          </fieldset>
         </div>
         <div>
-          <input type="radio" id="program-counter-out-of-bounds-actAsHalt" name="program-counter-out-of-bounds-behavior" value="actAsHalt" />
-          <label for="program-counter-out-of-bounds-actAsHalt"><%= t.settings.programCounterOutOfBounds.actAsHalt %></label>
+          <h3>Preferences</h3>
+          <fieldset>
+            <legend>Animations</legend>
+            <div>
+              <input type="radio" id="animations-enable" name="animations-toggle" value="enable" />
+              <label for="animations-enable">Enable</label>
+            </div>
+            <div>
+              <input type="radio" id="animations-disable" name="animations-toggle" value="disable" />
+              <label for="animations-disable">Disable</label>
+            </div>
+          </fieldset>
+
+          <input type="checkbox" id="monaco-editor-snippets-checkbox" name="monaco-editor-snippets-toggle" checked />
+          <label for="monaco-editor-snippets-checkbox">Enable additional snippets in the code editor</label>
         </div>
-      </fieldset>
+      </div>
       <div style="text-align: right; margin-top: 1rem;">
-        <button type="button" id="reset-settings-button"><%= t.settings.reset %></button>
-        <button type="button" id="close-settings-button"><%= t.settings.close %></button>
+        <button type="reset"><%= t.settings.reset %></button>
+        <button type="submit"><%= t.settings.close %></button>
       </div>
     </form>
   </dialog>

@@ -21,10 +21,8 @@
   cursor: default;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .register-scroll-list-row {
-    transition: 0.2s background-color;
-  }
+body.animations-enabled .register-scroll-list-row {
+  transition: 0.2s background-color;
 }
 
 .register-scroll-list-row.odd {

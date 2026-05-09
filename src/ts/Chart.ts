@@ -1,12 +1,11 @@
 import { Chart, ScaleOptions } from "chart.js/auto";
 import { Dialogs, Nodes } from "./Nodes";
 import { Machine } from "./Machine";
-import { assertNever, unwrap } from "./Util";
+import { unwrap } from "./Util";
 import annotationPlugin from "chartjs-plugin-annotation";
 import { t } from "./Localization";
-import { createSimulationInputTape, InputTape, InputTapeGenerator } from "./InputTape";
-import { randomBigint } from "./Memory";
-import { prefersReducedMotion } from "./app";
+import { createSimulationInputTape } from "./InputTape";
+import { animationsEnabled } from "./Settings";
 Chart.register(annotationPlugin);
 
 export type DataPoint = {
@@ -119,14 +118,18 @@ export class ComplexityChart {
       },
     });
 
+    this.changeAnimationEnabled(animationsEnabled());
+  }
+
+  changeAnimationEnabled(enabled: boolean) {
     const activeTransition = this.chart.options.transitions?.active?.animation;
     if (activeTransition !== undefined) {
-      activeTransition.duration = prefersReducedMotion ? 0 : 200;
+      activeTransition.duration = enabled ? 200 : 0;
       activeTransition.easing = "easeOutExpo";
     }
     const animation = this.chart.options.animation;
     if (animation !== false && animation !== undefined) {
-      animation.duration = prefersReducedMotion ? 0 : 200;
+      animation.duration = enabled ? 200 : 0;
       animation.easing = "easeOutExpo";
     }
   }
@@ -137,10 +140,7 @@ export class ComplexityChart {
     this.chart.options.scales = this.genScales();
     unwrap(this.chart.options.plugins?.annotation).annotations = this.genAnnotations();
     this.chart.setDatasetVisibility(4, displayRealTime);
-    // this.chart.update();
     this.chart.update("active");
-    // this.chart.update("none");
-    // this.chart.update("resize");
   }
   
 

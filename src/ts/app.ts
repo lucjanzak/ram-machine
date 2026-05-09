@@ -22,8 +22,6 @@ function compileInput() {
   machine.loadProgramAndReset(program);
 }
 
-export const prefersReducedMotion = !window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
-
 // Make these values globally available
 declare global {
   interface Window {

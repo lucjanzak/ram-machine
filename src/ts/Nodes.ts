@@ -31,8 +31,6 @@ export namespace Nodes {
   export const outputTapeLength = element("#output-tape-length");
 
   export const settingsForm = element<HTMLFormElement>("#settings-form");
-  export const resetSettingsButton = element("#reset-settings-button");
-  export const closeSettingsButton = element("#close-settings-button");
   
   export const chartCanvas = element<HTMLCanvasElement>("#chart-canvas");
   export const chartSettingsForm = element<HTMLFormElement>("#chart-settings-form");

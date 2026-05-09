@@ -42,24 +42,71 @@ export class MachineSettings {
 }
 
 
-export function updateSettingsDOM(settings: MachineSettings) {
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+export function updateSettingsDOM(settings: MachineSettings, animations: boolean) {
   select<HTMLInputElement>(Nodes.settingsForm, `#input-tape-underflow-${settings.inputTapeUnderflow}`).checked = true;
   select<HTMLInputElement>(Nodes.settingsForm, `#uninitialized-register-read-${settings.uninitializedRegisterRead}`).checked = true;
   select<HTMLInputElement>(Nodes.settingsForm, `#program-counter-out-of-bounds-${settings.programCounterOutOfBounds}`).checked = true;
+  if (animations) {
+    select<HTMLInputElement>(Nodes.settingsForm, `#animations-enable`).checked = true;
+  } else {
+    select<HTMLInputElement>(Nodes.settingsForm, `#animations-disable`).checked = true;
+  }
+}
+
+export function updateDefaultSettingsDOM(defaultSettings: MachineSettings, animations: boolean) {
+  select<HTMLInputElement>(Nodes.settingsForm, `#input-tape-underflow-${defaultSettings.inputTapeUnderflow}`).defaultChecked = true;
+  select<HTMLInputElement>(Nodes.settingsForm, `#uninitialized-register-read-${defaultSettings.uninitializedRegisterRead}`).defaultChecked = true;
+  select<HTMLInputElement>(Nodes.settingsForm, `#program-counter-out-of-bounds-${defaultSettings.programCounterOutOfBounds}`).defaultChecked = true;
+  if (animations) {
+    select<HTMLInputElement>(Nodes.settingsForm, `#animations-enable`).defaultChecked = true;
+  } else {
+    select<HTMLInputElement>(Nodes.settingsForm, `#animations-disable`).defaultChecked = true;
+  }
+}
+
+let _animationsEnabled = false;
+function changeAnimationEnabled(enabled: boolean) {
+    _animationsEnabled = enabled;
+    if (_animationsEnabled) {
+      document.body.classList.add("animations-enabled");
+      document.body.classList.add("monaco-enable-motion");
+      document.body.classList.remove("animations-disabled");
+      document.body.classList.remove("monaco-disable-motion");
+    } else {
+      document.body.classList.add("animations-disabled");
+      document.body.classList.add("monaco-disable-motion");
+      document.body.classList.remove("animations-enabled");
+      document.body.classList.remove("monaco-enable-motion");
+    }
+    window.RAMMachine.chart.changeAnimationEnabled(enabled);
+}
+
+export function animationsEnabled() {
+  return _animationsEnabled;
 }
 
 export function initSettingsDOM() {
-  updateSettingsDOM(window.RAMMachine.machine.settings);
+  const defaultSettings = new MachineSettings();
+
+  changeAnimationEnabled(!prefersReducedMotion);
+  updateSettingsDOM(window.RAMMachine.machine.settings, animationsEnabled());
+  updateDefaultSettingsDOM(defaultSettings, animationsEnabled());
+
   Nodes.settingsForm.addEventListener("input", () => {
-    window.RAMMachine.machine.settings = MachineSettings.fromForm(new FormData(Nodes.settingsForm));
+    const formData = new FormData(Nodes.settingsForm);
+    window.RAMMachine.machine.settings = MachineSettings.fromForm(formData);
+    changeAnimationEnabled(formData.get("animations-toggle") === "enable");
   });
 
-  Nodes.resetSettingsButton.addEventListener("click", () => {
-    const defaultSettings = new MachineSettings();
+  Nodes.settingsForm.addEventListener("reset", () => {
     window.RAMMachine.machine.settings = defaultSettings;
-    updateSettingsDOM(defaultSettings);
+    changeAnimationEnabled(!prefersReducedMotion);
+    updateSettingsDOM(defaultSettings, animationsEnabled());
   });
-  Nodes.closeSettingsButton.addEventListener("click", () => {
+  Nodes.settingsForm.addEventListener("submit", (e) => {
     Dialogs.settings.close();
+    e.preventDefault();
   });
 }
