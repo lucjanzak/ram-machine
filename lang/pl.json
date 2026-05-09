@@ -54,6 +54,10 @@
   },
   "settings": {
     "title": "Ustawienia",
+    "sections": {
+      "machineEmulation": "Emulacja maszyny",
+      "preferences": "Preferencje"
+    },
     "inputTapeUnderflow": {
       "legend": "Co powinno się stać, gdy maszyna odczytuje pustą wartość z taśmy wejściowej?",
       "error": "Wyświetl błąd",
@@ -72,6 +76,12 @@
       "error": "Wyświetl błąd",
       "actAsHalt": "Zatrzymaj wykonywanie programu (niejawna instrukcja HALT)"
     },
+    "animations": {
+      "legend": "Animacje",
+      "enable": "Włączone",
+      "disable": "Wyłączone"
+    },
+    "monacoEditorSnippets": "Włącz dodatkowe podpowiedzi fragmentów kodu w edytorze kodu",
     "reset": "Przywróć ustawienia domyślne",
     "close": "Zapisz i zamknij"
   },

@@ -186,7 +186,7 @@
       <h1><%= t.settings.title %></h1>
       <div style="display: flex;">
         <div>
-          <h3>Machine emulation</h3>
+          <h3><%= t.settings.sections.machineEmulation %></h3>
           <fieldset>
             <legend><%= t.settings.inputTapeUnderflow.legend %></legend>
             <div>
@@ -236,21 +236,21 @@
           </fieldset>
         </div>
         <div>
-          <h3>Preferences</h3>
+          <h3><%= t.settings.sections.preferences %></h3>
           <fieldset>
-            <legend>Animations</legend>
+            <legend><%= t.settings.animations.legend %></legend>
             <div>
               <input type="radio" id="animations-enable" name="animations-toggle" value="enable" />
-              <label for="animations-enable">Enable</label>
+              <label for="animations-enable"><%= t.settings.animations.enable %></label>
             </div>
             <div>
               <input type="radio" id="animations-disable" name="animations-toggle" value="disable" />
-              <label for="animations-disable">Disable</label>
+              <label for="animations-disable"><%= t.settings.animations.disable %></label>
             </div>
           </fieldset>
 
           <input type="checkbox" id="monaco-editor-snippets-checkbox" name="monaco-editor-snippets-toggle" checked />
-          <label for="monaco-editor-snippets-checkbox">Enable additional snippets in the code editor</label>
+          <label for="monaco-editor-snippets-checkbox"><%= t.settings.monacoEditorSnippets %></label>
         </div>
       </div>
       <div style="text-align: right; margin-top: 1rem;">

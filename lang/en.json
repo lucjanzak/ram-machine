@@ -54,6 +54,10 @@
   },
   "settings": {
     "title": "Settings",
+    "sections": {
+      "machineEmulation": "Machine emulation",
+      "preferences": "Preferences"
+    },
     "inputTapeUnderflow": {
       "legend": "What should happen when the machine reads an empty cell from the input tape?",
       "error": "Show an error",
@@ -72,6 +76,12 @@
       "error": "Show an error",
       "actAsHalt": "Stop the machine normally (implicit HALT instruction)"
     },
+    "animations": {
+      "legend": "Animations",
+      "enable": "Enable",
+      "disable": "Disable"
+    },
+    "monacoEditorSnippets": "Enable additional snippets in the code editor",
     "reset": "Revert to defaults",
     "close": "Save and Close"
   },

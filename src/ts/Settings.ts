@@ -99,7 +99,6 @@ export function initSettingsDOM() {
     window.RAMMachine.machine.settings = MachineSettings.fromForm(formData);
     changeAnimationEnabled(formData.get("animations-toggle") === "enable");
   });
-
   Nodes.settingsForm.addEventListener("reset", () => {
     window.RAMMachine.machine.settings = defaultSettings;
     changeAnimationEnabled(!prefersReducedMotion);
