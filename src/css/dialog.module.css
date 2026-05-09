@@ -21,6 +21,16 @@ dialog h3 {
   font-weight: 400;
 }
 
+#settings-layout {
+  display: flex;
+  gap: 2rem;
+}
+
+.settings-footer-buttons {
+  text-align: right;
+  margin-top: 1rem;
+}
+
 #about {
   padding: 2rem;
   text-align: center;

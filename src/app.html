@@ -184,7 +184,7 @@
   <dialog id="settings">
     <form id="settings-form">
       <h1><%= t.settings.title %></h1>
-      <div style="display: flex;">
+      <div id="settings-layout">
         <div>
           <h3><%= t.settings.sections.machineEmulation %></h3>
           <fieldset>
@@ -253,7 +253,7 @@
           <label for="monaco-editor-snippets-checkbox"><%= t.settings.monacoEditorSnippets %></label>
         </div>
       </div>
-      <div style="text-align: right; margin-top: 1rem;">
+      <div class="settings-footer-buttons">
         <button type="reset"><%= t.settings.reset %></button>
         <button type="submit"><%= t.settings.close %></button>
       </div>
