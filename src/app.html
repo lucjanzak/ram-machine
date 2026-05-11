@@ -22,7 +22,7 @@
           <div>
             <%= t.header.language %>
             <ul>
-            <% _.forEach(languageInfo, function(lang) { %> <li><% print('<a href="app_' + lang.key + '.html">' + lang.displayName + '</a>') %></li> <% }); %>
+            <% _.forEach(languageInfo, function(lang) { %><li><% print('<a href="app_' + lang.key + '.html">' + lang.displayName + '</a>') %></li><% }); %>
             </ul>
           </div>
         <div style="display: none;"><%= t.header.author %> <a href="https://lucjanzak.github.io" target=" _blank">Lucjan Żak</a></div>
@@ -108,7 +108,7 @@
     </div>
 
     <div style="display: none;">
-      <!-- TODO idk what to do with this yet -->
+      <!-- TODO: move this into a separate window/pane, (swappable with code editor?) -->
       <section>
         Statistics:
         <table>
@@ -158,7 +158,7 @@
     <template id="register-row">
       <div class="register-scroll-list-row" id="register-scroll-list-row">
       <span class="register-index">
-        r<sub id="index"></sub>:
+        r<sub id="index">?</sub>:
       </span>
         <span id="value" class="register-value"></span>
       </div>

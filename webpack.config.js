@@ -37,7 +37,7 @@ console.log("Creating template with parameters: ", commonTemplateParameters);
 
 const config /*: webpack.Configuration*/ = {
   mode: "development",
-  entry: "./src/ts/app.ts",
+  entry: "./src/ts/index.ts",
   devtool: "source-map",
   output: {
     path: path.resolve(__dirname, "dist"),
