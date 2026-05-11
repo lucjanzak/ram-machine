@@ -31,8 +31,8 @@
       <nav>
         <div class="nav-buttons">
         <button id="new-program-button" class="nav-button nav-button-auto"><%= t.nav.new %></button>
-        <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>"><%= t.nav.open %></button>
-        <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>"><%= t.nav.save %></button>
+        <button id="open-program-button" class="nav-button nav-button-auto"><%= t.nav.open %></button>
+        <button id="save-program-button" class="nav-button nav-button-auto"><%= t.nav.save %></button>
         <button id="settings-button" class="nav-button nav-button-auto"><%= t.nav.settings %></button>
         </div>
         <div class="nav-buttons">
@@ -183,6 +183,16 @@
         Hello world <span id="number">number</span>
       </div>
     </template>
+
+    <dialog id="load-file">
+      <label id="load-file-drop-zone">
+        Drag and drop a file here, or click to choose a file.
+        <input type="file" id="load-file-input" accept=".ram,text/*" />
+      </label>
+      <div id="load-file-status-box"></div>
+      <span>Loaded data:</span>
+      <textarea id="load-file-textarea-preview" disabled></textarea>
+    </dialog>
 
     <dialog id="settings">
       <form id="settings-form">

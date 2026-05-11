@@ -11,8 +11,18 @@ import {
 import { assertNever } from "./Util";
 import { ParsedLine, Tile } from "./Program";
 
+export type ParserMessage = {
+  type: "error" | "warning";
+  message: string;
+  line?: number;
+  col?: number;
+};
+
 export class Parser {
-  constructor(private hideErrors = false, private unknownMnemonics: "actAsHalt" | "actAsNoInstruction" | "forbid" = "forbid") {}
+  constructor(
+    private hideErrors = false,
+    private unknownMnemonics: "actAsHalt" | "actAsNoInstruction" | "forbid" = "forbid"
+  ) {}
 
   parseBigInt(operand: string): bigint {
     return BigInt(operand);
@@ -118,9 +128,10 @@ export class Parser {
     };
   }
 
-  parseAssemblyProgram(assemblyText: string): Tile[] {
+  parseAssemblyProgram(assemblyText: string): { tiles: Tile[]; messages: ParserMessage[] } {
     const lines = assemblyText.split("\n");
     const tiles: Tile[] = [];
+    const messages: ParserMessage[] = [];
 
     const definedLabels = new Map<string, number>();
     function defineNewLabel(label: string, sourceLineNumber: number) {
@@ -186,6 +197,6 @@ export class Parser {
       });
     }
 
-    return tiles;
+    return { tiles, messages };
   }
 }

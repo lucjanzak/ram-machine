@@ -4,8 +4,10 @@ import { t } from "./Localization";
 import { Memory } from "./Memory";
 import { Nodes } from "./Nodes";
 import { OutputTape, OutputTapeArray, OutputTapeArrayDOM } from "./OutputTape";
+import { ParserMessage } from "./Parser";
+import { preprocess } from "./Preprocessor";
 import { Program, ProgramCounter } from "./Program";
-import { MachineSettings, preferences } from "./Settings";
+import { MachineSettings, preferences, updateSettingsDOM } from "./Settings";
 import { Statistics } from "./Statistics";
 import { assertNever } from "./Util";
 
@@ -23,10 +25,18 @@ export class Machine {
   public stats = new Statistics();
   private debugBreakpoints: ProgramCounter[] = []; //[5, 10, 15, 30]; // TODO
 
-  constructor(private program: Program = Program.EMPTY, private detachedMode = false, public settings: MachineSettings = new MachineSettings()) {
+  constructor(
+    private program: Program = Program.EMPTY,
+    private detachedMode = false,
+    public settings: MachineSettings = new MachineSettings()
+  ) {
     this.memory = new Memory(this.detachedMode ? null : Nodes.registerScrollList);
-    this.inputTape = this.detachedMode ? new InputTapeArray() : new InputTapeArrayDOM(Nodes.inputTape, Nodes.inputTapeLength);
-    this.outputTape = this.detachedMode ? new OutputTapeArray() : new OutputTapeArrayDOM(Nodes.outputTape, Nodes.outputTapeLength);
+    this.inputTape = this.detachedMode
+      ? new InputTapeArray()
+      : new InputTapeArrayDOM(Nodes.inputTape, Nodes.inputTapeLength);
+    this.outputTape = this.detachedMode
+      ? new OutputTapeArray()
+      : new OutputTapeArrayDOM(Nodes.outputTape, Nodes.outputTapeLength);
   }
 
   getProgram() {
@@ -59,10 +69,22 @@ export class Machine {
     this.stats.replaceStatisticsDOM();
   }
 
-  loadAssemblyAndReset(assembly: string) {
+  loadRAMFileAndReset(sourceText: string) {
+    const pre = preprocess(sourceText);
+    if (pre.inputTapeString !== null) this.loadTapeFromText(pre.inputTapeString);
+    if (pre.inputTapeUnderflow !== null) this.settings.inputTapeUnderflow = pre.inputTapeUnderflow;
+    if (pre.uninitializedRegisterRead !== null) this.settings.uninitializedRegisterRead = pre.uninitializedRegisterRead;
+    if (pre.programCounterOutOfBounds !== null) this.settings.programCounterOutOfBounds = pre.programCounterOutOfBounds;
+    updateSettingsDOM(this.settings, preferences);
+    const { parserMessages } = this.loadAssemblyAndReset(pre.assembly);
+    return { preprocessorMessages: pre.messages, parserMessages };
+  }
+
+  loadAssemblyAndReset(assembly: string): { parserMessages: ParserMessage[] } {
     window.RAMMachine.editor.setValue(assembly);
-    const program = Program.fromAssembly(assembly);
+    const { program, parserMessages } = Program.fromAssembly(assembly);
     this.loadProgramAndReset(program);
+    return { parserMessages };
   }
 
   loadProgramAndReset(program: Program) {
@@ -73,7 +95,9 @@ export class Machine {
   }
 
   loadTapeFromText(text: string) {
-    this.inputTape = this.detachedMode ? InputTapeArray.fromString(text) : InputTapeArrayDOM.fromStringDOM(text, Nodes.inputTape, Nodes.inputTapeLength);
+    this.inputTape = this.detachedMode
+      ? InputTapeArray.fromString(text)
+      : InputTapeArrayDOM.fromStringDOM(text, Nodes.inputTape, Nodes.inputTapeLength);
   }
 
   getRegister(index: bigint, quiet: boolean): bigint {
@@ -142,10 +166,15 @@ export class Machine {
     if (!this.detachedMode) {
       const oldActiveLine = Nodes.programListingTable.querySelector<HTMLElement>("tr.debug-line-highlight");
       if (oldActiveLine !== null) oldActiveLine.classList.remove("debug-line-highlight");
-      const activeLine = Nodes.programListingTable.querySelector<HTMLElement>(`tr[data-line-number="${programCounter + 1}"]`);
+      const activeLine = Nodes.programListingTable.querySelector<HTMLElement>(
+        `tr[data-line-number="${programCounter + 1}"]`
+      );
       if (activeLine !== null) {
         activeLine.classList.add("debug-line-highlight");
-        activeLine.scrollIntoView({ behavior: preferences.getAnimationsEnabled() ? "smooth" : "instant", block: "nearest" });
+        activeLine.scrollIntoView({
+          behavior: preferences.getAnimationsEnabled() ? "smooth" : "instant",
+          block: "nearest",
+        });
       }
     }
   }
@@ -367,7 +396,11 @@ export class Machine {
   ): Machine {
     const machine = new Machine(program, true, settings);
     machine.inputTape = inputTape;
-    machine.runAll(false, { timeoutPrintWarning: undefined, timeoutUserKill: undefined, timeoutAutoKill: options.timeout });
+    machine.runAll(false, {
+      timeoutPrintWarning: undefined,
+      timeoutUserKill: undefined,
+      timeoutAutoKill: options.timeout,
+    });
     return machine;
   }
 }

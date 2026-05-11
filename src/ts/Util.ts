@@ -16,6 +16,18 @@ export function expect<T>(value: T | null | undefined, msg: string): T {
   return value;
 }
 
+export function assert(condition: boolean, msg: string = "") {
+  if (!condition) {
+    throw new Error(`assertion failed: ${msg}`);
+  }
+}
+
+export function assertEq(expected: any, actual: any, msg: string = "") {
+  if (expected !== actual) {
+    throw new Error(`assertion failed: expected !== actual (${expected} !== ${actual}): ${msg}`);
+  }
+}
+
 export function unreachable(msg?: string): never {
   throw new Error(msg ?? "unreachable code block reached");
 }

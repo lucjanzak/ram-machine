@@ -1,7 +1,9 @@
+/// @no-format
 import { initChartDOM } from "./Chart";
+import { initFileDrop } from "./LoadFile";
 import { t } from "./Localization";
-import { initSettingsDOM, InputTapeUnderflowBehavior, MachineSettings, ProgramCounterOutOfBoundsBehavior, UninitializedRegisterReadBehavior } from "./Settings";
-import { expect } from "./Util";
+import { initSettingsDOM } from "./Settings";
+import { assertEq, expect } from "./Util";
 
 export namespace Nodes {
   function element<T extends Element = Element>(selector: string) {
@@ -10,6 +12,8 @@ export namespace Nodes {
 
   // Static elements
   export const newProgramButton = element("#new-program-button");
+  export const openProgramButton = element("#open-program-button");
+  export const saveProgramButton = element("#save-program-button");
   export const settingsButton = element("#settings-button");
   export const clearInputTapeButton = element("#clear-input-tape-button");
   export const editInputTapeButton = element("#edit-input-tape-button");
@@ -30,8 +34,14 @@ export namespace Nodes {
   export const outputTape = element<HTMLElement>("#output-tape");
   export const outputTapeLength = element("#output-tape-length");
 
+  // export const loadFileForm = element<HTMLFormElement>("#load-file-form");
+  export const loadFileInput = element<HTMLInputElement>("#load-file-input");
+  export const loadFileDropZone = element("#load-file-drop-zone");
+  export const loadFileTextareaPreview = element<HTMLTextAreaElement>("#load-file-textarea-preview");
+  export const loadFileStatusBox = element("#load-file-status-box");
+
   export const settingsForm = element<HTMLFormElement>("#settings-form");
-  
+
   export const chartCanvas = element<HTMLCanvasElement>("#chart-canvas");
   export const chartSettingsForm = element<HTMLFormElement>("#chart-settings-form");
   export const generatePointsInput = element<HTMLInputElement>("#generate-points-input");
@@ -40,13 +50,18 @@ export namespace Nodes {
   export const toggleRealTimeAxis = element<HTMLInputElement>("#toggle-realtime-axis");
   export const clearChartButton = element("#clear-chart-button");
   export const closeChartButton = element("#close-chart-button");
-  
+
   export const bigScrollListTest = element<HTMLElement>("#big-scroll-list-test");
 }
 
 export namespace Templates {
   function template(selector: string) {
-    return expect(document.querySelector<HTMLTemplateElement>(`template${selector}`), `template with selector '${selector}' not found`);
+    const element = expect(
+      document.querySelector<HTMLTemplateElement>(`template${selector}`),
+      `template with selector '${selector}' not found`
+    );
+    assertEq("TEMPLATE", element.tagName);
+    return element;
   }
 
   export const commentTile = template("#comment-tile");
@@ -60,9 +75,15 @@ export namespace Templates {
 
 export namespace Dialogs {
   function dialog(selector: string) {
-    return expect(document.querySelector<HTMLDialogElement>(`dialog${selector}`), `dialog with selector '${selector}' not found`);
+    const element = expect(
+      document.querySelector<HTMLDialogElement>(`dialog${selector}`),
+      `dialog with selector '${selector}' not found`
+    );
+    assertEq("DIALOG", element.tagName);
+    return element;
   }
 
+  export const loadFile = dialog("#load-file");
   export const settings = dialog("#settings");
   export const chartWindow = dialog("#chart-window");
   export const about = dialog("#about");
@@ -77,8 +98,13 @@ export function select<T extends Element = Element>(f: ParentNode, selector: str
 }
 
 export function initDOM() {
+  initFileDrop();
   Nodes.newProgramButton.addEventListener("click", () => {
     window.RAMMachine.machine.loadAssemblyAndReset("");
+  });
+  Nodes.openProgramButton.addEventListener("click", () => {
+    Nodes.loadFileTextareaPreview.value = "";
+    Dialogs.loadFile.showModal();
   });
   Nodes.settingsButton.addEventListener("click", () => {
     Dialogs.settings.showModal();

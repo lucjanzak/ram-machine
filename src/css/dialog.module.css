@@ -1,4 +1,3 @@
-
 dialog {
   /* margin: 2rem; */
   padding: 1rem 2rem;
@@ -21,41 +20,7 @@ dialog h3 {
   font-weight: 400;
 }
 
-#settings-layout {
-  display: flex;
-  gap: 2rem;
-}
-
-.settings-footer-buttons {
-  text-align: right;
-  margin-top: 1rem;
-}
-
-#about {
-  padding: 2rem;
-  text-align: center;
-}
-
-#chart-window {
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
-}
-
-#chart-window:open {
-  display: flex;
-}
-
-#chart-container {
-  width: 100%;
-  height: 0;
-  flex-grow: 1;
-  position: relative;
-}
-
-#chart-settings-form {
-  display: flex;
-  margin-top: 1rem;
-  justify-content: space-between;
-  align-items: flex-end;
-}
+@import url(load-file.module.css);
+@import url(settings.module.css);
+@import url(about.module.css);
+@import url(chart.module.css);

@@ -1,8 +1,4 @@
-import {
-  DEFAULT_PROGRAM_ASSEMBLY,
-  EXAMPLE_PROGRAMS,
-  EXAMPLE_PROGRAMS_ASSEMBLY,
-} from "./Examples";
+import { DEFAULT_PROGRAM_ASSEMBLY, EXAMPLE_PROGRAMS, EXAMPLE_PROGRAMS_ASSEMBLY } from "./Examples";
 import { Machine } from "./Machine";
 import { initDOM } from "./Nodes";
 import { Program } from "./Program";
@@ -17,7 +13,7 @@ const machine = new Machine();
 const editor = createEditor();
 function compileInput() {
   const assembly = editor.getValue();
-  const program = Program.fromAssembly(assembly);
+  const { program } = Program.fromAssembly(assembly);
   machine.loadProgramAndReset(program);
 }
 

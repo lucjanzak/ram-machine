@@ -1,0 +1,9 @@
+#settings-layout {
+  display: flex;
+  gap: 2rem;
+}
+
+.settings-footer-buttons {
+  text-align: right;
+  margin-top: 1rem;
+}

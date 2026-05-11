@@ -43,7 +43,7 @@ export abstract class InputTape {
   refreshActiveCell(): void {}
 }
 
-function valuesFromString(text: string) {
+export function valuesFromString(text: string) {
   if (text === "") {
     return [];
   }
@@ -79,7 +79,7 @@ export class InputTapeArray extends InputTape {
     this.currentIndex++;
     return value;
   }
-  
+
   reset() {
     this.currentIndex = 0n;
     this.refreshActiveCell();
@@ -149,7 +149,10 @@ export class InputTapeArrayDOM extends InputTapeArray {
   updateListLength() {
     if (this.scrollList !== null) {
       this.scrollList.setItemCount(
-        bigintMax(this.values.length() + InputTapeArrayDOM.EXTRA_ELEMENTS_ON_VISIBLE_TAPE, InputTapeArrayDOM.MIN_ELEMENTS_ON_VISIBLE_TAPE)
+        bigintMax(
+          this.values.length() + InputTapeArrayDOM.EXTRA_ELEMENTS_ON_VISIBLE_TAPE,
+          InputTapeArrayDOM.MIN_ELEMENTS_ON_VISIBLE_TAPE
+        )
       );
     }
     if (this.lengthElement !== null) {
@@ -185,13 +188,21 @@ export class InputTapeArrayDOM extends InputTapeArray {
       });
     }
   }
-  
-  static fromStringDOM(text: string, hostElement: HTMLElement | null, lengthElement: Element | null): InputTapeArrayDOM {
+
+  static fromStringDOM(
+    text: string,
+    hostElement: HTMLElement | null,
+    lengthElement: Element | null
+  ): InputTapeArrayDOM {
     const values = valuesFromString(text);
     return InputTapeArrayDOM.fromValuesDOM(values, hostElement, lengthElement);
   }
 
-  static fromValuesDOM(values: bigint[], hostElement: HTMLElement | null, lengthElement: Element | null): InputTapeArrayDOM {
+  static fromValuesDOM(
+    values: bigint[],
+    hostElement: HTMLElement | null,
+    lengthElement: Element | null
+  ): InputTapeArrayDOM {
     const tape = new InputTapeArrayDOM(hostElement, lengthElement);
     // tape.values.push(...values); <-- this does not work for a very large amount of values
     for (const value of values) {
@@ -201,7 +212,7 @@ export class InputTapeArrayDOM extends InputTapeArray {
     tape.refreshExistingCells();
     return tape;
   }
-  
+
   constructor(hostElement: HTMLElement | null, public lengthElement: Element | null) {
     super();
     if (hostElement !== null) {
@@ -333,79 +344,80 @@ export class InputTapeGenerator extends InputTape {
       yield 2n;
       yield 3n;
       return;
-    }
+    };
   }
 }
 
-export type SimulationInputTapeSettings = {
-  type: "natural" | "positive" | "negative" | "singleValue" | "constant" | "prime" | "composite"
-} | {
-  type: "arithmetic" | "geometric",
-  from: bigint,
-  step: bigint
-} | {
-  type: "random",
-  minInclusive: bigint,
-  maxExclusive: bigint,
-} | {
-  type: "custom",
-  tapeList: bigint[][]
-}
+export type SimulationInputTapeSettings =
+  | {
+      type: "natural" | "positive" | "negative" | "singleValue" | "constant" | "prime" | "composite";
+    }
+  | {
+      type: "arithmetic" | "geometric";
+      from: bigint;
+      step: bigint;
+    }
+  | {
+      type: "random";
+      minInclusive: bigint;
+      maxExclusive: bigint;
+    }
+  | {
+      type: "custom";
+      tapeList: bigint[][];
+    };
 
-export function createSimulationInputTape(
-  x: bigint,
-  sequence: SimulationInputTapeSettings,
-): InputTape {
+export function createSimulationInputTape(x: bigint, sequence: SimulationInputTapeSettings): InputTape {
   function genRange(from: bigint, to: bigint | undefined, step: bigint = 1n) {
     if (step > 0n) {
-      return function*() {
+      return function* () {
         for (let i = from; to === undefined || i <= to; i += step) {
           yield i;
         }
-      }
+      };
     } else {
-      return function*() {
+      return function* () {
         for (let i = from; to === undefined || i >= to; i += step) {
           yield i;
         }
-      }
+      };
     }
   }
 
   function genArithmeticSeq(from: bigint, step: bigint, length: bigint | undefined) {
-    return function*() {
+    return function* () {
       let value = from;
       for (let i = 0; length === undefined || i < length; i++) {
         yield value;
         value += step;
       }
-    }
+    };
   }
 
   function genGeometricSeq(from: bigint, step: bigint, length: bigint | undefined) {
-    return function*() {
+    return function* () {
       let value = from;
       for (let i = 0; length === undefined || i < length; i++) {
         yield value;
         value *= step;
       }
-    }
+    };
   }
 
   function genConst(num: bigint, length: bigint | undefined) {
-    return function*() {
+    return function* () {
       for (let i = 0; length === undefined || i < length; i++) {
         yield num;
       }
-    }
+    };
   }
 
   function genRandom(minRandValue: bigint, maxRandValue: bigint, length: bigint | undefined) {
-    return function*() {
+    return function* () {
       for (let i = 0; length === undefined || i < length; i++) {
         yield minRandValue + randomBigint(maxRandValue - minRandValue);
       }
-    }
+    };
   }
 
   function isPrime(i: bigint) {
@@ -418,7 +430,7 @@ export function createSimulationInputTape(
   }
 
   function genPrime(length: bigint | undefined) {
-    return function*() {
+    return function* () {
       let x = 2n;
       for (let i = 0; length === undefined || i < length; i++) {
         while (!isPrime(x)) {
@@ -427,11 +439,11 @@ export function createSimulationInputTape(
         yield x;
         x++;
       }
-    }
+    };
   }
 
   function genComposite(length: bigint | undefined) {
-    return function*() {
+    return function* () {
       let x = 2n;
       for (let i = 0; length === undefined || i < length; i++) {
         while (isPrime(x)) {
@@ -440,7 +452,7 @@ export function createSimulationInputTape(
         yield x;
         x++;
       }
-    }
+    };
   }
 
   if (sequence.type === "natural") {
@@ -474,7 +486,6 @@ export function createSimulationInputTape(
     assertNever(sequence.type);
   }
 }
-
 
 // export class InputTapeMock implements InputTape {
 //   private currentIndex: bigint = 0n;

@@ -276,9 +276,11 @@ function compileExamplePrograms(): { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBL
     console.log(`Compiling example programs... (${i + 1}/${total}) ${key}`);
     if (key === "PARSER_ERROR_TEST") {
       // TODO: instead of silencing warning, the warnings should be recorded and counted, and the count should be asserted
-      programs[key] = Program.fromAssembly(sourceCode, true);
+      const { program } = Program.fromAssembly(sourceCode, true);
+      programs[key] = program;
     } else {
-      programs[key] = Program.fromAssembly(sourceCode);
+      const { program } = Program.fromAssembly(sourceCode);
+      programs[key] = program;
     }
   });
 
