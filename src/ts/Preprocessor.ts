@@ -1,4 +1,4 @@
-import { InputTapeArray } from "./InputTape";
+import { t } from "./Localization";
 import { ParserMessage } from "./Parser";
 import {
   InputTapeUnderflowBehavior,
@@ -20,9 +20,9 @@ export type PreprocessorOutput = {
 
 export function preprocess(sourceText: string): PreprocessorOutput {
   // ;.INPUT_TAPE 12,31,231,23,123
-  // ;.SET INPUT_TAPE_UNDERFLOW 123
-  // ;.SET UNINITIALIZED_REGISTER_READ 123
-  // ;.SET PROGRAM_COUNTER_OUT_OF_BOUNDS 123
+  // ;.SET INPUT_TAPE_UNDERFLOW zero
+  // ;.SET UNINITIALIZED_REGISTER_READ random
+  // ;.SET PROGRAM_COUNTER_OUT_OF_BOUNDS actAsHalt
 
   sourceText.split("\n");
   const assemblyLines: string[] = [];
@@ -53,7 +53,9 @@ export function preprocess(sourceText: string): PreprocessorOutput {
     };
 
     const warnInvalidValue = (key: string, value: string) => {
-      warn(`invalid value for .SET directive with key '${key}': ${value}, ignoring`);
+      warn(
+        `${t.compiler.preprocessor.warning.setInvalidValue} '${key}': ${value}, ${t.compiler.preprocessor.warning.genericIgnoring}`
+      );
     };
 
     const directive = line.slice(2).trim();
@@ -77,10 +79,14 @@ export function preprocess(sourceText: string): PreprocessorOutput {
         if (parsed === null) warnInvalidValue("PROGRAM_COUNTER_OUT_OF_BOUNDS", settingValue);
         else output.programCounterOutOfBounds = parsed;
       } else {
-        warn(`invalid setting key for .SET directive: ${settingKey}, ignoring`);
+        warn(
+          `${t.compiler.preprocessor.warning.setInvalidKey}: ${settingKey}, ${t.compiler.preprocessor.warning.genericIgnoring}`
+        );
       }
     } else {
-      warn(`unknown preprocessor directive: ${commandName}, ignoring`);
+      warn(
+        `${t.compiler.preprocessor.warning.unknownDirective}: ${commandName}, ${t.compiler.preprocessor.warning.genericIgnoring}`
+      );
     }
   });
   output.assembly = assemblyLines.join("\n");

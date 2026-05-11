@@ -105,6 +105,7 @@ export function initDOM() {
   });
   Nodes.openProgramButton.addEventListener("click", () => {
     Nodes.loadFileTextareaPreview.value = "";
+    Nodes.loadFileStatusContainer.innerHTML = "";
     Dialogs.loadFile.showModal();
   });
   Nodes.settingsButton.addEventListener("click", () => {

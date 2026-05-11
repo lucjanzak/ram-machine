@@ -8,9 +8,8 @@ import {
   WRITEABLE_OPERAND_INSTRUCTIONS,
   WriteableOperand,
 } from "./Instruction";
-import { assertNever } from "./Util";
 import { ParsedLine, Tile } from "./Program";
-import { error } from "node:console";
+import { t } from "./Localization";
 
 export type ParserMessage = {
   type: "error" | "warning";
@@ -21,7 +20,11 @@ export type ParserMessage = {
 
 export class Parser {
   parseBigInt(operand: string): bigint {
-    return BigInt(operand);
+    try {
+      return BigInt(operand);
+    } catch (e) {
+      throw new Error(`${t.compiler.parser.error.bigintParseError}: ${operand}`);
+    }
   }
 
   parseAnyOperand(operand: string): ReadableOperand {
@@ -37,14 +40,14 @@ export class Parser {
       };
     } else if (operand.startsWith("*")) {
       const value = this.parseBigInt(operand.slice(1));
-      if (value < 0) throw new Error("register number cannot be negative");
+      if (value < 0) throw new Error(t.compiler.parser.error.negativeRegister);
       return {
         type: "indirect",
         value,
       };
     } else {
       const value = this.parseBigInt(operand);
-      if (value < 0) throw new Error("register number cannot be negative");
+      if (value < 0) throw new Error(t.compiler.parser.error.negativeRegister);
       return {
         type: "register",
         value: BigInt(operand),
@@ -56,7 +59,7 @@ export class Parser {
     const parsed = this.parseAnyOperand(operand);
     const parsedType = parsed.type;
     if (parsedType === "immediate") {
-      throw new Error("immediate operand is not allowed in this instruction");
+      throw new Error(t.compiler.parser.error.immediateWritableOperand);
     }
     const converted = {
       type: parsedType,
@@ -86,7 +89,7 @@ export class Parser {
         operation: mnemonic,
       };
     } else {
-      throw new Error(`unrecognized mnemonic: '${mnemonic}'`);
+      throw new Error(`${t.compiler.parser.error.unrecognizedMnemonic}: '${mnemonic}'`);
     }
   }
 
@@ -103,7 +106,7 @@ export class Parser {
     const labels = labelSegments.toReversed().map((segment) => segment.trim().toLowerCase());
     labels.forEach((label) => {
       if (label.length === 0) {
-        throw new Error("label cannot be empty");
+        throw new Error(t.compiler.parser.error.emptyLabel);
       }
     });
     const [mnemonicSegment, ...operandSegments] = lineWithoutLabel.trim().split(/\s+/);
@@ -126,7 +129,7 @@ export class Parser {
     function defineNewLabel(label: string, sourceLineNumber: number) {
       if (definedLabels.has(label)) {
         const originalLine = definedLabels.get(label);
-        throw new Error(`label was already defined at line ${originalLine}: '${label}'`);
+        throw new Error(`${t.compiler.parser.error.redefinedLabel} ${originalLine}: '${label}'`);
       }
       definedLabels.set(label, sourceLineNumber);
     }
