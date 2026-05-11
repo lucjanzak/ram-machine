@@ -10,6 +10,7 @@ import {
 } from "./Instruction";
 import { assertNever } from "./Util";
 import { ParsedLine, Tile } from "./Program";
+import { error } from "node:console";
 
 export type ParserMessage = {
   type: "error" | "warning";
@@ -19,11 +20,6 @@ export type ParserMessage = {
 };
 
 export class Parser {
-  constructor(
-    private hideErrors = false,
-    private unknownMnemonics: "actAsHalt" | "actAsNoInstruction" | "forbid" = "forbid"
-  ) {}
-
   parseBigInt(operand: string): bigint {
     return BigInt(operand);
   }
@@ -90,14 +86,7 @@ export class Parser {
         operation: mnemonic,
       };
     } else {
-      if (this.unknownMnemonics === "forbid") {
-        throw new Error(`unrecognized mnemonic: '${mnemonic}'`);
-      } else if (this.unknownMnemonics === "actAsHalt") {
-        return { operation: "HALT" };
-      } else if (this.unknownMnemonics === "actAsNoInstruction") {
-        return null;
-      }
-      assertNever(this.unknownMnemonics);
+      throw new Error(`unrecognized mnemonic: '${mnemonic}'`);
     }
   }
 
@@ -183,9 +172,12 @@ export class Parser {
       try {
         processLine(line, lineIndex);
       } catch (e) {
-        if (!this.hideErrors) {
-          console.warn(`Error while parsing line #${lineIndex + 1}:`, e);
-        }
+        const ex = e as Error;
+        messages.push({
+          type: "error",
+          message: `${ex.message}`,
+          line: lineIndex + 1,
+        });
       }
     });
 

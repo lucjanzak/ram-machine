@@ -1,6 +1,7 @@
 import { t } from "./Localization";
 import { Nodes } from "./Nodes";
 import { Program } from "./Program";
+import { assertEq } from "./Util";
 
 // r₀ r₁ r₂ r₃ r₄ r₅ r₆ r₇ r₈ r₉
 
@@ -275,8 +276,9 @@ function compileExamplePrograms(): { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBL
   entries.forEach(([key, sourceCode], i) => {
     console.log(`Compiling example programs... (${i + 1}/${total}) ${key}`);
     if (key === "PARSER_ERROR_TEST") {
-      // TODO: instead of silencing warning, the warnings should be recorded and counted, and the count should be asserted
-      const { program } = Program.fromAssembly(sourceCode, true);
+      const { program, parserMessages } = Program.fromAssembly(sourceCode);
+      assertEq(parserMessages.length, 5);
+      console.log(parserMessages);
       programs[key] = program;
     } else {
       const { program } = Program.fromAssembly(sourceCode);

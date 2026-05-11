@@ -1,43 +1,87 @@
-import { Nodes } from "./Nodes";
+import { makeStatusBox, Nodes, select, Templates, useTemplate } from "./Nodes";
+import { Parser, ParserMessage } from "./Parser";
+import { preprocess, PreprocessorMessage } from "./Preprocessor";
 
 export function initFileDrop() {
-  const displayFiles = (files: File[] | FileList | null) => {
-    if (files === null) {
+  const fileFinishedLoading = (sourceText: string) => {
+    Nodes.loadFileTextareaPreview.value = sourceText;
+
+    const dispPreMsg = (msg: PreprocessorMessage) => {
+      return (
+        `${msg.message}` +
+        (msg.line === undefined ? "" : ` (at line ${msg.line}${msg.col === undefined ? "" : `:${msg.col}`})`)
+      );
+    };
+
+    const dispParserMsg = (msg: ParserMessage) => {
+      return (
+        `${msg.message}` +
+        (msg.line === undefined ? "" : ` (at line ${msg.line}${msg.col === undefined ? "" : `:${msg.col}`})`)
+      );
+    };
+
+    // TODO: confirm button?
+    // const { preprocessorMessages, parserMessages } = window.RAMMachine.machine.loadRAMFileAndReset();
+
+    const pre = preprocess(sourceText);
+    const parser = new Parser();
+    const parsed = parser.parseAssemblyProgram(pre.assembly);
+    const preprocessorMessages = pre.messages;
+    const parserMessages = parsed.messages;
+    console.log(preprocessorMessages, parserMessages);
+
+    if (preprocessorMessages.length + parserMessages.length === 0) {
+      Nodes.loadFileStatusContainer.append(makeStatusBox("File loaded successfully", "success"));
+    } else {
+      preprocessorMessages.forEach((msg) => {
+        if (msg.type === "error") {
+          Nodes.loadFileStatusContainer.append(makeStatusBox(`Preprocessor error: ${dispPreMsg(msg)}`, "error"));
+        } else {
+          Nodes.loadFileStatusContainer.append(makeStatusBox(`Preprocessor warning: ${dispPreMsg(msg)}`, "warning"));
+        }
+      });
+      parserMessages.forEach((msg) => {
+        if (msg.type === "error") {
+          Nodes.loadFileStatusContainer.append(makeStatusBox(`Parser error: ${dispParserMsg(msg)}`, "error"));
+        } else {
+          Nodes.loadFileStatusContainer.append(makeStatusBox(`Parser warning: ${dispParserMsg(msg)}`, "warning"));
+        }
+      });
+    }
+  };
+  const fileChanged = (file: File | null) => {
+    Nodes.loadFileStatusContainer.innerHTML = "";
+    if (file === null) {
       Nodes.loadFileTextareaPreview.value = "";
       return;
     }
 
-    const filesany = files as any;
-    const file: File = filesany[0];
     const fileReader = new FileReader();
     fileReader.readAsText(file);
     fileReader.addEventListener("load", () => {
-      // TODO: confirm button?
-      Nodes.loadFileTextareaPreview.value = fileReader.result as string;
-      const { preprocessorMessages, parserMessages } = window.RAMMachine.machine.loadRAMFileAndReset(
-        fileReader.result as string
-      );
-      console.log(preprocessorMessages, parserMessages);
-      if (preprocessorMessages.length !== 0) {
-        Nodes.loadFileStatusBox.textContent = preprocessorMessages.map((x) => x.message).join(",");
-      } else {
-        Nodes.loadFileStatusBox.textContent = "Success";
+      if (typeof fileReader.result === "string") {
+        fileFinishedLoading(fileReader.result);
       }
     });
-    console.log(files);
+    console.log(file);
   };
 
   const dropHandler = (e: DragEvent) => {
     if (e.dataTransfer === null) return;
     e.preventDefault();
     const files = [...e.dataTransfer.items].map((item) => item.getAsFile()).filter((file) => file !== null);
-    displayFiles(files);
+    fileChanged(files[0]);
   };
   Nodes.loadFileDropZone.addEventListener("drop", (e) => {
     dropHandler(e as DragEvent);
   });
   Nodes.loadFileInput.addEventListener("change", () => {
-    displayFiles(Nodes.loadFileInput.files);
+    const files = Nodes.loadFileInput.files;
+    if (files !== null && files.length > 0) {
+      fileChanged(files[0]);
+    } else {
+      fileChanged(null);
+    }
   });
 
   // Prevent default user-agent behavior for drag & dropping files (downloading/opening)

@@ -98,8 +98,8 @@ export class Program {
     }
   }
 
-  static fromAssembly(assemblyText: string, hideErrors = false): { program: Program; parserMessages: ParserMessage[] } {
-    const parser = new Parser(hideErrors);
+  static fromAssembly(assemblyText: string): { program: Program; parserMessages: ParserMessage[] } {
+    const parser = new Parser();
     const { tiles, messages } = parser.parseAssemblyProgram(assemblyText);
     // console.log("Program tiles:", tiles);
     return { program: new Program(tiles), parserMessages: messages };

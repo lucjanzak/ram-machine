@@ -166,22 +166,26 @@
 
     <template id="input-tape-cell">
       <div class="input-tape-scroll-list-cell" id="input-tape-scroll-list-cell">
-      <span class="input-tape-cell-index"><% print(t.inputTape.cellLabel + '<span id="index">?</span>' + t.inputTape.cellLabelEnd) %></span>
-      <input type="text" id="value" class="input-tape-cell-value" value="0" step="1" />
+        <span class="input-tape-cell-index"><% print(t.inputTape.cellLabel + '<span id="index">?</span>' + t.inputTape.cellLabelEnd) %></span>
+        <input type="text" id="value" class="input-tape-cell-value" value="0" step="1" />
       </div>
     </template>
 
     <template id="output-tape-cell">
-    <div class="output-tape-scroll-list-cell" id="output-tape-scroll-list-cell">
-      <span class="output-tape-cell-index"><% print(t.outputTape.cellLabel + '<span id="index">?</span>' + t.outputTape.cellLabelEnd) %></span>
-      <input type="text" id="value" class="output-tape-cell-value" value="0" step="1" disabled />
+      <div class="output-tape-scroll-list-cell" id="output-tape-scroll-list-cell">
+        <span class="output-tape-cell-index"><% print(t.outputTape.cellLabel + '<span id="index">?</span>' + t.outputTape.cellLabelEnd) %></span>
+        <input type="text" id="value" class="output-tape-cell-value" value="0" step="1" disabled />
       </div>
     </template>
 
     <template id="big-scroll-list-test-row">
-    <div style="width: 90px; height: 50px; background-color: #0000ff1f; word-break: break-all;">
+      <div style="width: 90px; height: 50px; background-color: #0000ff1f; word-break: break-all;">
         Hello world <span id="number">number</span>
       </div>
+    </template>
+
+    <template id="status-box">
+      <div class="status-box"><span class="title"></span><span class="message"></span></div>
     </template>
 
     <dialog id="load-file">
@@ -189,7 +193,7 @@
         Drag and drop a file here, or click to choose a file.
         <input type="file" id="load-file-input" accept=".ram,text/*" />
       </label>
-      <div id="load-file-status-box"></div>
+      <div id="load-file-status-container"></div>
       <span>Loaded data:</span>
       <textarea id="load-file-textarea-preview" disabled></textarea>
     </dialog>
@@ -300,29 +304,29 @@
     </dialog>
 
     <dialog id="about" popover="auto">
-    <span><%= t.about.author %> <a href="https://lucjanzak.github.io" target=" _blank">Lucjan Żak</a></span>
-    <br>
-    <span><%= t.about.license %> <a href="LICENSE.txt" target="_blank">GNU General Public License v3</a></span>
-    <br>
-    <span><%= t.about.sourceCode %> <a href="https://github.com/lucjanzak/ram-machine" target="_blank">GitHub</a></span>
-    <br>
-      <span>2026</span>
-    <hr>
-    <span><%= t.about.externalLibraries %></span>
-    <br>
-    <a href="https://github.com/microsoft/monaco-editor" target="_blank">monaco-editor</a>
-    <span><%= t.about.monacoEditorCredit %></span>
-    <a href="https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt" target="_blank">MIT License</a>
-    <br>
-    <a href="https://github.com/microsoft/vscode-codicons" target="_blank">vscode-codicons</a>
-    <span><%= t.about.vscodeCodiconsCredit %></span>
-    <a href="https://github.com/microsoft/vscode-codicons/blob/main/LICENSE" target="_blank">CC-BY 4.0 International</a>
-    <br>
-      <a href="https://github.com/chartjs/Chart.js" target="_blank">Chart.js</a>
-    <span><%= t.about.chartJsCredit %></span>
-    <a href="https://github.com/chartjs/Chart.js/blob/master/LICENSE.md" target="_blank">MIT License</a>
-    <hr>
-    <button popovertarget="about" popovertargetaction="hide"><%= t.about.close %></button>
+      <span><%= t.about.author %> <a href="https://lucjanzak.github.io" target=" _blank">Lucjan Żak</a></span>
+      <br>
+      <span><%= t.about.license %> <a href="LICENSE.txt" target="_blank">GNU General Public License v3</a></span>
+      <br>
+      <span><%= t.about.sourceCode %> <a href="https://github.com/lucjanzak/ram-machine" target="_blank">GitHub</a></span>
+      <br>
+        <span>2026</span>
+      <hr>
+      <span><%= t.about.externalLibraries %></span>
+      <br>
+      <a href="https://github.com/microsoft/monaco-editor" target="_blank">monaco-editor</a>
+      <span><%= t.about.monacoEditorCredit %></span>
+      <a href="https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt" target="_blank">MIT License</a>
+      <br>
+      <a href="https://github.com/microsoft/vscode-codicons" target="_blank">vscode-codicons</a>
+      <span><%= t.about.vscodeCodiconsCredit %></span>
+      <a href="https://github.com/microsoft/vscode-codicons/blob/main/LICENSE" target="_blank">CC-BY 4.0 International</a>
+      <br>
+        <a href="https://github.com/chartjs/Chart.js" target="_blank">Chart.js</a>
+      <span><%= t.about.chartJsCredit %></span>
+      <a href="https://github.com/chartjs/Chart.js/blob/master/LICENSE.md" target="_blank">MIT License</a>
+      <hr>
+      <button popovertarget="about" popovertargetaction="hide"><%= t.about.close %></button>
     </dialog>
   </body>
 

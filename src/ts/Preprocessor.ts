@@ -1,3 +1,4 @@
+import { InputTapeArray } from "./InputTape";
 import { ParserMessage } from "./Parser";
 import {
   InputTapeUnderflowBehavior,
@@ -51,27 +52,35 @@ export function preprocess(sourceText: string): PreprocessorOutput {
       console.trace(output);
     };
 
+    const warnInvalidValue = (key: string, value: string) => {
+      warn(`invalid value for .SET directive with key '${key}': ${value}, ignoring`);
+    };
+
     const directive = line.slice(2).trim();
     let [commandName, remaining, _] = directive.split(/\s+(.*)/s);
     commandName = commandName.toUpperCase();
     if (commandName === "INPUT_TAPE") {
       output.inputTapeString = remaining;
     } else if (commandName === "SET") {
-      let [settingName, settingValue, _] = remaining.split(/\s+(.*)/s);
-      settingName = settingName.toUpperCase();
-      if (settingName === "INPUT_TAPE_UNDERFLOW") {
+      let [settingKey, settingValue, _] = remaining.split(/\s+(.*)/s);
+      settingKey = settingKey.toUpperCase();
+      if (settingKey === "INPUT_TAPE_UNDERFLOW") {
         const parsed = MachineSettings.parseInputTapeUnderflowBehavior(settingValue);
-        if (parsed === null) warn(`Could not parse INPUT_TAPE_UNDERFLOW value: ${settingValue}`);
-        output.inputTapeUnderflow = parsed;
-      } else if (settingName === "UNINITIALIZED_REGISTER_READ") {
+        if (parsed === null) warnInvalidValue("INPUT_TAPE_UNDERFLOW", settingValue);
+        else output.inputTapeUnderflow = parsed;
+      } else if (settingKey === "UNINITIALIZED_REGISTER_READ") {
         const parsed = MachineSettings.parseUninitializedRegisterReadBehavior(settingValue);
-        if (parsed === null) warn(`Could not parse UNINITIALIZED_REGISTER_READ value: ${settingValue}`);
-        output.uninitializedRegisterRead = parsed;
-      } else if (settingName === "PROGRAM_COUNTER_OUT_OF_BOUNDS") {
+        if (parsed === null) warnInvalidValue("UNINITIALIZED_REGISTER_READ", settingValue);
+        else output.uninitializedRegisterRead = parsed;
+      } else if (settingKey === "PROGRAM_COUNTER_OUT_OF_BOUNDS") {
         const parsed = MachineSettings.parseProgramCounterOutOfBoundsBehavior(settingValue);
-        if (parsed === null) warn(`Could not parse PROGRAM_COUNTER_OUT_OF_BOUNDS value: ${settingValue}`);
-        output.programCounterOutOfBounds = parsed;
+        if (parsed === null) warnInvalidValue("PROGRAM_COUNTER_OUT_OF_BOUNDS", settingValue);
+        else output.programCounterOutOfBounds = parsed;
+      } else {
+        warn(`invalid setting key for .SET directive: ${settingKey}, ignoring`);
       }
+    } else {
+      warn(`unknown preprocessor directive: ${commandName}, ignoring`);
     }
   });
   output.assembly = assemblyLines.join("\n");

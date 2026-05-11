@@ -22,9 +22,9 @@ export function assert(condition: boolean, msg: string = "") {
   }
 }
 
-export function assertEq(expected: any, actual: any, msg: string = "") {
+export function assertEq(actual: any, expected: any, msg: string = "") {
   if (expected !== actual) {
-    throw new Error(`assertion failed: expected !== actual (${expected} !== ${actual}): ${msg}`);
+    throw new Error(`assertion failed: expected ${expected}, got ${actual}: ${msg}`);
   }
 }
 

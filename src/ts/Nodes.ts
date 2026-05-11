@@ -38,7 +38,7 @@ export namespace Nodes {
   export const loadFileInput = element<HTMLInputElement>("#load-file-input");
   export const loadFileDropZone = element("#load-file-drop-zone");
   export const loadFileTextareaPreview = element<HTMLTextAreaElement>("#load-file-textarea-preview");
-  export const loadFileStatusBox = element("#load-file-status-box");
+  export const loadFileStatusContainer = element("#load-file-status-container");
 
   export const settingsForm = element<HTMLFormElement>("#settings-form");
 
@@ -60,7 +60,7 @@ export namespace Templates {
       document.querySelector<HTMLTemplateElement>(`template${selector}`),
       `template with selector '${selector}' not found`
     );
-    assertEq("TEMPLATE", element.tagName);
+    assertEq(element.tagName, "TEMPLATE");
     return element;
   }
 
@@ -71,6 +71,7 @@ export namespace Templates {
   export const inputTapeCell = template("#input-tape-cell");
   export const outputTapeCell = template("#output-tape-cell");
   export const bigScrollListTestRow = template("#big-scroll-list-test-row");
+  export const statusBox = template("#status-box");
 }
 
 export namespace Dialogs {
@@ -79,7 +80,7 @@ export namespace Dialogs {
       document.querySelector<HTMLDialogElement>(`dialog${selector}`),
       `dialog with selector '${selector}' not found`
     );
-    assertEq("DIALOG", element.tagName);
+    assertEq(element.tagName, "DIALOG");
     return element;
   }
 
@@ -140,4 +141,13 @@ export function initDOM() {
 
   initChartDOM();
   initSettingsDOM();
+}
+
+export function makeStatusBox(message: string, type: "error" | "warning" | "success"): DocumentFragment {
+  const f = useTemplate(Templates.statusBox);
+  const box = select(f, ".status-box");
+  const messageSpan = select(f, ".message");
+  box.classList.add(type);
+  messageSpan.textContent = message;
+  return f;
 }
