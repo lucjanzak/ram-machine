@@ -45,6 +45,16 @@
   background-color: #eeeeee;
 }
 
+#program-listing-table tr {
+  border-left: 6px solid transparent;
+}
+
+#program-listing-table tr.debug-line-highlight,
+#program-listing-table tr:nth-child(even):not(:has(.tile-part-comment.big)).debug-line-highlight {
+  background-color: #ffcccc;
+  border-left-color: #ff0000;
+}
+
 #program-listing-table td#instruction {
   word-break: break-all;
 }

@@ -57,6 +57,7 @@ export class Program {
       } else if (tile.type === "instruction") {
         lineNumber++;
         const t = useTemplate(Templates.instructionTile);
+        select<HTMLElement>(t, "tr").dataset.lineNumber = `${lineNumber}`;
         select(t, "#line-number").textContent = `${lineNumber}`;
         select(t, "#labels").textContent = makeLabelsText(tile.labels);
         select(t, "#instruction").textContent = instructionToString(tile.instruction);

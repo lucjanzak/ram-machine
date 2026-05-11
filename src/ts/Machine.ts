@@ -9,12 +9,12 @@ import { MachineSettings } from "./Settings";
 import { Statistics } from "./Statistics";
 import { assertNever } from "./Util";
 
-
 export type StopReason = "halt" | "error" | "kill" | "timeout";
 
 export class Machine {
   private running = false; // Indicates that the machine is currently in the runAll loop
   private paused = false; // Indicates that the machine is paused inbetween steps
+  private started = false; // Indicates that the machine is started in debug mode
   private stopReason: StopReason | null = null;
   public inputTape: InputTape;
   public outputTape: OutputTape;
@@ -23,11 +23,7 @@ export class Machine {
   public stats = new Statistics();
   private debugBreakpoints: ProgramCounter[] = []; //[5, 10, 15, 30]; // TODO
 
-  constructor(
-    private program: Program = Program.EMPTY,
-    private detachedMode = false,
-    public settings: MachineSettings = new MachineSettings()
-  ) {
+  constructor(private program: Program = Program.EMPTY, private detachedMode = false, public settings: MachineSettings = new MachineSettings()) {
     this.memory = new Memory(this.detachedMode ? null : Nodes.registerScrollList);
     this.inputTape = this.detachedMode ? new InputTapeArray() : new InputTapeArrayDOM(Nodes.inputTape, Nodes.inputTapeLength);
     this.outputTape = this.detachedMode ? new OutputTapeArray() : new OutputTapeArrayDOM(Nodes.outputTape, Nodes.outputTapeLength);
@@ -52,11 +48,13 @@ export class Machine {
   reset() {
     this.running = false;
     this.paused = false;
+    this.started = false;
     this.stopReason = null;
     this.inputTape.reset();
     this.outputTape.clearAndReset();
     this.memory.clear();
     this.programCounter = 0;
+    this.resetDebugRowHighlight();
     this.stats.clear();
     this.stats.replaceStatisticsDOM();
   }
@@ -131,6 +129,22 @@ export class Machine {
       throw new Error(`undefined label: '${label}'`);
     }
     this.programCounter = newProgramCounter;
+  }
+
+  resetDebugRowHighlight() {
+    if (!this.detachedMode) {
+      const oldActiveLine = Nodes.programListingTable.querySelector<HTMLElement>("tr.debug-line-highlight");
+      if (oldActiveLine !== null) oldActiveLine.classList.remove("debug-line-highlight");
+    }
+  }
+
+  setDebugLineHighlight(programCounter: number) {
+    if (!this.detachedMode) {
+      const oldActiveLine = Nodes.programListingTable.querySelector<HTMLElement>("tr.debug-line-highlight");
+      if (oldActiveLine !== null) oldActiveLine.classList.remove("debug-line-highlight");
+      const activeLine = Nodes.programListingTable.querySelector<HTMLElement>(`tr[data-line-number="${programCounter + 1}"]`);
+      if (activeLine !== null) activeLine.classList.add("debug-line-highlight");
+    }
   }
 
   // 'quiet' -- suppresses any DOM updates that may be caused by that instruction
@@ -234,15 +248,21 @@ export class Machine {
 
   private stopMachine(currentTime: DOMHighResTimeStamp, stopReason: StopReason) {
     this.running = false;
+    this.started = false;
     this.stats.timer.stop(currentTime);
     this.stopReason = stopReason;
+    this.resetDebugRowHighlight();
     this.updateDOMElements();
   }
 
   // Run All - run all instructions as fast as possible
   runAll(
     debug: boolean,
-    options: { timeoutPrintWarning?: number; timeoutUserKill?: number; timeoutAutoKill: number } = { timeoutPrintWarning: 1000, timeoutUserKill: 3000, timeoutAutoKill: 20000 }
+    options: { timeoutPrintWarning?: number; timeoutUserKill?: number; timeoutAutoKill: number } = {
+      timeoutPrintWarning: 1000,
+      timeoutUserKill: 3000,
+      timeoutAutoKill: 20000,
+    }
   ) {
     if (this.isFinished()) return;
 
@@ -262,7 +282,7 @@ export class Machine {
           timeoutWarned = true;
           console.warn(`Program running longer than ${options.timeoutPrintWarning}ms...`);
         }
-        
+
         if (options.timeoutUserKill && timePassed > options.timeoutUserKill && !timeoutAlerted) {
           timeoutAlerted = true;
 
@@ -306,6 +326,13 @@ export class Machine {
   step() {
     if (this.isFinished()) return;
 
+    // First step should not actually execute anything, just highlight the first line
+    if (!this.started) {
+      this.setDebugLineHighlight(this.programCounter);
+      this.started = true;
+      return;
+    }
+
     this.stats.timer.resume();
     this.paused = false;
 
@@ -314,18 +341,27 @@ export class Machine {
       if (shouldStop) {
         // Normal stop - found a HALT instruction
         this.stopMachine(performance.now(), "halt");
+        return;
       }
     } catch (e) {
       console.error("machine exec error:", e);
       // Exception encountered - error stop
       this.stopMachine(performance.now(), "error");
+      return;
     }
+
+    this.setDebugLineHighlight(this.programCounter);
 
     this.stats.timer.pause();
     this.paused = true;
   }
 
-  static runSimulation(program: Program, inputTape: InputTape, options: { timeout: number } = { timeout: 100 }, settings: MachineSettings = MachineSettings.simulationDefaults()): Machine {
+  static runSimulation(
+    program: Program,
+    inputTape: InputTape,
+    options: { timeout: number } = { timeout: 100 },
+    settings: MachineSettings = MachineSettings.simulationDefaults()
+  ): Machine {
     const machine = new Machine(program, true, settings);
     machine.inputTape = inputTape;
     machine.runAll(false, { timeoutPrintWarning: undefined, timeoutUserKill: undefined, timeoutAutoKill: options.timeout });
