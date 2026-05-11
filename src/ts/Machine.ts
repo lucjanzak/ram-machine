@@ -5,7 +5,7 @@ import { Memory } from "./Memory";
 import { Nodes } from "./Nodes";
 import { OutputTape, OutputTapeArray, OutputTapeArrayDOM } from "./OutputTape";
 import { Program, ProgramCounter } from "./Program";
-import { MachineSettings } from "./Settings";
+import { MachineSettings, preferences } from "./Settings";
 import { Statistics } from "./Statistics";
 import { assertNever } from "./Util";
 
@@ -143,7 +143,10 @@ export class Machine {
       const oldActiveLine = Nodes.programListingTable.querySelector<HTMLElement>("tr.debug-line-highlight");
       if (oldActiveLine !== null) oldActiveLine.classList.remove("debug-line-highlight");
       const activeLine = Nodes.programListingTable.querySelector<HTMLElement>(`tr[data-line-number="${programCounter + 1}"]`);
-      if (activeLine !== null) activeLine.classList.add("debug-line-highlight");
+      if (activeLine !== null) {
+        activeLine.classList.add("debug-line-highlight");
+        activeLine.scrollIntoView({ behavior: preferences.getAnimationsEnabled() ? "smooth" : "instant", block: "nearest" });
+      }
     }
   }
 

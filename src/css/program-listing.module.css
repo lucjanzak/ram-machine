@@ -47,6 +47,8 @@
 
 #program-listing-table tr {
   border-left: 6px solid transparent;
+  scroll-margin-top: 8rem;
+  scroll-margin-bottom: 8rem;
 }
 
 #program-listing-table tr.debug-line-highlight,

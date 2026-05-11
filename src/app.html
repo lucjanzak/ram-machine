@@ -1,299 +1,302 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <meta charset="UTF-8" />
-  <title><%= t.pageTitle %></title>
-  <script>window.currentLanguage = "<%= lang %>"</script>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= t.pageTitle %></title>
+    <script>
+      window.currentLanguage = "<%= lang %>";
+    </script>
+  </head>
 
-<body>
-  <div id="whole-screen">
-    <header>
-      <div>
-        <h1 class="title-header"><%= t.header.title %></h1>
-        <h3 class="version-header">
-          <a href="https://github.com/lucjanzak/ram-machine/commit/<%= gitCommitHash %>" target="_blank" title="View git commit <%= gitCommitHash %>">v<%= displayedVersion %></a>
-        </h3>
-      </div>
-      <div class="header-right">
+  <body>
+    <div id="whole-screen">
+      <header>
         <div>
-          <%= t.header.language %>
-          <ul>
-            <% _.forEach(languageInfo, function(lang) { %> <li><% print('<a href="app_' + lang.key + '.html">' + lang.displayName + '</a>') %></li> <% }); %>
-          </ul>
+          <h1 class="title-header"><%= t.header.title %></h1>
+          <h3 class="version-header">
+          <a href="https://github.com/lucjanzak/ram-machine/commit/<%= gitCommitHash %>" target="_blank" title="View git commit <%= gitCommitHash %>">v<%= displayedVersion %></a>
+          </h3>
         </div>
+        <div class="header-right">
+          <div>
+            <%= t.header.language %>
+            <ul>
+            <% _.forEach(languageInfo, function(lang) { %> <li><% print('<a href="app_' + lang.key + '.html">' + lang.displayName + '</a>') %></li> <% }); %>
+            </ul>
+          </div>
         <div style="display: none;"><%= t.header.author %> <a href="https://lucjanzak.github.io" target=" _blank">Lucjan Żak</a></div>
-      </div>
-    </header>
-    <nav>
-      <div class="nav-buttons">
+        </div>
+      </header>
+      <nav>
+        <div class="nav-buttons">
         <button id="new-program-button" class="nav-button nav-button-auto"><%= t.nav.new %></button>
         <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>"><%= t.nav.open %></button>
         <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>"><%= t.nav.save %></button>
         <button id="settings-button" class="nav-button nav-button-auto"><%= t.nav.settings %></button>
-      </div>
-      <div class="nav-buttons">
+        </div>
+        <div class="nav-buttons">
         <button id="clear-input-tape-button" class="nav-button nav-button-auto"><%= t.nav.clearInputTape %></button>
         <button id="edit-input-tape-button" class="nav-button nav-button-auto"><%= t.nav.editInputTape %></button>
-      </div>
-      <div class="nav-buttons">
+        </div>
+        <div class="nav-buttons">
         <button id="run-all-button" class="nav-button nav-button-auto"><%= t.nav.run %></button>
         <button id="reset-button" class="nav-button nav-button-auto"><%= t.nav.reset %></button>
         <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>"><%= t.nav.debugContinue %></button>
         <button id="step-button" class="nav-button nav-button-auto"><%= t.nav.debugStep %></button>
-      </div>
-      <div class="nav-buttons" id="load-program-buttons"></div>
-      <div class="nav-buttons">
+        </div>
+        <div class="nav-buttons" id="load-program-buttons"></div>
+        <div class="nav-buttons">
         <button id="charts-button" class="nav-button nav-button-auto"><%= t.nav.charts %></button>
         <button id="about-button" class="nav-button nav-button-auto"><%= t.nav.about %></button>
-      </div>
-    </nav>
-    <main>
-      <div>
-        <section class="input-tape-pane">
+        </div>
+      </nav>
+      <main>
+        <div>
+          <section class="input-tape-pane">
           <span class="centered-text"><% print(t.inputTape.header + '<span id="input-tape-length">0</span>' + t.inputTape.headerEnd) %></span>
-          <div id="input-tape-container">
-            <div id="input-tape"></div>
-          </div>
-        </section>
-      </div>
-      <div id="panes">
-        <section id="register-pane">
-          <!-- registers here -->
-          <!-- TODO: r0 is updated very often, it should be sticky at the top. this is not trivial to do because it is currently in a scrolllist so i don't want to do it yet -->
-          <span class="centered-text"><%= t.registers.header %></span>
-          <div id="register-scroll-list-container">
-            <div id="register-scroll-list"></div>
-          </div>
-        </section>
-        <!-- TODO: make into tabs (?) -->
-        <section id="program-listing-pane">
-          <table id="program-listing-table">
-            <colgroup>
-              <col>
-              <col>
-              <col>
-              <col>
-            </colgroup>
-            <thead>
-              <tr class="sticky-row">
-                <th><%= t.programListing.tableHeader.line %></th>
-                <th><%= t.programListing.tableHeader.label %></th>
-                <th><%= t.programListing.tableHeader.instruction %></th>
-                <th><%= t.programListing.tableHeader.comment %></th>
-              </tr>
-            </thead>
-            <tbody id="program-listing"></tbody>
-          </table>
-        </section>
-        <section id="program-text-editor-pane">
-          <div id="program-text-editor-container"></div>
-          <nav>
+            <div id="input-tape-container">
+              <div id="input-tape"></div>
+            </div>
+          </section>
+        </div>
+        <div id="panes">
+          <section id="register-pane">
+            <!-- registers here -->
+            <!-- TODO: r0 is updated very often, it should be sticky at the top. this is not trivial to do because it is currently in a scrolllist so i don't want to do it yet -->
+            <span class="centered-text"><%= t.registers.header %> </span>
+            <div id="register-scroll-list-container">
+              <div id="register-scroll-list"></div>
+            </div>
+          </section>
+          <!-- TODO: make into tabs (?) -->
+          <section id="program-listing-pane">
+            <table id="program-listing-table">
+              <colgroup>
+                <col />
+                <col />
+                <col />
+                <col />
+              </colgroup>
+              <thead>
+                <tr class="sticky-row">
+                  <th><%= t.programListing.tableHeader.line %></th>
+                  <th><%= t.programListing.tableHeader.label %></th>
+                  <th><%= t.programListing.tableHeader.instruction %></th>
+                  <th><%= t.programListing.tableHeader.comment %></th>
+                </tr>
+              </thead>
+              <tbody id="program-listing"></tbody>
+            </table>
+          </section>
+          <section id="program-text-editor-pane">
+            <div id="program-text-editor-container"></div>
+            <nav>
             <button class="nav-button nav-button-auto" onclick="RAMMachine.compileInput()">Compile</button>
-          </nav>
-        </section>
-      </div>
-      <div>
-        <section class="output-tape-pane">
+            </nav>
+          </section>
+        </div>
+        <div>
+          <section class="output-tape-pane">
           <span class="centered-text"><% print(t.outputTape.header + '<span id="output-tape-length">0</span>' + t.outputTape.headerEnd) %></span>
-          <div id="output-tape-container">
-            <div id="output-tape"></div>
-          </div>
-        </section>
-      </div>
-    </main>
-  </div>
+            <div id="output-tape-container">
+              <div id="output-tape"></div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
 
-  <div> <!-- TODO idk what to do with this yet -->
-    <section>
-      Statistics:
-      <table>
-        <thead>
-          <td>instruction</td>
-          <td>count</td>
-        </thead>
-        <tbody id="stats"></tbody>
-      </table>
-    </section>
-  </div>
+    <div style="display: none;">
+      <!-- TODO idk what to do with this yet -->
+      <section>
+        Statistics:
+        <table>
+          <thead>
+            <td>instruction</td>
+            <td>count</td>
+          </thead>
+          <tbody id="stats"></tbody>
+        </table>
+      </section>
+    </div>
 
-  <div style="display: none;">
-    <section>
-      Infinite scrolling test:
-      <div id="big-scroll-list-test" style="height: 100px;"></div>
-    </section>
-  </div>
+    <div style="display: none;">
+      <section>
+        Infinite scrolling test:
+        <div id="big-scroll-list-test" style="height: 100px;"></div>
+      </section>
+    </div>
 
-  <template id="instruction-tile">
-    <tr>
-      <td id="line-number" class="tile-part-line-number"></td>
-      <td id="labels" class="tile-part-labels"></td>
-      <td id="instruction"></td>
-      <td>
-        <div id="comment" class="tile-part-comment"></div>
-      </td>
-    </tr>
-  </template>
+    <template id="instruction-tile">
+      <tr>
+        <td id="line-number" class="tile-part-line-number"></td>
+        <td id="labels" class="tile-part-labels"></td>
+        <td id="instruction"></td>
+        <td>
+          <div id="comment" class="tile-part-comment"></div>
+        </td>
+      </tr>
+    </template>
 
-  <template id="comment-tile">
-    <tr>
-      <td></td>
-      <td colspan="3">
-        <div id="comment" class="tile-part-comment present big"></div>
-      </td>
-    </tr>
-  </template>
+    <template id="comment-tile">
+      <tr>
+        <td></td>
+        <td colspan="3">
+          <div id="comment" class="tile-part-comment present big"></div>
+        </td>
+      </tr>
+    </template>
 
-  <template id="stats-row">
-    <tr>
-      <td id="instruction"></td>
-      <td id="count"></td>
-    </tr>
-  </template>
+    <template id="stats-row">
+      <tr>
+        <td id="instruction"></td>
+        <td id="count"></td>
+      </tr>
+    </template>
 
-  <template id="register-row">
-    <div class="register-scroll-list-row" id="register-scroll-list-row">
+    <template id="register-row">
+      <div class="register-scroll-list-row" id="register-scroll-list-row">
       <span class="register-index">
         r<sub id="index"></sub>:
       </span>
-      <span id="value" class="register-value"></span>
-    </div>
-  </template>
+        <span id="value" class="register-value"></span>
+      </div>
+    </template>
 
-  <template id="input-tape-cell">
-    <div class="input-tape-scroll-list-cell" id="input-tape-scroll-list-cell">
+    <template id="input-tape-cell">
+      <div class="input-tape-scroll-list-cell" id="input-tape-scroll-list-cell">
       <span class="input-tape-cell-index"><% print(t.inputTape.cellLabel + '<span id="index">?</span>' + t.inputTape.cellLabelEnd) %></span>
       <input type="text" id="value" class="input-tape-cell-value" value="0" step="1" />
-    </div>
-  </template>
+      </div>
+    </template>
 
-  <template id="output-tape-cell">
+    <template id="output-tape-cell">
     <div class="output-tape-scroll-list-cell" id="output-tape-scroll-list-cell">
       <span class="output-tape-cell-index"><% print(t.outputTape.cellLabel + '<span id="index">?</span>' + t.outputTape.cellLabelEnd) %></span>
       <input type="text" id="value" class="output-tape-cell-value" value="0" step="1" disabled />
-    </div>
-  </template>
+      </div>
+    </template>
 
-  <template id="big-scroll-list-test-row">
+    <template id="big-scroll-list-test-row">
     <div style="width: 90px; height: 50px; background-color: #0000ff1f; word-break: break-all;">
-      Hello world <span id="number">number</span>
-    </div>
-  </template>
+        Hello world <span id="number">number</span>
+      </div>
+    </template>
 
-  <dialog id="settings">
-    <form id="settings-form">
+    <dialog id="settings">
+      <form id="settings-form">
       <h1><%= t.settings.title %></h1>
-      <div id="settings-layout">
-        <div>
+        <div id="settings-layout">
+          <div>
           <h3><%= t.settings.sections.machineEmulation %></h3>
-          <fieldset>
+            <fieldset>
             <legend><%= t.settings.inputTapeUnderflow.legend %></legend>
-            <div>
+              <div>
               <input type="radio" id="input-tape-underflow-error" name="input-tape-underflow-behavior" value="error" />
               <label for="input-tape-underflow-error"><%= t.settings.inputTapeUnderflow.error %></label>
-            </div>
-            <div>
+              </div>
+              <div>
               <input type="radio" id="input-tape-underflow-zero" name="input-tape-underflow-behavior" value="zero" />
               <label for="input-tape-underflow-zero"><%= t.settings.inputTapeUnderflow.zero %></label>
-            </div>
-            <div>
+              </div>
+              <div>
               <input type="radio" id="input-tape-underflow-random" name="input-tape-underflow-behavior" value="random" />
               <label for="input-tape-underflow-random"><%= t.settings.inputTapeUnderflow.random %></label>
-            </div>
-          </fieldset>
+              </div>
+            </fieldset>
 
-          <fieldset>
+            <fieldset>
             <legend><%= t.settings.uninitializedRegisterRead.legend %></legend>
-            <div>
+              <div>
               <input type="radio" id="uninitialized-register-read-error" name="uninitialized-register-read-behavior" value="error" />
               <label for="uninitialized-register-read-error"><%= t.settings.uninitializedRegisterRead.error %></label>
-            </div>
-            <div>
+              </div>
+              <div>
               <input type="radio" id="uninitialized-register-read-zero" name="uninitialized-register-read-behavior" value="zero" />
               <label for="uninitialized-register-read-zero"><%= t.settings.uninitializedRegisterRead.zero %></label>
-            </div>
-            <div>
+              </div>
+              <div>
               <input type="radio" id="uninitialized-register-read-random" name="uninitialized-register-read-behavior" value="random" />
               <label for="uninitialized-register-read-random"><%= t.settings.uninitializedRegisterRead.random %></label>
-            </div>
-            <div>
+              </div>
+              <div>
               <input type="radio" id="uninitialized-register-read-superpositionCollapse" name="uninitialized-register-read-behavior" value="superpositionCollapse" />
               <label for="uninitialized-register-read-superpositionCollapse"><%= t.settings.uninitializedRegisterRead.superpositionCollapse %></label>
-            </div>
-          </fieldset>
+              </div>
+            </fieldset>
 
-          <fieldset>
+            <fieldset>
             <legend><%= t.settings.programCounterOutOfBounds.legend %></legend>
-            <div>
+              <div>
               <input type="radio" id="program-counter-out-of-bounds-error" name="program-counter-out-of-bounds-behavior" value="error" />
               <label for="program-counter-out-of-bounds-error"><%= t.settings.programCounterOutOfBounds.error %></label>
-            </div>
-            <div>
+              </div>
+              <div>
               <input type="radio" id="program-counter-out-of-bounds-actAsHalt" name="program-counter-out-of-bounds-behavior" value="actAsHalt" />
               <label for="program-counter-out-of-bounds-actAsHalt"><%= t.settings.programCounterOutOfBounds.actAsHalt %></label>
-            </div>
-          </fieldset>
-        </div>
-        <div>
+              </div>
+            </fieldset>
+          </div>
+          <div>
           <h3><%= t.settings.sections.preferences %></h3>
-          <fieldset>
+            <fieldset>
             <legend><%= t.settings.animations.legend %></legend>
-            <div>
+              <div>
               <input type="radio" id="animations-enable" name="animations-toggle" value="enable" />
               <label for="animations-enable"><%= t.settings.animations.enable %></label>
-            </div>
-            <div>
+              </div>
+              <div>
               <input type="radio" id="animations-disable" name="animations-toggle" value="disable" />
               <label for="animations-disable"><%= t.settings.animations.disable %></label>
-            </div>
-          </fieldset>
+              </div>
+            </fieldset>
 
           <input type="checkbox" id="monaco-editor-snippets-checkbox" name="monaco-editor-snippets-toggle" checked />
           <label for="monaco-editor-snippets-checkbox"><%= t.settings.monacoEditorSnippets %></label>
+          </div>
         </div>
-      </div>
-      <div class="settings-footer-buttons">
+        <div class="settings-footer-buttons">
         <button type="reset"><%= t.settings.reset %></button>
         <button type="submit"><%= t.settings.close %></button>
-      </div>
-    </form>
-  </dialog>
+        </div>
+      </form>
+    </dialog>
 
-  <dialog id="chart-window">
+    <dialog id="chart-window">
     <h1><%= t.chartScreen.title %></h1>
-    
-    <div id="chart-container">
-      <canvas id="chart-canvas"></canvas>
-    </div>
 
-    <form id="chart-settings-form">
-      <div>
+      <div id="chart-container">
+        <canvas id="chart-canvas"></canvas>
+      </div>
+
+      <form id="chart-settings-form">
+        <div>
         <label for="generate-points-input"><%= t.chartScreen.generateMorePoints %></label>
-        <input type="number" id="generate-points-input" value="5" size="3" />
+          <input type="number" id="generate-points-input" value="5" size="3" />
         <button type="button" id="generate-points-button"><%= t.chartScreen.generate %></button>
         <br>
         <label for="execution-timeout-input"><%= t.chartScreen.executionTimeoutInput %></label>
         <input type="number" id="execution-timeout-input" value="100" size="6" /> <%= t.chartScreen.executionTimeoutInputMs %>
         <input type="checkbox" id="toggle-realtime-axis">
         <label for="toggle-realtime-axis"><%= t.chartScreen.showRealTimeAxis %></label>
-      </div>
-      <div>
+        </div>
+        <div>
         <button type="reset"><%= t.chartScreen.reset %></button>
         <button type="button" id="clear-chart-button"><%= t.chartScreen.clear %></button>
         <button type="button" id="close-chart-button"><%= t.chartScreen.close %></button>
-      </div>
-    </form>
-  </dialog>
+        </div>
+      </form>
+    </dialog>
 
-  <dialog id="about" popover="auto">
+    <dialog id="about" popover="auto">
     <span><%= t.about.author %> <a href="https://lucjanzak.github.io" target=" _blank">Lucjan Żak</a></span>
     <br>
     <span><%= t.about.license %> <a href="LICENSE.txt" target="_blank">GNU General Public License v3</a></span>
     <br>
     <span><%= t.about.sourceCode %> <a href="https://github.com/lucjanzak/ram-machine" target="_blank">GitHub</a></span>
     <br>
-    <span>2026</span>
+      <span>2026</span>
     <hr>
     <span><%= t.about.externalLibraries %></span>
     <br>
@@ -305,12 +308,12 @@
     <span><%= t.about.vscodeCodiconsCredit %></span>
     <a href="https://github.com/microsoft/vscode-codicons/blob/main/LICENSE" target="_blank">CC-BY 4.0 International</a>
     <br>
-    <a href="https://github.com/chartjs/Chart.js" target="_blank">Chart.js</a>
+      <a href="https://github.com/chartjs/Chart.js" target="_blank">Chart.js</a>
     <span><%= t.about.chartJsCredit %></span>
     <a href="https://github.com/chartjs/Chart.js/blob/master/LICENSE.md" target="_blank">MIT License</a>
     <hr>
     <button popovertarget="about" popovertargetaction="hide"><%= t.about.close %></button>
-  </dialog>
-</body>
+    </dialog>
+  </body>
 
 </html>

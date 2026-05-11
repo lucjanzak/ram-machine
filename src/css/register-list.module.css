@@ -19,6 +19,7 @@
   border-top: var(--generic-border);
   box-sizing: border-box;
   cursor: default;
+  transform-origin: right; /* This is a workaround to prevent the horizontal scroll-bar from appearing during scale animations - it will not appear if the element overflows only to the left */
 }
 
 body.animations-enabled .register-scroll-list-row {

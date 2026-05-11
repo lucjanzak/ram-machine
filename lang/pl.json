@@ -62,14 +62,14 @@
       "legend": "Co powinno się stać, gdy maszyna odczytuje pustą wartość z taśmy wejściowej?",
       "error": "Wyświetl błąd",
       "zero": "Zwróć zero",
-      "random": "Zwróć losową liczbnę całkowitą od 0 do 9999"
+      "random": "Zwróć losową liczbę całkowitą od 0 do 9999"
     },
     "uninitializedRegisterRead": {
       "legend": "Co się powinno stać, gdy maszyna czyta z niezainicjalizowanego rejestru?",
       "error": "Wyświetl błąd",
       "zero": "Zwróć zero",
-      "random": "Zwróć nową losową liczbnę całkowitą od 0 do 9999",
-      "superpositionCollapse": "Stabilize the register at a random value from 0 to 9999"
+      "random": "Zwróć nową losową liczbę całkowitą od 0 do 9999",
+      "superpositionCollapse": "Ustabilizuj rejestr na losowej wartości od 0 do 9999"
     },
     "programCounterOutOfBounds": {
       "legend": "Co powinno się stać, gdy licznik rozkazu opuści granice programu?",
