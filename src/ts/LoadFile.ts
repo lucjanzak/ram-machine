@@ -1,21 +1,14 @@
 import { makeStatusBox, Nodes, select, Templates, useTemplate } from "./Nodes";
-import { Parser, ParserMessage } from "./Parser";
-import { preprocess, PreprocessorMessage } from "./Preprocessor";
+import { CompilerMessage, Parser } from "./Parser";
+import { preprocess } from "./Preprocessor";
 
 export function initFileDrop() {
   const fileFinishedLoading = (sourceText: string) => {
     Nodes.loadFileTextareaPreview.value = sourceText;
 
-    const dispPreMsg = (msg: PreprocessorMessage) => {
+    const dispMsg = (msg: CompilerMessage) => {
       return (
-        `${msg.message}` +
-        (msg.line === undefined ? "" : ` (at line ${msg.line}${msg.col === undefined ? "" : `:${msg.col}`})`)
-      );
-    };
-
-    const dispParserMsg = (msg: ParserMessage) => {
-      return (
-        `${msg.message}` +
+        `${msg.body.message} <${msg.body.id}>` +
         (msg.line === undefined ? "" : ` (at line ${msg.line}${msg.col === undefined ? "" : `:${msg.col}`})`)
       );
     };
@@ -35,16 +28,16 @@ export function initFileDrop() {
     } else {
       preprocessorMessages.forEach((msg) => {
         if (msg.type === "error") {
-          Nodes.loadFileStatusContainer.append(makeStatusBox(`Preprocessor error: ${dispPreMsg(msg)}`, "error"));
+          Nodes.loadFileStatusContainer.append(makeStatusBox(`Preprocessor error: ${dispMsg(msg)}`, "error"));
         } else {
-          Nodes.loadFileStatusContainer.append(makeStatusBox(`Preprocessor warning: ${dispPreMsg(msg)}`, "warning"));
+          Nodes.loadFileStatusContainer.append(makeStatusBox(`Preprocessor warning: ${dispMsg(msg)}`, "warning"));
         }
       });
       parserMessages.forEach((msg) => {
         if (msg.type === "error") {
-          Nodes.loadFileStatusContainer.append(makeStatusBox(`Parser error: ${dispParserMsg(msg)}`, "error"));
+          Nodes.loadFileStatusContainer.append(makeStatusBox(`Parser error: ${dispMsg(msg)}`, "error"));
         } else {
-          Nodes.loadFileStatusContainer.append(makeStatusBox(`Parser warning: ${dispParserMsg(msg)}`, "warning"));
+          Nodes.loadFileStatusContainer.append(makeStatusBox(`Parser warning: ${dispMsg(msg)}`, "warning"));
         }
       });
     }

@@ -4,7 +4,7 @@ import { t } from "./Localization";
 import { Memory } from "./Memory";
 import { Nodes } from "./Nodes";
 import { OutputTape, OutputTapeArray, OutputTapeArrayDOM } from "./OutputTape";
-import { ParserMessage } from "./Parser";
+import { CompilerMessage } from "./Parser";
 import { preprocess } from "./Preprocessor";
 import { Program, ProgramCounter } from "./Program";
 import { MachineSettings, preferences, updateSettingsDOM } from "./Settings";
@@ -76,15 +76,15 @@ export class Machine {
     if (pre.uninitializedRegisterRead !== null) this.settings.uninitializedRegisterRead = pre.uninitializedRegisterRead;
     if (pre.programCounterOutOfBounds !== null) this.settings.programCounterOutOfBounds = pre.programCounterOutOfBounds;
     updateSettingsDOM(this.settings, preferences);
-    const { parserMessages } = this.loadAssemblyAndReset(pre.assembly);
-    return { preprocessorMessages: pre.messages, parserMessages };
+    const { compilerMessages } = this.loadAssemblyAndReset(pre.assembly);
+    return { preprocessorMessages: pre.messages, compilerMessages };
   }
 
-  loadAssemblyAndReset(assembly: string): { parserMessages: ParserMessage[] } {
+  loadAssemblyAndReset(assembly: string): { compilerMessages: CompilerMessage[] } {
     window.RAMMachine.editor.setValue(assembly);
-    const { program, parserMessages } = Program.fromAssembly(assembly);
+    const { program, compilerMessages } = Program.fromAssembly(assembly);
     this.loadProgramAndReset(program);
-    return { parserMessages };
+    return { compilerMessages };
   }
 
   loadProgramAndReset(program: Program) {

@@ -1,5 +1,6 @@
+import { CompileMessageBody, PreprocessorError } from "./CompileError";
 import { t } from "./Localization";
-import { ParserMessage } from "./Parser";
+import { CompilerMessage } from "./Parser";
 import {
   InputTapeUnderflowBehavior,
   MachineSettings,
@@ -7,15 +8,13 @@ import {
   UninitializedRegisterReadBehavior,
 } from "./Settings";
 
-export type PreprocessorMessage = ParserMessage;
-
 export type PreprocessorOutput = {
   inputTapeString: string | null;
   inputTapeUnderflow: InputTapeUnderflowBehavior | null;
   uninitializedRegisterRead: UninitializedRegisterReadBehavior | null;
   programCounterOutOfBounds: ProgramCounterOutOfBoundsBehavior | null;
   assembly: string;
-  messages: PreprocessorMessage[];
+  messages: CompilerMessage[];
 };
 
 export function preprocess(sourceText: string): PreprocessorOutput {
@@ -41,21 +40,16 @@ export function preprocess(sourceText: string): PreprocessorOutput {
       return;
     }
 
-    const warn = (msg: string) => {
+    const warn = (msg: PreprocessorError) => {
       const lineNumber = lineIndex + 1;
-      console.warn(msg, lineNumber);
+      const body = Object.assign(msg, { category: "preprocessor" as const });
+      console.warn(body, lineNumber);
       output.messages.push({
         type: "warning",
-        message: msg,
+        body,
         line: lineNumber,
       });
       console.trace(output);
-    };
-
-    const warnInvalidValue = (key: string, value: string) => {
-      warn(
-        `${t.compiler.preprocessor.warning.setInvalidValue} '${key}': ${value}, ${t.compiler.preprocessor.warning.genericIgnoring}`
-      );
     };
 
     const directive = line.slice(2).trim();
@@ -68,25 +62,21 @@ export function preprocess(sourceText: string): PreprocessorOutput {
       settingKey = settingKey.toUpperCase();
       if (settingKey === "INPUT_TAPE_UNDERFLOW") {
         const parsed = MachineSettings.parseInputTapeUnderflowBehavior(settingValue);
-        if (parsed === null) warnInvalidValue("INPUT_TAPE_UNDERFLOW", settingValue);
+        if (parsed === null) warn(PreprocessorError.setInvalidValue("INPUT_TAPE_UNDERFLOW", settingValue));
         else output.inputTapeUnderflow = parsed;
       } else if (settingKey === "UNINITIALIZED_REGISTER_READ") {
         const parsed = MachineSettings.parseUninitializedRegisterReadBehavior(settingValue);
-        if (parsed === null) warnInvalidValue("UNINITIALIZED_REGISTER_READ", settingValue);
+        if (parsed === null) warn(PreprocessorError.setInvalidValue("UNINITIALIZED_REGISTER_READ", settingValue));
         else output.uninitializedRegisterRead = parsed;
       } else if (settingKey === "PROGRAM_COUNTER_OUT_OF_BOUNDS") {
         const parsed = MachineSettings.parseProgramCounterOutOfBoundsBehavior(settingValue);
-        if (parsed === null) warnInvalidValue("PROGRAM_COUNTER_OUT_OF_BOUNDS", settingValue);
+        if (parsed === null) warn(PreprocessorError.setInvalidValue("PROGRAM_COUNTER_OUT_OF_BOUNDS", settingValue));
         else output.programCounterOutOfBounds = parsed;
       } else {
-        warn(
-          `${t.compiler.preprocessor.warning.setInvalidKey}: ${settingKey}, ${t.compiler.preprocessor.warning.genericIgnoring}`
-        );
+        warn(PreprocessorError.setInvalidKey(settingKey));
       }
     } else {
-      warn(
-        `${t.compiler.preprocessor.warning.unknownDirective}: ${commandName}, ${t.compiler.preprocessor.warning.genericIgnoring}`
-      );
+      warn(PreprocessorError.unknownDirective(commandName));
     }
   });
   output.assembly = assemblyLines.join("\n");

@@ -276,7 +276,7 @@ function compileExamplePrograms(): { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBL
   entries.forEach(([key, sourceCode], i) => {
     console.log(`Compiling example programs... (${i + 1}/${total}) ${key}`);
     if (key === "PARSER_ERROR_TEST") {
-      const { program, parserMessages } = Program.fromAssembly(sourceCode);
+      const { program, compilerMessages: parserMessages } = Program.fromAssembly(sourceCode);
       assertEq(parserMessages.length, 5);
       console.log(parserMessages);
       programs[key] = program;

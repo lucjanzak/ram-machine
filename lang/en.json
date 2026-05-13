@@ -119,22 +119,18 @@
   },
   "compiler": {
     "preprocessor": {
-      "warning": {
-        "setInvalidValue": "invalid value for .SET directive with key",
-        "setInvalidKey": "invalid setting key for .SET directive",
-        "unknownDirective": "unknown preprocessor directive",
-        "genericIgnoring": "ignoring"
-      }
+      "setInvalidValue": "invalid value for .SET directive with key",
+      "setInvalidKey": "invalid setting key for .SET directive",
+      "unknownDirective": "unknown preprocessor directive",
+      "genericIgnoreWarning": "ignoring"
     },
     "parser": {
-      "error": {
-        "bigintParseError": "could not parse bigint",
-        "immediateWritableOperand": "immediate operand is not allowed for this instruction",
-        "negativeRegister": "register number cannot be negative",
-        "unrecognizedMnemonic": "unrecognized mnemonic",
-        "emptyLabel": "label cannot be empty",
-        "redefinedLabel": "label was already defined at line"
-      }
+      "bigintParseError": "could not parse bigint",
+      "immediateWritableOperand": "immediate operand is not allowed for this instruction",
+      "negativeRegister": "register number cannot be negative",
+      "unrecognizedMnemonic": "unrecognized mnemonic",
+      "emptyLabel": "label cannot be empty",
+      "redefinedLabel": "label was already defined at line"
     }
   },
   "examples": {

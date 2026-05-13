@@ -9,11 +9,11 @@ import {
   WriteableOperand,
 } from "./Instruction";
 import { ParsedLine, Tile } from "./Program";
-import { t } from "./Localization";
+import { CompileMessageBody as CompileMessageBody, ParserError } from "./CompileError";
 
-export type ParserMessage = {
+export type CompilerMessage = {
   type: "error" | "warning";
-  message: string;
+  body: CompileMessageBody;
   line?: number;
   col?: number;
 };
@@ -23,7 +23,7 @@ export class Parser {
     try {
       return BigInt(operand);
     } catch (e) {
-      throw new Error(`${t.compiler.parser.error.bigintParseError}: ${operand}`);
+      throw ParserError.bigintParseError(operand);
     }
   }
 
@@ -40,14 +40,14 @@ export class Parser {
       };
     } else if (operand.startsWith("*")) {
       const value = this.parseBigInt(operand.slice(1));
-      if (value < 0) throw new Error(t.compiler.parser.error.negativeRegister);
+      if (value < 0) throw ParserError.negativeRegister();
       return {
         type: "indirect",
         value,
       };
     } else {
       const value = this.parseBigInt(operand);
-      if (value < 0) throw new Error(t.compiler.parser.error.negativeRegister);
+      if (value < 0) throw ParserError.negativeRegister();
       return {
         type: "register",
         value: BigInt(operand),
@@ -59,7 +59,7 @@ export class Parser {
     const parsed = this.parseAnyOperand(operand);
     const parsedType = parsed.type;
     if (parsedType === "immediate") {
-      throw new Error(t.compiler.parser.error.immediateWritableOperand);
+      throw ParserError.immediateWritableOperand();
     }
     const converted = {
       type: parsedType,
@@ -89,7 +89,7 @@ export class Parser {
         operation: mnemonic,
       };
     } else {
-      throw new Error(`${t.compiler.parser.error.unrecognizedMnemonic}: '${mnemonic}'`);
+      throw ParserError.unrecognizedMnemonic(mnemonic);
     }
   }
 
@@ -106,7 +106,7 @@ export class Parser {
     const labels = labelSegments.toReversed().map((segment) => segment.trim().toLowerCase());
     labels.forEach((label) => {
       if (label.length === 0) {
-        throw new Error(t.compiler.parser.error.emptyLabel);
+        throw ParserError.emptyLabel();
       }
     });
     const [mnemonicSegment, ...operandSegments] = lineWithoutLabel.trim().split(/\s+/);
@@ -120,16 +120,16 @@ export class Parser {
     };
   }
 
-  parseAssemblyProgram(assemblyText: string): { tiles: Tile[]; messages: ParserMessage[] } {
+  parseAssemblyProgram(assemblyText: string): { tiles: Tile[]; messages: CompilerMessage[] } {
     const lines = assemblyText.split("\n");
     const tiles: Tile[] = [];
-    const messages: ParserMessage[] = [];
+    const messages: CompilerMessage[] = [];
 
     const definedLabels = new Map<string, number>();
     function defineNewLabel(label: string, sourceLineNumber: number) {
       if (definedLabels.has(label)) {
         const originalLine = definedLabels.get(label);
-        throw new Error(`${t.compiler.parser.error.redefinedLabel} ${originalLine}: '${label}'`);
+        throw new Error();
       }
       definedLabels.set(label, sourceLineNumber);
     }
@@ -174,13 +174,19 @@ export class Parser {
     lines.forEach((line, lineIndex) => {
       try {
         processLine(line, lineIndex);
-      } catch (e) {
-        const ex = e as Error;
-        messages.push({
-          type: "error",
-          message: `${ex.message}`,
-          line: lineIndex + 1,
-        });
+      } catch (ex) {
+        // TODO: use of `as`
+        if (ex) {
+          const b = ex as ParserError;
+          const body = Object.assign(b, { category: "parser" as const });
+          messages.push({
+            type: "error",
+            body,
+            line: lineIndex + 1,
+          });
+        } else {
+          throw ex;
+        }
       }
     });
 
