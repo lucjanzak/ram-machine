@@ -64,16 +64,15 @@ body.animations-enabled .nav-button {
 }
 
 .nav-button:not(:disabled):hover {
+  background-color: #ffffff3f;
+}
+
+.nav-button.active {
   background-color: #fff;
   color: #000;
 }
 
-.nav-button.active {
-  background-color: #0f0;
-  color: #000;
-}
-
 .nav-button.active:hover {
-  background-color: #8f8;
+  background-color: #ddd;
   color: #000;
 }

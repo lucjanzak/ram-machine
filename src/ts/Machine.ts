@@ -298,13 +298,19 @@ export class Machine {
       timeoutAutoKill: 20000,
     }
   ) {
-    if (this.isFinished()) return;
+    if (this.isFinished()) {
+      // TODO: reset when pressing "runAll" after finishing
+      this.reset();
+      return;
+    }
 
     let timeoutWarned = false;
     let timeoutAlerted = false;
 
-    this.stats.clear();
-    this.stats.timer.start();
+    if (!this.started) {
+      this.stats.clear();
+    }
+    this.stats.timer.resume();
     this.running = true;
 
     try {

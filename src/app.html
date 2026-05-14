@@ -100,12 +100,12 @@
               </table>
             </section>
             <section id="status-pane">
-              <h1>status pane</h1>
-              Statistics:
+              <h1><%= t.status.title %></h1>
+              <%= t.status.stats.title %>
               <table>
                 <thead>
-                  <td>instruction</td>
-                  <td>count</td>
+                  <td><%= t.status.stats.instruction %></td>
+                  <td><%= t.status.stats.count %></td>
                 </thead>
                 <tbody id="stats"></tbody>
               </table>
@@ -113,7 +113,7 @@
             <section id="code-editor-pane">
               <div id="code-editor-container"></div>
               <nav>
-                <button class="nav-button nav-button-auto" id="compile-button">Compile</button>
+                <button class="nav-button nav-button-auto" id="compile-button"><%= t.editor.compile %></button>
               </nav>
             </section>
           </div>

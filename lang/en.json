@@ -55,6 +55,17 @@
       "comment": "Comment"
     }
   },
+  "status": {
+    "title": "Machine Status",
+    "stats": {
+      "title": "Statistics: ",
+      "instruction": "Instruction",
+      "count": "Count"
+    }
+  },
+  "editor": {
+    "compile": "Compile"
+  },
   "settings": {
     "title": "Settings",
     "sections": {
