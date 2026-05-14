@@ -24,6 +24,7 @@ export class Memory {
     const register = this.registers.get(index);
     if (register === undefined) {
       if (config === "error") {
+        // TODO: display runtime error in status pane
         throw new Error(`tried to read uninitialized register (r${index})`);
       } else if (config === "zero") {
         return 0n;
@@ -116,9 +117,9 @@ export class Memory {
       valueSpan.textContent = `${value}`;
       valueSpan.classList.remove("uninitialized");
       if (animate) {
-        // TODO: maybe the color should stay blue until the next update?
+        // TODO(optional): maybe the color should stay blue until the next update?
         // that would require storing a list/set of all recently-updated registers, and also probably a css class, instead of an animation
-        // TODO: fix the background color becoming white instead of the default row color (depending on odd and even)
+        // TODO(visual bug): fix the background color becoming white instead of the default row color (depending on odd and even)
         row.animate(
           [
             {

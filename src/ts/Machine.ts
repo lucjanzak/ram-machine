@@ -189,8 +189,8 @@ export class Machine {
     if (quiet) {
       this.stats.processSilently(
         instruction,
-        (i) => this.getRegister(i, quiet), // TODO: this may return a random value, which may be different from the random value used later in the program
-        () => this.inputTape.peek() || 0n // TODO: same for this
+        (i) => this.getRegister(i, quiet), // TODO(bug): this may return a random value, which may be different from the random value used later in the program
+        () => this.inputTape.peek() || 0n // TODO(bug): same for this
       );
     } else {
       this.stats.processAndUpdateDOM(
@@ -338,7 +338,7 @@ export class Machine {
           this.stopMachine(currentTimePrecise, "timeout");
         }
 
-        // TODO
+        // TODO: implement breakpoints
         if (debug && this.debugBreakpoints.includes(this.programCounter)) {
           alert("breakpoint hit! @ line " + this.programCounter);
         }

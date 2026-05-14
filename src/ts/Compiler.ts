@@ -142,7 +142,7 @@ export class Compiler {
     });
     const [mnemonicSegment, ...operandSegments] = lineWithoutLabel.trim().split(/\s+/);
     const mnemonic = mnemonicSegment.trim().toUpperCase();
-    const operand = operandSegments.join(" ").trim(); // TODO: this doesn't preserve the operand exactly; the original operand could've been separated by tabs for example, or varying levels of spaces.
+    const operand = operandSegments.join(" ").trim(); // TODO(bug): this doesn't preserve the operand exactly; the original operand could've been separated by tabs for example, or varying levels of spaces.
     const instruction = mnemonic.length > 0 ? this.parseInstruction(mnemonic, operand) : null;
     return {
       labels,

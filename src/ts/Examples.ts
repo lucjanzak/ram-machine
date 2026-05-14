@@ -302,7 +302,8 @@ function initDOM() {
     btn.addEventListener("click", () => {
       window.RAMMachine.machine.loadAssemblyAndReset(programText);
     });
-    // TODO: get rid of this any. or check in runtime if the title key exists.
+    // TODO(optional): get rid of this any, or check in runtime if the title key exists
+    // TODO: move buttons to "open file" dialog
     const title: string = (t.examples as any)[programKey].title || programKey;
     btn.textContent = `${t.nav.open} '${title}'`;
     Nodes.loadProgramButtons.appendChild(btn);

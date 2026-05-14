@@ -47,7 +47,7 @@ export class ComplexityChart {
     };
   }
 
-  // TODO: define a type of this
+  // TODO(optional): define a type of this
   private genAnnotations(): any {
     return {
       timeoutThreshold: {

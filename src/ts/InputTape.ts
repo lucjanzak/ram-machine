@@ -23,6 +23,7 @@ export abstract class InputTape {
     const value = this.read(quiet);
     if (value === undefined) {
       if (config === "error") {
+        // TODO: display runtime error in status pane
         unreachable(`tried to read from input tape, but there is no more cells to read`);
       } else if (config === "zero") {
         return 0n;
