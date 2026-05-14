@@ -117,6 +117,7 @@ export class Statistics {
     const timeMsBigInt = BigInt(Math.round(timeMs * 1000));
     const speed = timeMsBigInt === 0n ? 0 : (total * 1000000n) / timeMsBigInt;
 
+    // TODO: translate these:
     generateRow("Total", `${total}`);
     generateRow("Time", `${Math.round(timeMs * 1000) / 1000} ms`);
     generateRow("Avg. Speed", `${speed} inst. / s`);
