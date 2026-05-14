@@ -75,36 +75,41 @@
               <div id="register-scroll-list"></div>
             </div>
           </section>
-          <section id="program-listing-pane">
-            <table id="program-listing-table">
-              <colgroup>
-                <col />
-                <col />
-                <col />
-                <col />
-              </colgroup>
-              <thead>
-                <tr class="sticky-row">
-                  <th><%= t.programListing.tableHeader.line %></th>
-                  <th><%= t.programListing.tableHeader.label %></th>
-                  <th><%= t.programListing.tableHeader.instruction %></th>
-                  <th><%= t.programListing.tableHeader.comment %></th>
-                </tr>
-              </thead>
-              <tbody id="program-listing"></tbody>
-            </table>
-          </section>
-          <section id="status-pane">
-            <div>
-              status pane
+          <div id="central-panes">
+            <div id="central-panes-background">
+              Click buttons above to display panes
             </div>
-          </section>
-          <section id="code-editor-pane">
-            <div id="code-editor-container"></div>
-            <nav>
-              <button class="nav-button nav-button-auto" id="compile-button">Compile</button>
-            </nav>
-          </section>
+            <section id="program-listing-pane">
+              <table id="program-listing-table">
+                <colgroup>
+                  <col />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <thead>
+                  <tr class="sticky-row">
+                    <th><%= t.programListing.tableHeader.line %></th>
+                    <th><%= t.programListing.tableHeader.label %></th>
+                    <th><%= t.programListing.tableHeader.instruction %></th>
+                    <th><%= t.programListing.tableHeader.comment %></th>
+                  </tr>
+                </thead>
+                <tbody id="program-listing"></tbody>
+              </table>
+            </section>
+            <section id="status-pane">
+              <div>
+                status pane
+              </div>
+            </section>
+            <section id="code-editor-pane">
+              <div id="code-editor-container"></div>
+              <nav>
+                <button class="nav-button nav-button-auto" id="compile-button">Compile</button>
+              </nav>
+            </section>
+          </div>
         </div>
         <div>
           <section class="output-tape-pane">

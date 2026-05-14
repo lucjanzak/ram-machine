@@ -1,8 +1,9 @@
 #status-pane {
-  width: 50%;
+  width: 25%;
   flex-grow: 1;
   min-width: 200px;
   border-left: var(--generic-border);
+  background-color: #fff;
 
   overflow-x: auto;
   overflow-y: scroll;

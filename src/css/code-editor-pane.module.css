@@ -3,6 +3,7 @@
   flex-grow: 1;
   min-width: 200px;
   border-left: var(--generic-border);
+  background-color: #fff;
 
   display: flex;
   flex-direction: column;

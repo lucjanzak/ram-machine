@@ -34,7 +34,7 @@ nav {
 }
 
 body.animations-enabled .nav-button {
-  transition: 0.2s color, 0.2s background-color; 
+  transition: 0.2s color, 0.2s background-color;
 }
 
 .nav-button:disabled {
@@ -65,5 +65,15 @@ body.animations-enabled .nav-button {
 
 .nav-button:not(:disabled):hover {
   background-color: #fff;
+  color: #000;
+}
+
+.nav-button.active {
+  background-color: #0f0;
+  color: #000;
+}
+
+.nav-button.active:hover {
+  background-color: #8f8;
   color: #000;
 }

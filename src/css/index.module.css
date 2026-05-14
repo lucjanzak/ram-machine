@@ -45,6 +45,6 @@ hr {
 
 @import url(header.module.css);
 @import url(nav.module.css);
-@import url(main.module.css);
+@import url(panes.module.css);
 @import url(dialog.module.css);
 @import url(status-box.module.css);

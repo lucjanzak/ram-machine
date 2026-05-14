@@ -251,9 +251,9 @@ export function createEditor(): monaco.editor.IStandaloneCodeEditor {
     }
     timeout = window.setTimeout(() => {
       editor.layout();
-    }, 200);
+    }, 50);
   });
-  resizeObserver.observe(Nodes.codeEditorContainer);
+  resizeObserver.observe(Nodes.codeEditorPane);
   return editor;
 }
 

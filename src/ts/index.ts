@@ -8,6 +8,7 @@ import { testingArea } from "./testing";
 import * as monaco from "monaco-editor";
 import "../css/index.module.css";
 import { ComplexityChart, initChart } from "./Chart";
+import { changePaneVisibility } from "./Panes";
 
 const machine = new Machine();
 const editor = createEditor();
@@ -46,6 +47,10 @@ window.lang = {
 
 // Initialization
 initDOM();
+changePaneVisibility("register", true);
+changePaneVisibility("programListing", true);
+changePaneVisibility("codeEditor", true);
 machine.loadAssemblyAndReset(DEFAULT_PROGRAM_ASSEMBLY);
 
+// Testing
 testingArea();
