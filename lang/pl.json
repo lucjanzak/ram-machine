@@ -12,7 +12,7 @@
   },
   "nav": {
     "new": "Nowy",
-    "open": "Otwórz",
+    "load": "Otwórz",
     "save": "Zapisz",
     "settings": "Ustawienia",
     "clearInputTape": "Wyczyść taśmę",
@@ -65,6 +65,13 @@
   },
   "editor": {
     "compile": "Kompiluj"
+  },
+  "loadFile": {
+    "loadExample": "Wybierz program poniżej:",
+    "loadFromFile": "...lub załaduj swój program z pliku:",
+    "dropZoneHint": "Przeciągnij i upuść plik tutaj, albo kliknij aby wybrać plik z komputera.",
+    "loadedData": "Załadowane dane:",
+    "loadSuccess": "Plik załadowano pomyślnie"
   },
   "settings": {
     "title": "Ustawienia",

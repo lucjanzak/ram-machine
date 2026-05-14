@@ -18,7 +18,7 @@
   max-height: 600px;
   padding: 4rem 6rem;
   box-sizing: border-box;
-  margin: auto;
+  margin: 1rem auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,6 +32,11 @@
 
 #load-file-input {
   display: none;
+}
+
+#load-program-buttons {
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 #load-file-status-container {

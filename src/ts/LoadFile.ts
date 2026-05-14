@@ -12,7 +12,7 @@ function fileFinishedLoading(sourceText: string) {
   console.log(compilerOutput.messages);
 
   if (compilerOutput.messages.length === 0) {
-    Nodes.loadFileStatusContainer.append(makeStatusBox("File loaded successfully", "success"));
+    Nodes.loadFileStatusContainer.append(makeStatusBox(t.loadFile.loadSuccess, "success"));
   } else {
     compilerOutput.messages.forEach((msg) => {
       Nodes.loadFileStatusContainer.append(makeCompilerMessageBox(msg));

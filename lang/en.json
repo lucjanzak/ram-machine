@@ -12,7 +12,7 @@
   },
   "nav": {
     "new": "New",
-    "open": "Open",
+    "load": "Load",
     "save": "Save",
     "settings": "Settings",
     "clearInputTape": "Clear Tape",
@@ -65,6 +65,13 @@
   },
   "editor": {
     "compile": "Compile"
+  },
+  "loadFile": {
+    "loadExample": "Select a program below:",
+    "loadFromFile": "...or load a program from file:",
+    "dropZoneHint": "Drag and drop a file here, or click to choose a file.",
+    "loadedData": "Loaded data:",
+    "loadSuccess": "File loaded successfully"
   },
   "settings": {
     "title": "Settings",

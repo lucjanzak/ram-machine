@@ -5,9 +5,9 @@ import { select, Templates, useTemplate } from "./Nodes";
 import { preferences, UninitializedRegisterReadBehavior } from "./Settings";
 import { assertNever } from "./Util";
 
-export function randomBigint(to: bigint = 10000n) {
-  const rand = BigInt(Math.floor(Math.random() * Number(to)));
-  console.trace("randomBigint: ", rand);
+export function randomBigint(to: number = 10000) {
+  const rand = BigInt(Math.floor(Math.random() * to));
+  // console.trace("randomBigint: ", rand);
   return rand;
 }
 
@@ -50,9 +50,9 @@ export class Memory {
   setRegister(index: bigint, value: bigint, quiet: boolean) {
     this.registers.set(index, value);
     if (quiet) {
-      this.updateDOMCellLater(index);
+      this.updateDOMRowLater(index);
     } else {
-      this.updateDOMCellNow(index, value);
+      this.updateDOMRowNow(index, value);
     }
   }
 
@@ -63,7 +63,7 @@ export class Memory {
     this.refreshExistingRows();
   }
 
-  updateDOMCellNow(index: bigint, value: bigint | undefined) {
+  updateDOMRowNow(index: bigint, value: bigint | undefined) {
     if (this.scrollList === null) return;
 
     const listItem = this.scrollList.selectListItem(index);
@@ -75,7 +75,7 @@ export class Memory {
     this.updateRegisterRowElement(row, value, true);
   }
 
-  updateDOMCellLater(index: bigint) {
+  updateDOMRowLater(index: bigint) {
     this.quietlyUpdatedRegisters.add(index);
   }
 

@@ -1,5 +1,5 @@
 import { t } from "./Localization";
-import { Nodes } from "./Nodes";
+import { Dialogs, Nodes } from "./Nodes";
 import { Program } from "./Program";
 import { assertEq } from "./Util";
 
@@ -195,6 +195,7 @@ HALT
 ; ${hdiv}
 ;
 ; ${str.description}
+;.SET INPUT_TAPE_UNDERFLOW zero
 ${str.labels.start}:
 READ 0
 WRITE 0
@@ -296,16 +297,17 @@ function initDOM() {
   const hidden = ["PARSER_TEST", "PARSER_ERROR_TEST"];
   for (const [programKey, programText] of Object.entries(EXAMPLE_PROGRAMS_ASSEMBLY)) {
     if (hidden.includes(programKey)) continue;
+
     const btn = document.createElement("button");
     btn.classList.add("nav-button");
     btn.classList.add("nav-button-auto");
     btn.addEventListener("click", () => {
       window.RAMMachine.machine.loadAssemblyAndReset(programText);
+      Dialogs.loadFile.close();
     });
     // TODO(optional): get rid of this any, or check in runtime if the title key exists
-    // TODO: move buttons to "open file" dialog
     const title: string = (t.examples as any)[programKey].title || programKey;
-    btn.textContent = `${t.nav.open} '${title}'`;
+    btn.textContent = `${title}`;
     Nodes.loadProgramButtons.appendChild(btn);
   }
 }

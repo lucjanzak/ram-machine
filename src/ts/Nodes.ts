@@ -14,9 +14,9 @@ export namespace Nodes {
     return expect(document.querySelector<T>(selector), `element with selector '${selector}' not found`);
   }
 
-  // Static elements
+  // Navbar buttons
   export const newProgramButton = element("#new-program-button");
-  export const openProgramButton = element("#open-program-button");
+  export const loadProgramButton = element("#load-program-button");
   export const saveProgramButton = element("#save-program-button");
   export const settingsButton = element("#settings-button");
   export const clearInputTapeButton = element("#clear-input-tape-button");
@@ -24,7 +24,6 @@ export namespace Nodes {
   export const runAllButton = element("#run-all-button");
   export const resetButton = element("#reset-button");
   export const stepButton = element("#step-button");
-  export const loadProgramButtons = element("#load-program-buttons");
   export const chartsButton = element("#charts-button");
   export const aboutButton = element("#about-button");
   export const viewRegisterPaneButton = element("#view-register-pane-button");
@@ -38,6 +37,7 @@ export namespace Nodes {
     codeEditor: viewCodeEditorPaneButton,
   };
 
+  // Panes
   export const registerPane = element("#register-pane");
   export const programListingPane = element("#program-listing-pane");
   export const statusPane = element("#status-pane");
@@ -49,6 +49,7 @@ export namespace Nodes {
     codeEditor: codeEditorPane,
   };
 
+  // Pane elements
   export const programListingTable = element("#program-listing-table");
   // export const codeEditorBasic = element<HTMLTextAreaElement>("#code-editor-basic");
   export const codeEditorContainer = element<HTMLElement>("#code-editor-container");
@@ -61,14 +62,18 @@ export namespace Nodes {
   export const outputTapeLength = element("#output-tape-length");
   export const compileButton = element("#compile-button");
 
+  // Load file dialog
   // export const loadFileForm = element<HTMLFormElement>("#load-file-form");
   export const loadFileInput = element<HTMLInputElement>("#load-file-input");
   export const loadFileDropZone = element("#load-file-drop-zone");
   export const loadFileTextareaPreview = element<HTMLTextAreaElement>("#load-file-textarea-preview");
   export const loadFileStatusContainer = element("#load-file-status-container");
+  export const loadProgramButtons = element("#load-program-buttons");
 
+  // Settings dialog
   export const settingsForm = element<HTMLFormElement>("#settings-form");
 
+  // Chart dialog
   export const chartCanvas = element<HTMLCanvasElement>("#chart-canvas");
   export const chartSettingsForm = element<HTMLFormElement>("#chart-settings-form");
   export const generatePointsInput = element<HTMLInputElement>("#generate-points-input");
@@ -78,6 +83,7 @@ export namespace Nodes {
   export const clearChartButton = element("#clear-chart-button");
   export const closeChartButton = element("#close-chart-button");
 
+  // Testing
   export const bigScrollListTest = element<HTMLElement>("#big-scroll-list-test");
 }
 
@@ -131,7 +137,7 @@ export function initDOM() {
   Nodes.newProgramButton.addEventListener("click", () => {
     window.RAMMachine.machine.loadAssemblyAndReset("");
   });
-  Nodes.openProgramButton.addEventListener("click", () => {
+  Nodes.loadProgramButton.addEventListener("click", () => {
     Nodes.loadFileTextareaPreview.value = "";
     Nodes.loadFileStatusContainer.innerHTML = "";
     Dialogs.loadFile.showModal();

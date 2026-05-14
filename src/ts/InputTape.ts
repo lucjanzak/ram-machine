@@ -416,7 +416,7 @@ export function createSimulationInputTape(x: bigint, sequence: SimulationInputTa
   function genRandom(minRandValue: bigint, maxRandValue: bigint, length: bigint | undefined) {
     return function* () {
       for (let i = 0; length === undefined || i < length; i++) {
-        yield minRandValue + randomBigint(maxRandValue - minRandValue);
+        yield minRandValue + randomBigint(Number(maxRandValue - minRandValue));
       }
     };
   }
