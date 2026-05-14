@@ -64,7 +64,7 @@ export class Statistics {
       timeComplexity: Number(this.fetchTimeComplexitySimple()),
       timeComplexityLog: Number(this.fetchTimeComplexityLog()),
       realTime: this.fetchRealTime(),
-    }
+    };
   }
 
   static createEmptyCounters(): { [key in (typeof ALL_INSTRUCTIONS)[number]]: bigint } {
@@ -88,8 +88,9 @@ export class Statistics {
   }
 
   replaceStatisticsDOM() {
+    // TODO: make this class detachable from DOM - stats tables are also updated during simulations for charts
     Nodes.stats.textContent = "";
-    
+
     function generateRow(titleText: string, valueText: string) {
       const f = useTemplate(Templates.statsRow);
       const totalCellTitle = select<HTMLTableCellElement>(f, "#instruction");
@@ -100,7 +101,6 @@ export class Statistics {
       totalCellCounter.style.fontWeight = "700";
       Nodes.stats.append(f);
     }
-
 
     let total = 0n;
     for (const instruction of ALL_INSTRUCTIONS) {
@@ -118,7 +118,7 @@ export class Statistics {
     const speed = timeMsBigInt === 0n ? 0 : (total * 1000000n) / timeMsBigInt;
 
     generateRow("Total", `${total}`);
-    generateRow("Time", `${timeMs} ms`);
+    generateRow("Time", `${Math.round(timeMs * 1000) / 1000} ms`);
     generateRow("Avg. Speed", `${speed} inst. / s`);
     generateRow("Mem Cmplx", `${this.fetchMemoryComplexitySimple()}`);
     generateRow("Mem Cmplx (Log)", `${this.fetchMemoryComplexityLog()}`);

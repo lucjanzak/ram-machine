@@ -22,7 +22,7 @@ export class Machine {
   public memory: Memory;
   private programCounter: ProgramCounter = 0;
   public stats = new Statistics();
-  private debugBreakpoints: ProgramCounter[] = []; //[5, 10, 15, 30]; // TODO
+  private debugBreakpoints: ProgramCounter[] = []; //[5, 10, 15, 30]; // TODO: implement breakpoints
 
   constructor(
     private program: Program = Program.EMPTY,
@@ -262,7 +262,7 @@ export class Machine {
     const instruction = this.program.getInstruction(this.programCounter);
     if (instruction === undefined) {
       if (this.settings.programCounterOutOfBounds === "error") {
-        throw new Error("program counter outside of program bounds"); // TODO
+        throw new Error("program counter outside of program bounds"); // TODO: display runtime error in status pane
       } else if (this.settings.programCounterOutOfBounds === "actAsHalt") {
         return this.executeInstruction({ operation: "HALT" }, quiet);
       } else {

@@ -96,4 +96,6 @@ body.animations-enabled .compiler-message {
 .compiler-message .line-location {
   font-family: monospace;
   float: right;
+  margin: 0.2rem;
+  margin-left: 0.6rem;
 }

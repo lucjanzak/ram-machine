@@ -19,6 +19,7 @@ body {
   font-family: "Segoe UI", sans-serif;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
 #whole-screen {

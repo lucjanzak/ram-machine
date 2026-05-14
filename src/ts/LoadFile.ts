@@ -2,51 +2,52 @@ import { formatString, t } from "./Localization";
 import { makeCompilerMessageBox, makeStatusBox, Nodes } from "./Nodes";
 import { CompilerMessage, Compiler } from "./Compiler";
 
-export function initFileDrop() {
-  const fileFinishedLoading = (sourceText: string) => {
-    Nodes.loadFileTextareaPreview.value = sourceText;
+function fileFinishedLoading(sourceText: string) {
+  Nodes.loadFileTextareaPreview.value = sourceText;
 
-    // TODO: confirm button?
-    // const { preprocessorMessages, parserMessages } = window.RAMMachine.machine.loadRAMFileAndReset();
+  // TODO: add confirm button
 
-    const compiler = new Compiler();
-    const compilerOutput = compiler.compile(sourceText);
-    console.log(compilerOutput.messages);
+  const compiler = new Compiler();
+  const compilerOutput = compiler.compile(sourceText);
+  console.log(compilerOutput.messages);
 
-    if (compilerOutput.messages.length === 0) {
-      Nodes.loadFileStatusContainer.append(makeStatusBox("File loaded successfully", "success"));
-    } else {
-      compilerOutput.messages.forEach((msg) => {
-        Nodes.loadFileStatusContainer.append(makeCompilerMessageBox(msg));
-      });
-    }
-  };
-  const fileChanged = (file: File | null) => {
-    Nodes.loadFileStatusContainer.innerHTML = "";
-    if (file === null) {
-      Nodes.loadFileTextareaPreview.value = "";
-      return;
-    }
-
-    const fileReader = new FileReader();
-    fileReader.readAsText(file);
-    fileReader.addEventListener("load", () => {
-      if (typeof fileReader.result === "string") {
-        fileFinishedLoading(fileReader.result);
-      }
+  if (compilerOutput.messages.length === 0) {
+    Nodes.loadFileStatusContainer.append(makeStatusBox("File loaded successfully", "success"));
+  } else {
+    compilerOutput.messages.forEach((msg) => {
+      Nodes.loadFileStatusContainer.append(makeCompilerMessageBox(msg));
     });
-    console.log(file);
-  };
+  }
+}
 
-  const dropHandler = (e: DragEvent) => {
+function fileChanged(file: File | null) {
+  Nodes.loadFileStatusContainer.innerHTML = "";
+  if (file === null) {
+    Nodes.loadFileTextareaPreview.value = "";
+    return;
+  }
+
+  const fileReader = new FileReader();
+  fileReader.readAsText(file);
+  fileReader.addEventListener("load", () => {
+    if (typeof fileReader.result === "string") {
+      fileFinishedLoading(fileReader.result);
+    }
+  });
+  console.log(file);
+}
+
+export function initFileDrop() {
+  // File has been dropped
+  Nodes.loadFileDropZone.addEventListener("drop", (event) => {
+    const e = event as DragEvent;
     if (e.dataTransfer === null) return;
     e.preventDefault();
     const files = [...e.dataTransfer.items].map((item) => item.getAsFile()).filter((file) => file !== null);
     fileChanged(files[0]);
-  };
-  Nodes.loadFileDropZone.addEventListener("drop", (e) => {
-    dropHandler(e as DragEvent);
   });
+
+  // File has been chosen - call fileChanged
   Nodes.loadFileInput.addEventListener("change", () => {
     const files = Nodes.loadFileInput.files;
     if (files !== null && files.length > 0) {

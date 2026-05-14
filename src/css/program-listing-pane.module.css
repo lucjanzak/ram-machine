@@ -6,7 +6,7 @@
   background-color: #fff;
 
   overflow-x: auto;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 #program-listing-pane:not(.active) {

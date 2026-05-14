@@ -486,22 +486,3 @@ export function createSimulationInputTape(x: bigint, sequence: SimulationInputTa
     assertNever(sequence.type);
   }
 }
-
-// export class InputTapeMock implements InputTape {
-//   private currentIndex: bigint = 0n;
-//   read(): bigint | undefined {
-//     // TODO
-//     this.currentIndex++;
-//     return 1n;
-//   }
-//   readOrDefault(): bigint {
-//     this.currentIndex++;
-//     return 1n;
-//   }
-//   reset(): void {
-//     this.currentIndex = 0n;
-//   }
-//   clearAndReset(): void {
-//     this.currentIndex = 0n;
-//   }
-// }
