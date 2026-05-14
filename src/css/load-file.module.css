@@ -34,6 +34,10 @@
   display: none;
 }
 
+#load-file-status-container {
+  padding: 1rem 0;
+}
+
 #load-file-textarea-preview {
   resize: none;
   /* width: 100%; */

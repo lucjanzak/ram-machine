@@ -90,7 +90,8 @@ export function initFileDrop() {
     const e = e2 as DragEvent;
     if (e.dataTransfer === null) return;
 
-    const hasCorrectType = (item: DataTransferItem) => item.type.startsWith("text/") || item.type === "";
+    const hasCorrectType = (item: DataTransferItem) =>
+      item.type.startsWith("text/") || item.type === "application/ram" || item.type === "";
     const fileItems = [...e.dataTransfer.items].filter((item) => item.kind === "file");
     if (fileItems.length > 0) {
       e.preventDefault();

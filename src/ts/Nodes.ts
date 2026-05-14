@@ -160,7 +160,7 @@ export function makeStatusBox(message: string, type: "error" | "warning" | "succ
 export function makeCompilerMessageBox(msg: CompilerMessage): DocumentFragment {
   const f = useTemplate(Templates.compilerMessage);
 
-  const box = select(f, ".status-box");
+  const box = select(f, ".compiler-message");
   box.classList.add(msg.type);
 
   const titleSpan = select(f, ".title");
