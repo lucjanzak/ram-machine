@@ -32,7 +32,7 @@
         <div class="nav-buttons">
           <button id="new-program-button" class="nav-button nav-button-auto"><%= t.nav.new %></button>
           <button id="load-program-button" class="nav-button nav-button-auto"><%= t.nav.load %></button>
-          <button id="save-program-button" class="nav-button nav-button-auto"><%= t.nav.save %></button>
+          <button id="save-program-button" class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>"><%= t.nav.save %></button>
           <button id="settings-button" class="nav-button nav-button-auto"><%= t.nav.settings %></button>
         </div>
         <div class="nav-buttons">
@@ -101,6 +101,8 @@
             <section id="status-pane">
               <h3><%= t.status.title %></h3>
               <%= t.status.stats.title %>
+              <!-- TODO: Add current machine state here - running/paused/stopped/halted/error -->
+              <!-- TODO: show compile errors and runtime errors -->
               <table>
                 <thead>
                   <td><%= t.status.stats.instruction %></td>
