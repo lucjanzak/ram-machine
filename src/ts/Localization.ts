@@ -7,3 +7,11 @@ export const currentTranslationKey = window.currentLanguage;
 
 // Current translation:
 export const t = translations[currentTranslationKey];
+
+export function formatString(fmt: string, ...args: string[]) {
+  args.forEach((value, index) => {
+    fmt = fmt.replaceAll(`%${index}`, value);
+  })
+  fmt = fmt.replaceAll("%%", "%");
+  return fmt;
+}

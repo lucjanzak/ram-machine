@@ -1,0 +1,51 @@
+.status-box {
+  /* display: flex; */
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  margin-top: 0.5rem;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #7f7f7f3f;
+  background-color: #7f7f7f1f;
+  color: #7f7f7f;
+}
+
+.status-box.success {
+  border-color: #007f007f;
+  background-color: #00ff003f;
+  color: #007f00;
+}
+
+.status-box.error {
+  border-color: #7f00007f;
+  background-color: #ff00003f;
+  color: #7f0000;
+}
+
+.status-box.warning {
+  border-color: #7f7f007f;
+  background-color: #ffff003f;
+  color: #7f7f00;
+}
+
+.status-box .title {
+  font-weight: bold;
+}
+
+.status-box .message {
+  white-space-collapse: preserve;
+}
+
+.compiler-message .error-id {
+  font-family: monospace;
+  opacity: 0.5;
+}
+
+.compiler-message .message {
+  font-family: monospace;
+}
+
+.compiler-message .line-location {
+  font-family: monospace;
+  float: right;
+}

@@ -118,6 +118,10 @@
     "close": "Close"
   },
   "compiler": {
+    "parserErrorTitle": "Parser error: ",
+    "preprocessorErrorTitle": "Preprocessor error: ",
+    "atLine": "(at line %0)",
+    "atLineCol": "(at line %0:%1)",
     "preprocessor": {
       "setInvalidValue": "invalid value for .SET directive with key",
       "setInvalidKey": "invalid setting key for .SET directive",

@@ -1,17 +1,11 @@
-import { makeStatusBox, Nodes, select, Templates, useTemplate } from "./Nodes";
+import { formatString, t } from "./Localization";
+import { makeCompilerMessageBox, makeStatusBox, Nodes } from "./Nodes";
 import { CompilerMessage, Parser } from "./Parser";
 import { preprocess } from "./Preprocessor";
 
 export function initFileDrop() {
   const fileFinishedLoading = (sourceText: string) => {
     Nodes.loadFileTextareaPreview.value = sourceText;
-
-    const dispMsg = (msg: CompilerMessage) => {
-      return (
-        `${msg.body.message} <${msg.body.id}>` +
-        (msg.line === undefined ? "" : ` (at line ${msg.line}${msg.col === undefined ? "" : `:${msg.col}`})`)
-      );
-    };
 
     // TODO: confirm button?
     // const { preprocessorMessages, parserMessages } = window.RAMMachine.machine.loadRAMFileAndReset();
@@ -27,18 +21,10 @@ export function initFileDrop() {
       Nodes.loadFileStatusContainer.append(makeStatusBox("File loaded successfully", "success"));
     } else {
       preprocessorMessages.forEach((msg) => {
-        if (msg.type === "error") {
-          Nodes.loadFileStatusContainer.append(makeStatusBox(`Preprocessor error: ${dispMsg(msg)}`, "error"));
-        } else {
-          Nodes.loadFileStatusContainer.append(makeStatusBox(`Preprocessor warning: ${dispMsg(msg)}`, "warning"));
-        }
+        Nodes.loadFileStatusContainer.append(makeCompilerMessageBox(msg));
       });
       parserMessages.forEach((msg) => {
-        if (msg.type === "error") {
-          Nodes.loadFileStatusContainer.append(makeStatusBox(`Parser error: ${dispMsg(msg)}`, "error"));
-        } else {
-          Nodes.loadFileStatusContainer.append(makeStatusBox(`Parser warning: ${dispMsg(msg)}`, "warning"));
-        }
+        Nodes.loadFileStatusContainer.append(makeCompilerMessageBox(msg));
       });
     }
   };

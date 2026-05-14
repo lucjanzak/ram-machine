@@ -118,6 +118,10 @@
     "close": "Close"
   },
   "compiler": {
+    "parserErrorTitle": "Błąd parsera: ",
+    "preprocessorErrorTitle": "Błąd preprocesora: ",
+    "atLine": "(w linii %0)",
+    "atLineCol": "(w linii %0:%1)",
     "preprocessor": {
       "setInvalidValue": "nieprawidłowa wartość dla dyrektywy .SET z kluczem",
       "setInvalidKey": "nieprawidłowy klucz dla dyrektywy .SET",

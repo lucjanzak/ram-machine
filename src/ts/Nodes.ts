@@ -1,9 +1,10 @@
 /// @no-format
 import { initChartDOM } from "./Chart";
 import { initFileDrop } from "./LoadFile";
-import { t } from "./Localization";
+import { formatString, t } from "./Localization";
+import { CompilerMessage } from "./Parser";
 import { initSettingsDOM } from "./Settings";
-import { assertEq, expect } from "./Util";
+import { assertEq, assertNever, expect } from "./Util";
 
 export namespace Nodes {
   function element<T extends Element = Element>(selector: string) {
@@ -72,6 +73,7 @@ export namespace Templates {
   export const outputTapeCell = template("#output-tape-cell");
   export const bigScrollListTestRow = template("#big-scroll-list-test-row");
   export const statusBox = template("#status-box");
+  export const compilerMessage = template("#compiler-message");
 }
 
 export namespace Dialogs {
@@ -146,9 +148,42 @@ export function initDOM() {
 
 export function makeStatusBox(message: string, type: "error" | "warning" | "success"): DocumentFragment {
   const f = useTemplate(Templates.statusBox);
+
   const box = select(f, ".status-box");
-  const messageSpan = select(f, ".message");
   box.classList.add(type);
+
+  const messageSpan = select(f, ".message");
   messageSpan.textContent = message;
+  return f;
+}
+
+export function makeCompilerMessageBox(msg: CompilerMessage): DocumentFragment {
+  const f = useTemplate(Templates.compilerMessage);
+
+  const box = select(f, ".status-box");
+  box.classList.add(msg.type);
+
+  const titleSpan = select(f, ".title");
+  if (msg.body.category === "preprocessor") {
+    titleSpan.textContent = `${t.compiler.preprocessorErrorTitle}`;
+  } else if (msg.body.category === "parser") {
+    titleSpan.textContent = `${t.compiler.parserErrorTitle}`;
+  } else {
+    assertNever(msg.body);
+  }
+
+  const errorIdSpan = select(f, ".error-id");
+  errorIdSpan.textContent = `<${msg.body.id}>`;
+
+  const messageSpan = select(f, ".message");
+  messageSpan.textContent = `${msg.body.message}`;
+
+  const lineLocation = select(f, ".line-location");
+  lineLocation.textContent =
+    msg.line === undefined
+      ? ""
+      : msg.col === undefined
+      ? formatString(t.compiler.atLine, `${msg.line}`)
+      : formatString(t.compiler.atLineCol, `${msg.line}`, `${msg.col}`);
   return f;
 }
