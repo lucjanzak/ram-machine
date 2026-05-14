@@ -1,0 +1,22 @@
+#code-editor-pane {
+  width: 50%;
+  flex-grow: 1;
+  min-width: 200px;
+  border-left: var(--generic-border);
+
+  display: flex;
+  flex-direction: column;
+}
+
+#code-editor-pane:not(.active) {
+  display: none;
+}
+
+#code-editor-basic {
+  resize: none;
+}
+
+#code-editor-container {
+  flex-grow: 1;
+  min-height: 0;
+}

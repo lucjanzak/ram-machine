@@ -285,12 +285,12 @@ export class InputTapeArrayDOM extends InputTapeArray {
         hostElement.parentElement!.clientWidth
       );
 
-      // TODO: these are probably not reliable, the container size can change independently of the window as well
-      window.addEventListener("resize", () => {
+      const resizeObserver = new ResizeObserver(() => {
         if (this.scrollList !== null) {
           this.scrollList.setContainerAvailableSize(this.scrollList.hostElement.parentElement!.clientWidth);
         }
       });
+      resizeObserver.observe(hostElement);
     }
 
     this.updateListLength();

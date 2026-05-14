@@ -197,10 +197,16 @@ export class Compiler {
     }
   }
 
-  compile(assemblyText: string): { tiles: Tile[]; messages: CompilerMessage[]; preprocessorState: PreprocessorState } {
+  compile(assemblyText: string): {
+    success: boolean;
+    tiles: Tile[];
+    messages: CompilerMessage[];
+    preprocessorState: PreprocessorState;
+  } {
     const lines = assemblyText.split("\n");
     const tiles: Tile[] = [];
     const messages: CompilerMessage[] = [];
+    let success = true;
 
     const definedLabels = new Map<string, number>();
     const defineNewLabel = (label: string, sourceLineNumber: number) => {
@@ -261,6 +267,7 @@ export class Compiler {
         processLine(line, lineIndex);
       } catch (ex) {
         if (ex instanceof CompilerException) {
+          success = false;
           messages.push({
             type: "error",
             body: ex.msg,
@@ -280,6 +287,6 @@ export class Compiler {
       });
     }
 
-    return { tiles, messages, preprocessorState };
+    return { success, tiles, messages, preprocessorState };
   }
 }

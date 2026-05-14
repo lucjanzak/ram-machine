@@ -1,3 +1,17 @@
+#program-listing-pane {
+  width: 50%;
+  flex-grow: 1;
+  min-width: 200px;
+  border-left: var(--generic-border);
+
+  overflow-x: auto;
+  overflow-y: scroll;
+}
+
+#program-listing-pane:not(.active) {
+  display: none;
+}
+
 #program-listing-table {
   border-collapse: collapse;
   transform-origin: center top;

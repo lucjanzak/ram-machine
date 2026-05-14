@@ -30,25 +30,31 @@
       </header>
       <nav>
         <div class="nav-buttons">
-        <button id="new-program-button" class="nav-button nav-button-auto"><%= t.nav.new %></button>
-        <button id="open-program-button" class="nav-button nav-button-auto"><%= t.nav.open %></button>
-        <button id="save-program-button" class="nav-button nav-button-auto"><%= t.nav.save %></button>
-        <button id="settings-button" class="nav-button nav-button-auto"><%= t.nav.settings %></button>
+          <button id="new-program-button" class="nav-button nav-button-auto"><%= t.nav.new %></button>
+          <button id="open-program-button" class="nav-button nav-button-auto"><%= t.nav.open %></button>
+          <button id="save-program-button" class="nav-button nav-button-auto"><%= t.nav.save %></button>
+          <button id="settings-button" class="nav-button nav-button-auto"><%= t.nav.settings %></button>
         </div>
         <div class="nav-buttons">
-        <button id="clear-input-tape-button" class="nav-button nav-button-auto"><%= t.nav.clearInputTape %></button>
-        <button id="edit-input-tape-button" class="nav-button nav-button-auto"><%= t.nav.editInputTape %></button>
+          <button id="clear-input-tape-button" class="nav-button nav-button-auto"><%= t.nav.clearInputTape %></button>
+          <button id="edit-input-tape-button" class="nav-button nav-button-auto"><%= t.nav.editInputTape %></button>
         </div>
         <div class="nav-buttons">
-        <button id="run-all-button" class="nav-button nav-button-auto"><%= t.nav.run %></button>
-        <button id="reset-button" class="nav-button nav-button-auto"><%= t.nav.reset %></button>
-        <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>"><%= t.nav.debugContinue %></button>
-        <button id="step-button" class="nav-button nav-button-auto"><%= t.nav.debugStep %></button>
+          <button id="run-all-button" class="nav-button nav-button-auto"><%= t.nav.run %></button>
+          <button id="reset-button" class="nav-button nav-button-auto"><%= t.nav.reset %></button>
+          <button class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>"><%= t.nav.debugContinue %></button>
+          <button id="step-button" class="nav-button nav-button-auto"><%= t.nav.debugStep %></button>
         </div>
         <div class="nav-buttons" id="load-program-buttons"></div>
         <div class="nav-buttons">
-        <button id="charts-button" class="nav-button nav-button-auto"><%= t.nav.charts %></button>
-        <button id="about-button" class="nav-button nav-button-auto"><%= t.nav.about %></button>
+          <button id="charts-button" class="nav-button nav-button-auto"><%= t.nav.charts %></button>
+          <button id="about-button" class="nav-button nav-button-auto"><%= t.nav.about %></button>
+        </div>
+        <div class="nav-buttons" id="view-buttons">
+          <button id="view-register-pane-button" class="nav-button nav-button-auto active">View Registers</button>
+          <button id="view-program-listing-pane-button" class="nav-button nav-button-auto active">View Program Listing</button>
+          <button id="view-status-pane-button" class="nav-button nav-button-auto">View Status</button>
+          <button id="view-code-editor-pane-button" class="nav-button nav-button-auto active">View Code Editor</button>
         </div>
       </nav>
       <main>
@@ -63,13 +69,12 @@
         <div id="panes">
           <section id="register-pane">
             <!-- registers here -->
-            <!-- TODO: r0 is updated very often, it should be sticky at the top. this is not trivial to do because it is currently in a scrolllist so i don't want to do it yet -->
+            <!-- TODO: r0 is updated very often, it should be sticky at the top. this is not completely trivial to do because it is currently in a scrolllist so i don't want to do it yet -->
             <span class="centered-text"><%= t.registers.header %> </span>
             <div id="register-scroll-list-container">
               <div id="register-scroll-list"></div>
             </div>
           </section>
-          <!-- TODO: make into tabs (?) -->
           <section id="program-listing-pane">
             <table id="program-listing-table">
               <colgroup>
@@ -89,10 +94,15 @@
               <tbody id="program-listing"></tbody>
             </table>
           </section>
-          <section id="program-text-editor-pane">
-            <div id="program-text-editor-container"></div>
+          <section id="status-pane">
+            <div>
+              status pane
+            </div>
+          </section>
+          <section id="code-editor-pane">
+            <div id="code-editor-container"></div>
             <nav>
-            <button class="nav-button nav-button-auto" id="compile-button">Compile</button>
+              <button class="nav-button nav-button-auto" id="compile-button">Compile</button>
             </nav>
           </section>
         </div>

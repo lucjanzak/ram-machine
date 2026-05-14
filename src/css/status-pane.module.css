@@ -1,0 +1,13 @@
+#status-pane {
+  width: 50%;
+  flex-grow: 1;
+  min-width: 200px;
+  border-left: var(--generic-border);
+
+  overflow-x: auto;
+  overflow-y: scroll;
+}
+
+#status-pane:not(.active) {
+  display: none;
+}

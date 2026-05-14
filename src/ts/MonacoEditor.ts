@@ -232,20 +232,20 @@ export function createEditor(): monaco.editor.IStandaloneCodeEditor {
       return { suggestions: suggestions };
     },
   });
-  Nodes.programTextEditorContainer.style.display = "flex";
-  Nodes.programTextEditorContainer.style.flexDirection = "column";
-  Nodes.programTextEditorContainer.style.alignItems = "stretch";
-  Nodes.programTextEditorContainer.style.width = "100%";
-  Nodes.programTextEditorContainer.style.height = "100%";
+  Nodes.codeEditorContainer.style.display = "flex";
+  Nodes.codeEditorContainer.style.flexDirection = "column";
+  Nodes.codeEditorContainer.style.alignItems = "stretch";
+  Nodes.codeEditorContainer.style.width = "100%";
+  Nodes.codeEditorContainer.style.height = "100%";
 
-  const editor = monaco.editor.create(Nodes.programTextEditorContainer, {
+  const editor = monaco.editor.create(Nodes.codeEditorContainer, {
     value: DEFAULT_PROGRAM_ASSEMBLY,
     language: "ramMachineAssembly",
     wordBasedSuggestions: "allDocuments",
   });
 
   let timeout: number | null = null;
-  window.addEventListener("resize", () => {
+  const resizeObserver = new ResizeObserver(() => {
     if (timeout !== null) {
       window.clearTimeout(timeout);
     }
@@ -253,6 +253,7 @@ export function createEditor(): monaco.editor.IStandaloneCodeEditor {
       editor.layout();
     }, 200);
   });
+  resizeObserver.observe(Nodes.codeEditorContainer);
   return editor;
 }
 

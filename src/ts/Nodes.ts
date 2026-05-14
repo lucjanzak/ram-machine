@@ -7,6 +7,7 @@ import { initSettingsDOM } from "./Settings";
 import { assertEq, assertNever, expect } from "./Util";
 import { Program } from "./Program";
 import { compileEditorSourceCode } from "./MonacoEditor";
+import { changePaneVisibility, PaneName } from "./Panes";
 
 export namespace Nodes {
   function element<T extends Element = Element>(selector: string) {
@@ -26,9 +27,31 @@ export namespace Nodes {
   export const loadProgramButtons = element("#load-program-buttons");
   export const chartsButton = element("#charts-button");
   export const aboutButton = element("#about-button");
+  export const viewRegisterPaneButton = element("#view-register-pane-button");
+  export const viewProgramListingPaneButton = element("#view-program-listing-pane-button");
+  export const viewStatusPaneButton = element("#view-status-pane-button");
+  export const viewCodeEditorPaneButton = element("#view-code-editor-pane-button");
+  export const viewButtons: { [K in PaneName]: Element } = {
+    register: viewRegisterPaneButton,
+    programListing: viewProgramListingPaneButton,
+    status: viewStatusPaneButton,
+    codeEditor: viewCodeEditorPaneButton,
+  };
+
+  export const registerPane = element("#register-pane");
+  export const programListingPane = element("#program-listing-pane");
+  export const statusPane = element("#status-pane");
+  export const codeEditorPane = element("#code-editor-pane");
+  export const panes: { [K in PaneName]: Element } = {
+    register: registerPane,
+    programListing: programListingPane,
+    status: statusPane,
+    codeEditor: codeEditorPane,
+  };
+
   export const programListingTable = element("#program-listing-table");
-  // export const programTextEditorBasic = element<HTMLTextAreaElement>("#program-text-editor-basic");
-  export const programTextEditorContainer = element<HTMLElement>("#program-text-editor-container");
+  // export const codeEditorBasic = element<HTMLTextAreaElement>("#code-editor-basic");
+  export const codeEditorContainer = element<HTMLElement>("#code-editor-container");
   export const programListing = element("#program-listing");
   export const stats = element("#stats");
   export const registerScrollList = element<HTMLElement>("#register-scroll-list");
@@ -143,6 +166,11 @@ export function initDOM() {
   });
   Nodes.aboutButton.addEventListener("click", () => {
     Dialogs.about.showPopover();
+  });
+  Object.entries(Nodes.viewButtons).forEach(([key, button]) => {
+    button.addEventListener("click", () => {
+      changePaneVisibility(key as PaneName, undefined);
+    });
   });
   Nodes.compileButton.addEventListener("click", () => {
     compileEditorSourceCode();

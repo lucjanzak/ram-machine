@@ -1,8 +1,0 @@
-#program-text-editor-basic {
-  resize: none;
-}
-
-#program-text-editor-container {
-  flex-grow: 1;
-  min-height: 0;
-}

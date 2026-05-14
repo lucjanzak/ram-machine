@@ -70,7 +70,7 @@ export class Memory {
 
     const row = select(listItem, "#register-scroll-list-row");
     if (row === null) return;
-    
+
     this.updateRegisterRowElement(row, value, true);
   }
 
@@ -121,7 +121,11 @@ export class Memory {
         // TODO: fix the background color becoming white instead of the default row color (depending on odd and even)
         row.animate(
           [
-            { backgroundColor: "#ff08", color: "blue", transform: preferences.getAnimationsEnabled() ? "scale(120%)" : "scale(100%)" },
+            {
+              backgroundColor: "#ff08",
+              color: "blue",
+              transform: preferences.getAnimationsEnabled() ? "scale(120%)" : "scale(100%)",
+            },
             { backgroundColor: "#ff08", color: "blue", transform: "scale(100%)" },
             { backgroundColor: "#ff08", color: "blue", transform: "scale(100%)" },
             { backgroundColor: "transparent", color: "initial", transform: "scale(100%)" },
@@ -160,12 +164,14 @@ export class Memory {
         hostElement.parentElement!.clientHeight
       );
 
-      // TODO: these are probably not reliable, the container size can change independently of the window as well
-      window.addEventListener("resize", () => {
-        if (this.scrollList !== null) {
-          this.scrollList.setContainerAvailableSize(this.scrollList.hostElement.parentElement!.clientHeight);
-        }
-      });
+      if (hostElement.parentElement !== null) {
+        const resizeObserver = new ResizeObserver(() => {
+          if (this.scrollList !== null) {
+            this.scrollList.setContainerAvailableSize(this.scrollList.hostElement.parentElement!.clientHeight);
+          }
+        });
+        resizeObserver.observe(hostElement.parentElement);
+      }
     }
   }
 }
