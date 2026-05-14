@@ -40,6 +40,9 @@
     "cellLabelEnd": "",
     "cellEmpty": "(pusta)"
   },
+  "panes": {
+    "background": "Kliknij przyciski u góry aby wybrać wyświetlane okna"
+  },
   "registers": {
     "header": "Rejestry:",
     "uninitialized": "niezainicjalizowany"
@@ -132,6 +135,7 @@
       "bigintParseError": "nieprawidłowa liczba całkowita",
       "immediateWritableOperand": "operand bezpośredni nie jest dozwolony dla tej instrukcji",
       "negativeRegister": "numer rejestru nie może być ujemny",
+      "negativeImmediate": "operand bezpośredni nie może być ujemny",
       "unrecognizedMnemonic": "nieznana nazwa instrukcji",
       "emptyLabel": "etykieta nie może być pusta",
       "redefinedLabel": "ta etykieta została już zdefiniowana w linii"

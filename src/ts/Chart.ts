@@ -35,7 +35,7 @@ export class ComplexityChart {
         position: "right",
         title: {
           display: true,
-          text: t.chartScreen.chart.realTimeAxis
+          text: t.chartScreen.chart.realTimeAxis,
         },
         ticks: {
           callback: (value) => `${value}${t.chartScreen.chart.realTimeAxisUnits}`,
@@ -69,11 +69,7 @@ export class ComplexityChart {
     };
   }
 
-  constructor(
-    private timeoutMs: number,
-    private showRealTimeAxis: boolean,
-    data: DataPoint[] = [],
-  ) {
+  constructor(private timeoutMs: number, private showRealTimeAxis: boolean, data: DataPoint[] = []) {
     this.chart = new Chart(Nodes.chartCanvas, {
       type: "line",
       data: {
@@ -133,7 +129,6 @@ export class ComplexityChart {
       animation.easing = "easeOutExpo";
     }
   }
-  
 
   changeRealTimeAxisVisibility(displayRealTime: boolean) {
     this.showRealTimeAxis = displayRealTime;
@@ -142,7 +137,6 @@ export class ComplexityChart {
     this.chart.setDatasetVisibility(4, displayRealTime);
     this.chart.update("active");
   }
-  
 
   changeTimeoutMs(timeoutMs: number) {
     this.timeoutMs = timeoutMs;
@@ -178,21 +172,18 @@ export class ComplexityChart {
     for (let i = 0; i < newPointsToGenerate; i++) {
       const timePassed = Date.now() - startTime;
       if (timePassed > loopTimeout) {
-        console.warn(
-          `Could not generate all desired points - the process was taking more than ${loopTimeout}ms`,
-        );
+        console.warn(`Could not generate all desired points - the process was taking more than ${loopTimeout}ms`);
         break;
       }
 
       this.currentXPosition++;
       // TODO: make it possible to put the sequence (of prime numbers for example) as a singlevalue sequence.
-      const inputTape = createSimulationInputTape(this.currentXPosition, {type: "singleValue"});
+      // TODO: make it possible to change sequences
+      const inputTape = createSimulationInputTape(this.currentXPosition, { type: "singleValue" });
       // console.log(inputTape);
-      const machine = Machine.runSimulation(
-        window.RAMMachine.machine.getProgram(),
-        inputTape,
-        { timeout: this.timeoutMs },
-      );
+      const machine = Machine.runSimulation(window.RAMMachine.machine.getProgram(), inputTape, {
+        timeout: this.timeoutMs,
+      });
       // console.log(inputData, machine);
       if (machine.getStopReason() !== "halt") {
         this.addDataPointWithoutUpdate({
@@ -204,9 +195,7 @@ export class ComplexityChart {
           realTime: machine.stats.fetchRealTime(),
         });
       } else {
-        this.addDataPointWithoutUpdate(
-          machine.stats.asDataPoint(this.currentXPosition),
-        );
+        this.addDataPointWithoutUpdate(machine.stats.asDataPoint(this.currentXPosition));
       }
       // this.updateChart();
     }

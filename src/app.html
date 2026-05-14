@@ -77,7 +77,7 @@
           </section>
           <div id="central-panes">
             <div id="central-panes-background">
-              Click buttons above to display panes
+              <%= t.panes.background %>
             </div>
             <section id="program-listing-pane">
               <table id="program-listing-table">
@@ -99,9 +99,15 @@
               </table>
             </section>
             <section id="status-pane">
-              <div>
-                status pane
-              </div>
+              <h1>status pane</h1>
+              Statistics:
+              <table>
+                <thead>
+                  <td>instruction</td>
+                  <td>count</td>
+                </thead>
+                <tbody id="stats"></tbody>
+              </table>
             </section>
             <section id="code-editor-pane">
               <div id="code-editor-container"></div>
@@ -120,20 +126,6 @@
           </section>
         </div>
       </main>
-    </div>
-
-    <div style="display: none;">
-      <!-- TODO: move this into a separate window/pane, (swappable with code editor?) -->
-      <section>
-        Statistics:
-        <table>
-          <thead>
-            <td>instruction</td>
-            <td>count</td>
-          </thead>
-          <tbody id="stats"></tbody>
-        </table>
-      </section>
     </div>
 
     <div style="display: none;">

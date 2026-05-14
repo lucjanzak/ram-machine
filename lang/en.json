@@ -40,6 +40,9 @@
     "cellLabelEnd": "",
     "cellEmpty": "(empty)"
   },
+  "panes": {
+    "background": "Click on the buttons above to choose displayed panes"
+  },
   "registers": {
     "header": "Registers:",
     "uninitialized": "uninitialized"
@@ -132,6 +135,7 @@
       "bigintParseError": "could not parse bigint",
       "immediateWritableOperand": "immediate operand is not allowed for this instruction",
       "negativeRegister": "register number cannot be negative",
+      "negativeImmediate": "immediate value cannot be negative",
       "unrecognizedMnemonic": "unrecognized mnemonic",
       "emptyLabel": "label cannot be empty",
       "redefinedLabel": "label was already defined at line"

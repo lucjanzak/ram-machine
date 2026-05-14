@@ -84,6 +84,7 @@ export class Machine {
 
     // Load program
     this.loadProgramAndReset(program);
+    console.log(compilerMessages, pre);
     return { compilerMessages, preprocessorState: pre };
   }
 
@@ -135,6 +136,7 @@ export class Machine {
       throw new Error("invalid argument: 'operand' is not a ReadableOperand");
     }
   }
+
   writeToOperand(operand: WriteableOperand, word: bigint, quiet: boolean) {
     if (operand.type === "register") {
       return this.setRegister(operand.value, word, quiet);

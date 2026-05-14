@@ -2,7 +2,7 @@ import { t } from "./Localization";
 
 export type CompilerError = ({ category: "parser" } & ParserError) | ({ category: "preprocessor" } & PreprocessorError);
 export type ParserError = { message: string } & (
-  | { id: "immediateWritableOperand" | "negativeRegister" | "emptyLabel" }
+  | { id: "immediateWritableOperand" | "negativeRegister" | "negativeImmediate" | "emptyLabel" }
   | { id: "bigintParseError"; operand: string }
   | { id: "unrecognizedMnemonic"; mnemonic: string }
   | { id: "redefinedLabel"; originalLine: number; label: string }
@@ -27,6 +27,9 @@ export namespace ParserError {
   }
   export function negativeRegister(): ParserError {
     return { id: "negativeRegister", message: p.negativeRegister };
+  }
+  export function negativeImmediate(): ParserError {
+    return { id: "negativeImmediate", message: p.negativeImmediate };
   }
   export function bigintParseError(operand: string): ParserError {
     return { id: "bigintParseError", message: `${p.bigintParseError}: ${operand}`, operand };

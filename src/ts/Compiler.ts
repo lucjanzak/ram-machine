@@ -46,6 +46,10 @@ class PreprocessorException extends CompilerException {
   }
 }
 
+export type CompilerSettings = {
+  allowNegativeImmediate: boolean;
+};
+
 export class Compiler {
   parseBigInt(operand: string): bigint {
     try {
@@ -59,9 +63,8 @@ export class Compiler {
     if (operand.startsWith("=")) {
       const value = this.parseBigInt(operand.slice(1));
 
-      // TODO: I don't know if it should be allowed to use negative literals, or if it should report an error. For now, this is allowed.
-      // If this is ever changed, it also needs to be changed in the Monaco language definition.
-      // if (value < 0) throw new Error("immediate value cannot be negative");
+      if (!this.settings.allowNegativeImmediate && value < 0)
+        throw new ParserException(ParserError.negativeImmediate());
       return {
         type: "immediate",
         value,
@@ -157,13 +160,11 @@ export class Compiler {
     const preprocessorWarn = (msg: PreprocessorError) => {
       const lineNumber = lineIndex + 1;
       const body = Object.assign(msg, { category: "preprocessor" as const });
-      console.warn(body, lineNumber);
       messages.push({
         type: "warning",
         body,
         line: lineNumber,
       });
-      console.trace(state);
     };
 
     const directive = line.slice(2).trim();
@@ -289,4 +290,14 @@ export class Compiler {
 
     return { success, tiles, messages, preprocessorState };
   }
+
+  static defaultSettings(): CompilerSettings {
+    return {
+      // TODO: I don't know if it should be allowed to use negative literals, or if it should report an error. For now, this is allowed.
+      // If this is ever changed, it also needs to be changed in the Monaco language definition.
+      allowNegativeImmediate: true,
+    };
+  }
+
+  constructor(private readonly settings = Compiler.defaultSettings()) {}
 }
