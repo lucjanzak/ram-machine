@@ -2,9 +2,11 @@
 import { initChartDOM } from "./Chart";
 import { initFileDrop } from "./LoadFile";
 import { formatString, t } from "./Localization";
-import { CompilerMessage } from "./Parser";
+import { CompilerMessage } from "./Compiler";
 import { initSettingsDOM } from "./Settings";
 import { assertEq, assertNever, expect } from "./Util";
+import { Program } from "./Program";
+import { compileEditorSourceCode } from "./MonacoEditor";
 
 export namespace Nodes {
   function element<T extends Element = Element>(selector: string) {
@@ -34,6 +36,7 @@ export namespace Nodes {
   export const inputTapeLength = element("#input-tape-length");
   export const outputTape = element<HTMLElement>("#output-tape");
   export const outputTapeLength = element("#output-tape-length");
+  export const compileButton = element("#compile-button");
 
   // export const loadFileForm = element<HTMLFormElement>("#load-file-form");
   export const loadFileInput = element<HTMLInputElement>("#load-file-input");
@@ -140,6 +143,9 @@ export function initDOM() {
   });
   Nodes.aboutButton.addEventListener("click", () => {
     Dialogs.about.showPopover();
+  });
+  Nodes.compileButton.addEventListener("click", () => {
+    compileEditorSourceCode();
   });
 
   initChartDOM();

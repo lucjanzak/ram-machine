@@ -4,8 +4,7 @@ import { t } from "./Localization";
 import { Memory } from "./Memory";
 import { Nodes } from "./Nodes";
 import { OutputTape, OutputTapeArray, OutputTapeArrayDOM } from "./OutputTape";
-import { CompilerMessage } from "./Parser";
-import { preprocess } from "./Preprocessor";
+import { CompilerMessage, PreprocessorState } from "./Compiler";
 import { Program, ProgramCounter } from "./Program";
 import { MachineSettings, preferences, updateSettingsDOM } from "./Settings";
 import { Statistics } from "./Statistics";
@@ -69,22 +68,23 @@ export class Machine {
     this.stats.replaceStatisticsDOM();
   }
 
-  loadRAMFileAndReset(sourceText: string) {
-    const pre = preprocess(sourceText);
+  loadAssemblyAndReset(assemblySourceText: string): {
+    compilerMessages: CompilerMessage[];
+    preprocessorState: PreprocessorState;
+  } {
+    window.RAMMachine.editor.setValue(assemblySourceText);
+    const { program, compilerMessages, preprocessorState: pre } = Program.fromAssembly(assemblySourceText);
+
+    // Load settings included within the file in preprocessor directives
     if (pre.inputTapeString !== null) this.loadTapeFromText(pre.inputTapeString);
     if (pre.inputTapeUnderflow !== null) this.settings.inputTapeUnderflow = pre.inputTapeUnderflow;
     if (pre.uninitializedRegisterRead !== null) this.settings.uninitializedRegisterRead = pre.uninitializedRegisterRead;
     if (pre.programCounterOutOfBounds !== null) this.settings.programCounterOutOfBounds = pre.programCounterOutOfBounds;
     updateSettingsDOM(this.settings, preferences);
-    const { compilerMessages } = this.loadAssemblyAndReset(pre.assembly);
-    return { preprocessorMessages: pre.messages, compilerMessages };
-  }
 
-  loadAssemblyAndReset(assembly: string): { compilerMessages: CompilerMessage[] } {
-    window.RAMMachine.editor.setValue(assembly);
-    const { program, compilerMessages } = Program.fromAssembly(assembly);
+    // Load program
     this.loadProgramAndReset(program);
-    return { compilerMessages };
+    return { compilerMessages, preprocessorState: pre };
   }
 
   loadProgramAndReset(program: Program) {

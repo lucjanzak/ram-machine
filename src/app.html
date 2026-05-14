@@ -92,7 +92,7 @@
           <section id="program-text-editor-pane">
             <div id="program-text-editor-container"></div>
             <nav>
-            <button class="nav-button nav-button-auto" onclick="RAMMachine.compileInput()">Compile</button>
+            <button class="nav-button nav-button-auto" id="compile-button">Compile</button>
             </nav>
           </section>
         </div>
@@ -190,8 +190,8 @@
 
     <template id="compiler-message">
       <div class="compiler-message">
-        <span class="line-location"></span>
         <span class="title"></span>&nbsp;
+        <span class="line-location"></span>
         <span class="message"></span>&nbsp;
         <span class="error-id"></span>
       </div>

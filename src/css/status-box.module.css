@@ -46,6 +46,7 @@
   padding: 0.25rem 1rem;
   border-collapse: collapse;
   margin-top: -1px;
+  user-select: text;
 }
 
 body.animations-enabled .compiler-message {

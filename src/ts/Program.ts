@@ -1,6 +1,6 @@
 import { Instruction, instructionToString } from "./Instruction";
 import { Nodes, select, Templates, useTemplate } from "./Nodes";
-import { CompilerMessage, Parser } from "./Parser";
+import { CompilerMessage, Compiler, PreprocessorState } from "./Compiler";
 import { preferences } from "./Settings";
 
 export type ParsedLine = {
@@ -98,11 +98,14 @@ export class Program {
     }
   }
 
-  static fromAssembly(assemblyText: string): { program: Program; compilerMessages: CompilerMessage[] } {
-    const parser = new Parser();
-    const { tiles, messages } = parser.parseAssemblyProgram(assemblyText);
-    // console.log("Program tiles:", tiles);
-    return { program: new Program(tiles), compilerMessages: messages };
+  static fromAssembly(assemblyText: string): {
+    program: Program;
+    compilerMessages: CompilerMessage[];
+    preprocessorState: PreprocessorState;
+  } {
+    const compiler = new Compiler();
+    const { tiles, messages, preprocessorState } = compiler.compile(assemblyText);
+    return { program: new Program(tiles), compilerMessages: messages, preprocessorState };
   }
 
   constructor(tiles: Tile[] = []) {

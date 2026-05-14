@@ -60,25 +60,57 @@ function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage 
         [/;.*$/, "comment", "@popall"],
       ],
 
-      after_writeop_keyword: [{ include: "@whitespace" }, [/\d+/, "number", "root"], [/\*\d+/, "number", "root"], [/.*/, "invalid", "root"]],
+      after_writeop_keyword: [
+        { include: "@whitespace" },
+        [/\d+/, "number", "root"],
+        [/\*\d+/, "number", "root"],
+        [/.*/, "invalid", "root"],
+      ],
       after_readop_keyword: [[/=-?\d+/, "number", "root"], { include: "@after_writeop_keyword" }],
-      after_jump_keyword: [{ include: "@whitespace" }, [/\s*[\p{L}_][\p{L}_0-9\s]*/u, "tag", "root"], [/.*/, "invalid", "root"]],
+      after_jump_keyword: [
+        { include: "@whitespace" },
+        [/\s*[\p{L}_][\p{L}_0-9\s]*/u, "tag", "root"],
+        [/.*/, "invalid", "root"],
+      ],
       after_noop_keyword: [{ include: "@whitespace" }, [/.*/, "invalid", "root"]],
     },
   };
 }
 
 const snippetsSource = [
-  ["if r₀ <= 0", "if statement with JGTZ", ["; if r₀ <= 0", "JGTZ ${1:endif}", "\t${0:; code ...}", "$1:", ""].join("\n")],
-  ["if r₀ != 0", "if statement with JZERO", ["; if r₀ != 0", "JZERO ${1:endif}", "\t${0:; code ...}", "$1:", ""].join("\n")],
-  ["if r₀ > 0", "if statement with JGTZ", ["; if r₀ > 0", "JGTZ ${1:if}", "JUMP ${2:endif}", "$1:", "\t${0:; code ...}", "$2:", ""].join("\n")],
-  ["if r₀ == 0", "if statement with JZERO", ["; if r₀ == 0", "JZERO ${1:if}", "JUMP ${2:endif}", "$1:", "\t${0:; code ...}", "$2:", ""].join("\n")],
+  [
+    "if r₀ <= 0",
+    "if statement with JGTZ",
+    ["; if r₀ <= 0", "JGTZ ${1:endif}", "\t${0:; code ...}", "$1:", ""].join("\n"),
+  ],
+  [
+    "if r₀ != 0",
+    "if statement with JZERO",
+    ["; if r₀ != 0", "JZERO ${1:endif}", "\t${0:; code ...}", "$1:", ""].join("\n"),
+  ],
+  [
+    "if r₀ > 0",
+    "if statement with JGTZ",
+    ["; if r₀ > 0", "JGTZ ${1:if}", "JUMP ${2:endif}", "$1:", "\t${0:; code ...}", "$2:", ""].join("\n"),
+  ],
+  [
+    "if r₀ == 0",
+    "if statement with JZERO",
+    ["; if r₀ == 0", "JZERO ${1:if}", "JUMP ${2:endif}", "$1:", "\t${0:; code ...}", "$2:", ""].join("\n"),
+  ],
   [
     "if-else r₀ <= 0",
     "if-else statement with JGTZ",
-    ["; if r₀ <= 0", "JGTZ ${1:else}", "\t${2:; ... code if true (r₀ <= 0)}", "JUMP ${3:endif}", "$1:", "\t${4:; ... code if false (r₀ > 0)}", "$3:", ""].join(
-      "\n"
-    ),
+    [
+      "; if r₀ <= 0",
+      "JGTZ ${1:else}",
+      "\t${2:; ... code if true (r₀ <= 0)}",
+      "JUMP ${3:endif}",
+      "$1:",
+      "\t${4:; ... code if false (r₀ > 0)}",
+      "$3:",
+      "",
+    ].join("\n"),
   ],
   [
     "if-else r₀ != 0",
@@ -94,12 +126,36 @@ const snippetsSource = [
       "",
     ].join("\n"),
   ],
-  ["while r₀ <= 0", "while loop with JGTZ", ["; while r₀ <= 0", "${1:loop}:", "JGTZ ${2:endloop}", "\t${0:; code ...}", "JUMP $1", "$2:", ""].join("\n")],
-  ["while r₀ != 0", "while loop with JZERO", ["; while r₀ != 0", "${1:loop}:", "JZERO ${2:endloop}", "\t${0:; code ...}", "JUMP $1", "$2:", ""].join("\n")],
-  ["while r₀ > 0", "while loop with JGTZ", ["; while r₀ > 0", "JUMP ${1:loopcheck}", "${2:loop}:", "\t${0:; code ...}", "$1:", "JGTZ $2", ""].join("\n")],
-  ["while r₀ == 0", "while loop with JZERO", ["; while r₀ == 0", "JUMP ${1:loopcheck}", "${2:loop}:", "\t${0:; code ...}", "$1:", "JZERO $2", ""].join("\n")],
-  ["do-while r₀ > 0", "do-while loop with JGTZ", ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ > 0;", "JGTZ $1", ""].join("\n")],
-  ["do-while r₀ == 0", "do-while loop with JZERO", ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ == 0;", "JZERO $1", ""].join("\n")],
+  [
+    "while r₀ <= 0",
+    "while loop with JGTZ",
+    ["; while r₀ <= 0", "${1:loop}:", "JGTZ ${2:endloop}", "\t${0:; code ...}", "JUMP $1", "$2:", ""].join("\n"),
+  ],
+  [
+    "while r₀ != 0",
+    "while loop with JZERO",
+    ["; while r₀ != 0", "${1:loop}:", "JZERO ${2:endloop}", "\t${0:; code ...}", "JUMP $1", "$2:", ""].join("\n"),
+  ],
+  [
+    "while r₀ > 0",
+    "while loop with JGTZ",
+    ["; while r₀ > 0", "JUMP ${1:loopcheck}", "${2:loop}:", "\t${0:; code ...}", "$1:", "JGTZ $2", ""].join("\n"),
+  ],
+  [
+    "while r₀ == 0",
+    "while loop with JZERO",
+    ["; while r₀ == 0", "JUMP ${1:loopcheck}", "${2:loop}:", "\t${0:; code ...}", "$1:", "JZERO $2", ""].join("\n"),
+  ],
+  [
+    "do-while r₀ > 0",
+    "do-while loop with JGTZ",
+    ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ > 0;", "JGTZ $1", ""].join("\n"),
+  ],
+  [
+    "do-while r₀ == 0",
+    "do-while loop with JZERO",
+    ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ == 0;", "JZERO $1", ""].join("\n"),
+  ],
   [
     "do-while r₀ <= 0",
     "do-while loop with JGTZ",
@@ -198,4 +254,9 @@ export function createEditor(): monaco.editor.IStandaloneCodeEditor {
     }, 200);
   });
   return editor;
+}
+
+export function compileEditorSourceCode() {
+  const sourceText = window.RAMMachine.editor.getValue();
+  window.RAMMachine.machine.loadAssemblyAndReset(sourceText);
 }

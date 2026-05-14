@@ -9,21 +9,49 @@ import {
   WriteableOperand,
 } from "./Instruction";
 import { ParsedLine, Tile } from "./Program";
-import { CompileMessageBody as CompileMessageBody, ParserError } from "./CompileError";
+import { CompilerError, ParserError, PreprocessorError } from "./CompileError";
+import {
+  InputTapeUnderflowBehavior,
+  MachineSettings,
+  ProgramCounterOutOfBoundsBehavior,
+  UninitializedRegisterReadBehavior,
+} from "./Settings";
 
 export type CompilerMessage = {
   type: "error" | "warning";
-  body: CompileMessageBody;
+  body: CompilerError;
   line?: number;
   col?: number;
 };
 
-export class Parser {
+export type PreprocessorState = {
+  inputTapeString: string | null;
+  inputTapeUnderflow: InputTapeUnderflowBehavior | null;
+  uninitializedRegisterRead: UninitializedRegisterReadBehavior | null;
+  programCounterOutOfBounds: ProgramCounterOutOfBoundsBehavior | null;
+};
+
+class CompilerException {
+  constructor(public readonly msg: CompilerError) {}
+}
+
+class ParserException extends CompilerException {
+  constructor(msg: ParserError) {
+    super(Object.assign(msg, { category: "parser" as const }));
+  }
+}
+class PreprocessorException extends CompilerException {
+  constructor(msg: PreprocessorError) {
+    super(Object.assign(msg, { category: "preprocessor" as const }));
+  }
+}
+
+export class Compiler {
   parseBigInt(operand: string): bigint {
     try {
       return BigInt(operand);
     } catch (e) {
-      throw ParserError.bigintParseError(operand);
+      throw new ParserException(ParserError.bigintParseError(operand));
     }
   }
 
@@ -40,14 +68,14 @@ export class Parser {
       };
     } else if (operand.startsWith("*")) {
       const value = this.parseBigInt(operand.slice(1));
-      if (value < 0) throw ParserError.negativeRegister();
+      if (value < 0) throw new ParserException(ParserError.negativeRegister());
       return {
         type: "indirect",
         value,
       };
     } else {
       const value = this.parseBigInt(operand);
-      if (value < 0) throw ParserError.negativeRegister();
+      if (value < 0) throw new ParserException(ParserError.negativeRegister());
       return {
         type: "register",
         value: BigInt(operand),
@@ -59,7 +87,7 @@ export class Parser {
     const parsed = this.parseAnyOperand(operand);
     const parsedType = parsed.type;
     if (parsedType === "immediate") {
-      throw ParserError.immediateWritableOperand();
+      throw new ParserException(ParserError.immediateWritableOperand());
     }
     const converted = {
       type: parsedType,
@@ -89,7 +117,7 @@ export class Parser {
         operation: mnemonic,
       };
     } else {
-      throw ParserError.unrecognizedMnemonic(mnemonic);
+      throw new ParserException(ParserError.unrecognizedMnemonic(mnemonic));
     }
   }
 
@@ -106,7 +134,7 @@ export class Parser {
     const labels = labelSegments.toReversed().map((segment) => segment.trim().toLowerCase());
     labels.forEach((label) => {
       if (label.length === 0) {
-        throw ParserError.emptyLabel();
+        throw new ParserException(ParserError.emptyLabel());
       }
     });
     const [mnemonicSegment, ...operandSegments] = lineWithoutLabel.trim().split(/\s+/);
@@ -120,28 +148,85 @@ export class Parser {
     };
   }
 
-  parseAssemblyProgram(assemblyText: string): { tiles: Tile[]; messages: CompilerMessage[] } {
+  parsePreprocessorDirective(line: string, lineIndex: number, state: PreprocessorState, messages: CompilerMessage[]) {
+    // ;.INPUT_TAPE 12,31,231,23,123
+    // ;.SET INPUT_TAPE_UNDERFLOW zero
+    // ;.SET UNINITIALIZED_REGISTER_READ random
+    // ;.SET PROGRAM_COUNTER_OUT_OF_BOUNDS actAsHalt
+
+    const preprocessorWarn = (msg: PreprocessorError) => {
+      const lineNumber = lineIndex + 1;
+      const body = Object.assign(msg, { category: "preprocessor" as const });
+      console.warn(body, lineNumber);
+      messages.push({
+        type: "warning",
+        body,
+        line: lineNumber,
+      });
+      console.trace(state);
+    };
+
+    const directive = line.slice(2).trim();
+    let [commandName, remaining, _] = directive.split(/\s+(.*)/s);
+    commandName = commandName.toUpperCase();
+
+    if (commandName === "INPUT_TAPE") {
+      state.inputTapeString = remaining;
+    } else if (commandName === "SET") {
+      let [settingKey, settingValue, _] = remaining.split(/\s+(.*)/s);
+      settingKey = settingKey.toUpperCase();
+      if (settingKey === "INPUT_TAPE_UNDERFLOW") {
+        const parsed = MachineSettings.parseInputTapeUnderflowBehavior(settingValue);
+        if (parsed === null) preprocessorWarn(PreprocessorError.setInvalidValue("INPUT_TAPE_UNDERFLOW", settingValue));
+        else state.inputTapeUnderflow = parsed;
+      } else if (settingKey === "UNINITIALIZED_REGISTER_READ") {
+        const parsed = MachineSettings.parseUninitializedRegisterReadBehavior(settingValue);
+        if (parsed === null)
+          preprocessorWarn(PreprocessorError.setInvalidValue("UNINITIALIZED_REGISTER_READ", settingValue));
+        else state.uninitializedRegisterRead = parsed;
+      } else if (settingKey === "PROGRAM_COUNTER_OUT_OF_BOUNDS") {
+        const parsed = MachineSettings.parseProgramCounterOutOfBoundsBehavior(settingValue);
+        if (parsed === null)
+          preprocessorWarn(PreprocessorError.setInvalidValue("PROGRAM_COUNTER_OUT_OF_BOUNDS", settingValue));
+        else state.programCounterOutOfBounds = parsed;
+      } else {
+        preprocessorWarn(PreprocessorError.setInvalidKey(settingKey));
+      }
+    } else {
+      preprocessorWarn(PreprocessorError.unknownDirective(commandName));
+    }
+  }
+
+  compile(assemblyText: string): { tiles: Tile[]; messages: CompilerMessage[]; preprocessorState: PreprocessorState } {
     const lines = assemblyText.split("\n");
     const tiles: Tile[] = [];
     const messages: CompilerMessage[] = [];
 
     const definedLabels = new Map<string, number>();
-    function defineNewLabel(label: string, sourceLineNumber: number) {
-      if (definedLabels.has(label)) {
-        const originalLine = definedLabels.get(label);
-        throw new Error();
+    const defineNewLabel = (label: string, sourceLineNumber: number) => {
+      const originalLine = definedLabels.get(label);
+      if (originalLine !== undefined) {
+        throw new ParserException(ParserError.redefinedLabel(originalLine, label));
       }
       definedLabels.set(label, sourceLineNumber);
-    }
+    };
 
     let leftoverCommentLines: string[] = [];
     let leftoverLabels: string[] = [];
+    const preprocessorState: PreprocessorState = {
+      inputTapeString: null,
+      inputTapeUnderflow: null,
+      uninitializedRegisterRead: null,
+      programCounterOutOfBounds: null,
+    };
 
-    function processLine(line: string, lineIndex: number) {
-      // console.log(`Processing line #${lineIndex + 1}: '${line}'`);
-      const parser = new Parser();
-      const parsed = parser.parseAssemblyLine(line);
-      // console.log("Parsed line: ", parsed);
+    const processLine = (line: string, lineIndex: number) => {
+      if (line.startsWith(";.")) {
+        this.parsePreprocessorDirective(line, lineIndex, preprocessorState, messages);
+        return;
+      }
+
+      const parsed = this.parseAssemblyLine(line);
 
       parsed.labels.forEach((label) => defineNewLabel(label, lineIndex + 1));
       leftoverLabels = leftoverLabels.concat(parsed.labels);
@@ -169,19 +254,16 @@ export class Parser {
           leftoverCommentLines.push(parsed.comment);
         }
       }
-    }
+    };
 
     lines.forEach((line, lineIndex) => {
       try {
         processLine(line, lineIndex);
       } catch (ex) {
-        // TODO: use of `as`
-        if (ex) {
-          const b = ex as ParserError;
-          const body = Object.assign(b, { category: "parser" as const });
+        if (ex instanceof CompilerException) {
           messages.push({
             type: "error",
-            body,
+            body: ex.msg,
             line: lineIndex + 1,
           });
         } else {
@@ -198,6 +280,6 @@ export class Parser {
       });
     }
 
-    return { tiles, messages };
+    return { tiles, messages, preprocessorState };
   }
 }

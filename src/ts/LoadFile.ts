@@ -1,7 +1,6 @@
 import { formatString, t } from "./Localization";
 import { makeCompilerMessageBox, makeStatusBox, Nodes } from "./Nodes";
-import { CompilerMessage, Parser } from "./Parser";
-import { preprocess } from "./Preprocessor";
+import { CompilerMessage, Compiler } from "./Compiler";
 
 export function initFileDrop() {
   const fileFinishedLoading = (sourceText: string) => {
@@ -10,20 +9,14 @@ export function initFileDrop() {
     // TODO: confirm button?
     // const { preprocessorMessages, parserMessages } = window.RAMMachine.machine.loadRAMFileAndReset();
 
-    const pre = preprocess(sourceText);
-    const parser = new Parser();
-    const parsed = parser.parseAssemblyProgram(pre.assembly);
-    const preprocessorMessages = pre.messages;
-    const parserMessages = parsed.messages;
-    console.log(preprocessorMessages, parserMessages);
+    const compiler = new Compiler();
+    const compilerOutput = compiler.compile(sourceText);
+    console.log(compilerOutput.messages);
 
-    if (preprocessorMessages.length + parserMessages.length === 0) {
+    if (compilerOutput.messages.length === 0) {
       Nodes.loadFileStatusContainer.append(makeStatusBox("File loaded successfully", "success"));
     } else {
-      preprocessorMessages.forEach((msg) => {
-        Nodes.loadFileStatusContainer.append(makeCompilerMessageBox(msg));
-      });
-      parserMessages.forEach((msg) => {
+      compilerOutput.messages.forEach((msg) => {
         Nodes.loadFileStatusContainer.append(makeCompilerMessageBox(msg));
       });
     }

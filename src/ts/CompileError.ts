@@ -1,8 +1,6 @@
 import { t } from "./Localization";
 
-export type CompileMessageBody =
-  | ({ category: "parser" } & ParserError)
-  | ({ category: "preprocessor" } & PreprocessorError);
+export type CompilerError = ({ category: "parser" } & ParserError) | ({ category: "preprocessor" } & PreprocessorError);
 export type ParserError = { message: string } & (
   | { id: "immediateWritableOperand" | "negativeRegister" | "emptyLabel" }
   | { id: "bigintParseError"; operand: string }
