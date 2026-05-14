@@ -4,9 +4,16 @@
   min-width: 200px;
   border-left: var(--generic-border);
   background-color: #fff;
+  padding: 1rem;
 
   overflow-x: auto;
   overflow-y: auto;
+}
+
+#status-pane h1,
+#status-pane h2,
+#status-pane h3 {
+  margin-block: 0;
 }
 
 #status-pane:not(.active) {

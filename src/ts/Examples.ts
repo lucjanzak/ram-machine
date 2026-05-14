@@ -110,6 +110,7 @@ HALT
   SUM: `; ${sum.title}
 ; ${hdiv}
 ; ${sum.description}
+;.SET INPUT_TAPE_UNDERFLOW zero
 
 LOAD =0 ; ${sum.comments[0]}
 STORE 1
