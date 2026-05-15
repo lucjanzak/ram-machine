@@ -314,30 +314,84 @@
       </div>
 
       <form id="chart-settings-form">
-        <div>
-          <label for="generate-points-input"><%= t.chartScreen.generateMorePoints %></label>
-          <input type="number" id="generate-points-input" value="5" size="3" />
-          <button type="button" id="generate-points-button"><%= t.chartScreen.generate %></button>
-          <br>
-          <label for="comparison-function-multiplier-input"><%= t.chartScreen.chooseComparisonFunction %></label>
-          <input type="number" id="comparison-function-multiplier-input" value="1" size="3" step="0.1" />
-          *
-          <select id="comparison-function-select">
-            <option value="none" selected><%= t.chartScreen.comparisonFunction.none %></option>
-            <option value="constant"><%= t.chartScreen.comparisonFunction.constant %></option>
-            <option value="linear"><%= t.chartScreen.comparisonFunction.linear %></option>
-            <option value="quadratic"><%= t.chartScreen.comparisonFunction.quadratic %></option>
-            <option value="cubic"><%= t.chartScreen.comparisonFunction.cubic %></option>
-            <option value="quartic"><%= t.chartScreen.comparisonFunction.quartic %></option>
-            <option value="logarithmic"><%= t.chartScreen.comparisonFunction.logarithmic %></option>
-            <option value="linear_logarithmic"><%= t.chartScreen.comparisonFunction.linear_logarithmic %></option>
-            <option value="quadratic_logarithmic"><%= t.chartScreen.comparisonFunction.quadratic_logarithmic %></option>
-          </select>
-          <br>
-          <label for="execution-timeout-input"><%= t.chartScreen.executionTimeoutInput %></label>
-          <input type="number" id="execution-timeout-input" value="100" size="6" /> <%= t.chartScreen.executionTimeoutInputMs %>
-          <input type="checkbox" id="toggle-realtime-axis">
-          <label for="toggle-realtime-axis"><%= t.chartScreen.showRealTimeAxis %></label>
+        <div id="chart-settings-grid">
+          <div class="text-align-right">
+            <label for="simulation-type-select"><%= t.chartScreen.simulationTypeLabel %></label>
+          </div>
+          <div class="wide-column">
+            <select id="simulation-type-select">
+              <option value="valueVariable" selected><%= t.chartScreen.simulationType.valueVariable %></option>
+              <option value="lengthVariable"><%= t.chartScreen.simulationType.lengthVariable %></option>
+              <option value="sizedArray"><%= t.chartScreen.simulationType.sizedArray %></option>
+              <option value="customData"><%= t.chartScreen.simulationType.customData %></option>
+            </select>
+          </div>
+          <div class="text-align-right">
+            <label for="input-data-select"><%= t.chartScreen.inputDataLabel %></label>
+          </div>
+          <div class="wide-column">
+            <select id="input-data-sequence-select">
+              <option value="natural" selected><%= t.chartScreen.inputDataSequence.natural %></option>
+              <option value="positive"><%= t.chartScreen.inputDataSequence.positive %></option>
+              <option value="negative"><%= t.chartScreen.inputDataSequence.negative %></option>
+              <option value="constant"><%= t.chartScreen.inputDataSequence.constant %></option>
+              <option value="prime"><%= t.chartScreen.inputDataSequence.prime %></option>
+              <option value="composite"><%= t.chartScreen.inputDataSequence.composite %></option>
+              <option value="arithmetic"><%= t.chartScreen.inputDataSequence.arithmetic %></option>
+              <option value="geometric"><%= t.chartScreen.inputDataSequence.geometric %></option>
+              <option value="random"><%= t.chartScreen.inputDataSequence.random %></option>
+              <option value="custom"><%= t.chartScreen.inputDataSequence.custom %></option>
+            </select>
+            <select id="input-data-value-select">
+              <option value="oneValueSingle" selected><%= t.chartScreen.inputDataValue.oneValueSingle %></option>
+              <option value="oneValueEndless"><%= t.chartScreen.inputDataValue.oneValueEndless %></option>
+            </select>
+            <label for="input-data-custom-input"><%= t.chartScreen.inputDataCustomLabel %></label>
+            <input id="input-data-custom-input" placeholder="<%= t.chartScreen.inputDataCustomPlaceholder %>" size="50" />
+            <label for="input-data-sequence-start-input"><%= t.chartScreen.sequenceStart %></label>
+            <input type="number" id="input-data-sequence-start-input" value="2" size="3" />
+            <label for="input-data-sequence-step-input"><%= t.chartScreen.sequenceStep %></label>
+            <input type="number" id="input-data-sequence-step-input" value="3" size="3" />
+            <label for="input-data-random-min-input"><%= t.chartScreen.randomMin %></label>
+            <input type="number" id="input-data-random-min-input" value="1" size="6" />
+            <label for="input-data-random-max-input"><%= t.chartScreen.randomMax %></label>
+            <input type="number" id="input-data-random-max-input" value="10000" size="6" />
+          </div>
+          <div class="text-align-right">
+            <label for="generate-points-input"><%= t.chartScreen.generateMorePoints %></label>
+          </div>
+          <div class="wide-column">
+            <input type="number" id="generate-points-input" value="5" size="3" />
+            <button type="button" id="generate-points-button"><%= t.chartScreen.generate %></button>
+          </div>
+          <div class="text-align-right">
+            <label for="comparison-function-multiplier-input"><%= t.chartScreen.chooseComparisonFunction %></label>
+          </div>
+          <div class="wide-column">
+            <input type="number" id="comparison-function-multiplier-input" value="1" size="3" step="0.1" />
+            *
+            <select id="comparison-function-select">
+              <option value="none" selected><%= t.chartScreen.comparisonFunction.none %></option>
+              <option value="constant"><%= t.chartScreen.comparisonFunction.constant %></option>
+              <option value="linear"><%= t.chartScreen.comparisonFunction.linear %></option>
+              <option value="quadratic"><%= t.chartScreen.comparisonFunction.quadratic %></option>
+              <option value="cubic"><%= t.chartScreen.comparisonFunction.cubic %></option>
+              <option value="quartic"><%= t.chartScreen.comparisonFunction.quartic %></option>
+              <option value="logarithmic"><%= t.chartScreen.comparisonFunction.logarithmic %></option>
+              <option value="linear_logarithmic"><%= t.chartScreen.comparisonFunction.linear_logarithmic %></option>
+              <option value="quadratic_logarithmic"><%= t.chartScreen.comparisonFunction.quadratic_logarithmic %></option>
+            </select>
+          </div>
+          <div class="text-align-right">
+            <label for="execution-timeout-input"><%= t.chartScreen.executionTimeoutInput %></label>
+          </div>
+          <div>
+            <input type="number" id="execution-timeout-input" value="100" size="6" /> <%= t.chartScreen.executionTimeoutInputMs %>
+          </div>
+          <div style="grid-column: 3 / 5;">
+            <input type="checkbox" id="toggle-realtime-axis">
+            <label for="toggle-realtime-axis"><%= t.chartScreen.showRealTimeAxis %></label>
+          </div>
         </div>
         <div>
           <button type="reset"><%= t.chartScreen.reset %></button>

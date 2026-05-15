@@ -25,8 +25,8 @@ export type FunctionType =
   | "cubic"
   | "quartic"
   | "logarithmic"
-  | "linear_logarithmic"
-  | "quadratic_logarithmic";
+  | "linearLogarithmic"
+  | "quadraticLogarithmic";
 
 function parseFunctionType(input: FormDataEntryValue | string | null): FunctionType | null {
   if (
@@ -37,8 +37,8 @@ function parseFunctionType(input: FormDataEntryValue | string | null): FunctionT
     input === "cubic" ||
     input === "quartic" ||
     input === "logarithmic" ||
-    input === "linear_logarithmic" ||
-    input === "quadratic_logarithmic"
+    input === "linearLogarithmic" ||
+    input === "quadraticLogarithmic"
   )
     return input;
   return null;
@@ -191,8 +191,8 @@ export class ComplexityChart {
       cubic: (n: number) => n * n * n,
       quartic: (n: number) => n * n * n * n,
       logarithmic: (n: number) => Math.log2(n),
-      linear_logarithmic: (n: number) => n * Math.log2(n),
-      quadratic_logarithmic: (n: number) => n * n * Math.log2(n),
+      linearLogarithmic: (n: number) => n * Math.log2(n),
+      quadraticLogarithmic: (n: number) => n * n * Math.log2(n),
     };
     const value = functions[this.comparisonFunctionType](n);
     if (value === undefined) {

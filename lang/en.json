@@ -195,6 +195,36 @@
       "realTimeAxis": "Real Time",
       "realTimeAxisUnits": " ms"
     },
+    "simulationTypeLabel": "Simulation type:",
+    "simulationType": {
+      "valueVariable": "Tape values are variable",
+      "lengthVariable": "Tape length is variable",
+      "sizedArray": "Sized array (tape length is variable, with n included at the beginning)",
+      "customData": "Custom data"
+    },
+    "inputDataLabel": "Input data:",
+    "inputDataSequence": {
+      "natural": "Natural numbers (non-negative)",
+      "positive": "Positive numbers",
+      "negative": "Negative numbers",
+      "constant": "Constant function",
+      "prime": "Prime numbers",
+      "composite": "Composite numbers",
+      "arithmetic": "Arithmetic sequence",
+      "geometric": "Geometric sequence",
+      "random": "Random sequence",
+      "custom": "Custom sequence"
+    },
+    "inputDataValue": {
+      "oneValueSingle": "One cell with value",
+      "oneValueEndless": "All cells filled with one value"
+    },
+    "inputDataCustomLabel": "Sequences:",
+    "inputDataCustomPlaceholder": "1,2,3; 2,4,6; 3,6,9; 4,8,12; ...",
+    "sequenceStart": "Sequence start: ",
+    "sequenceStep": "Sequence step: ",
+    "randomMin": "Minimum value: ",
+    "randomMax": "Maximum value: ",
     "generateMorePoints": "Generate more points:",
     "generate": "Generate",
     "chooseComparisonFunction": "Choose a function to compare to:",
@@ -206,8 +236,8 @@
       "cubic": "O(n³)",
       "quartic": "O(n⁴)",
       "logarithmic": "O(log(n))",
-      "linear_logarithmic": "O(n log(n))",
-      "quadratic_logarithmic": "O(n² log(n))"
+      "linearLogarithmic": "O(n log(n))",
+      "quadraticLogarithmic": "O(n² log(n))"
     },
     "executionTimeoutInput": "Execution timeout:",
     "executionTimeoutInputMs": "ms",

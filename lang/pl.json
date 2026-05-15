@@ -195,6 +195,36 @@
       "realTimeAxis": "Czas rzeczywisty",
       "realTimeAxisUnits": " ms"
     },
+    "simulationTypeLabel": "Rodzaj symulacji:",
+    "simulationType": {
+      "valueVariable": "Zmienne wartości taśmy",
+      "lengthVariable": "Zmienna długość taśmy",
+      "sizedArray": "Tablica z rozmiarem (zmienna długość taśmy, z wartością n dołączoną na początku)",
+      "customData": "Własne dane wejściowe"
+    },
+    "inputDataLabel": "Dane wejściowe:",
+    "inputDataSequence": {
+      "natural": "Liczby naturalne (nieujemne)",
+      "positive": "Liczby dodatnie",
+      "negative": "Liczby ujemne",
+      "constant": "Funkcja stała",
+      "prime": "Liczby pierwsze",
+      "composite": "Liczby złożone",
+      "arithmetic": "Ciąg arytmetyczny",
+      "geometric": "Ciąg geometryczny",
+      "random": "Ciąg losowy",
+      "custom": "Własny ciąg liczb"
+    },
+    "inputDataValue": {
+      "oneValueSingle": "Jedna komórka z wartością",
+      "oneValueEndless": "Wszystkie komórki z jedną wartością"
+    },
+    "inputDataCustomLabel": "Sekwencje:",
+    "inputDataCustomPlaceholder": "1,2,3; 2,4,6; 3,6,9; 4,8,12; ...",
+    "sequenceStart": "Początek sekwencji: ",
+    "sequenceStep": "Krok sekwencji: ",
+    "randomMin": "Minimalna wartość: ",
+    "randomMax": "Maksymalna wartość: ",
     "generateMorePoints": "Wygeneruj więcej punktów:",
     "generate": "Generuj",
     "chooseComparisonFunction": "Wybierz funkcję do porównania:",
@@ -206,8 +236,8 @@
       "cubic": "O(n³)",
       "quartic": "O(n⁴)",
       "logarithmic": "O(log(n))",
-      "linear_logarithmic": "O(n log(n))",
-      "quadratic_logarithmic": "O(n² log(n))"
+      "linearLogarithmic": "O(n log(n))",
+      "quadraticLogarithmic": "O(n² log(n))"
     },
     "executionTimeoutInput": "Limit czasu wykonywania:",
     "executionTimeoutInputMs": "ms",

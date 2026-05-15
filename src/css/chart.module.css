@@ -21,3 +21,21 @@
   justify-content: space-between;
   align-items: flex-end;
 }
+
+#chart-settings-grid {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  column-gap: 1rem;
+}
+
+.text-align-right {
+  text-align: right;
+}
+
+.wide-column {
+  /* One column layout */
+  grid-column: 2 / 5;
+
+  /* Two column layout */
+  /* grid-column: auto; */
+}

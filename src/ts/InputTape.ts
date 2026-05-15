@@ -349,9 +349,15 @@ export class InputTapeGenerator extends InputTape {
   }
 }
 
+// TODO
+// value variable  : "oneValueSingle" | "oneValueEndless"
+// length variable : "natural" | "positive" | "negative" | "constant" | "prime" | "composite" | "arithmetic" | "geometric" | "random" | "custom1d"
+// sized array     : "natural" | "positive" | "negative" | "constant" | "prime" | "composite" | "arithmetic" | "geometric" | "random" | "custom1d"
+// custom 2d       : "custom2d"
+
 export type SimulationInputTapeSettings =
   | {
-      type: "natural" | "positive" | "negative" | "singleValue" | "constant" | "prime" | "composite";
+      type: "singleValue" | "natural" | "positive" | "negative" | "constant" | "prime" | "composite";
     }
   | {
       type: "arithmetic" | "geometric";
