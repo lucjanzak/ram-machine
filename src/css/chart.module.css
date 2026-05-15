@@ -55,4 +55,5 @@
 
 #input-data-preview {
   width: 100%;
+  box-sizing: border-box;
 }

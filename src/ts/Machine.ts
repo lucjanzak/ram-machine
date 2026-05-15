@@ -23,7 +23,7 @@ export class Machine {
   public outputTape: OutputTape;
   public memory: Memory;
   private programCounter: ProgramCounter = 0;
-  public stats = new Statistics();
+  public stats: Statistics;
   private debugBreakpoints: ProgramCounter[] = []; //[5, 10, 15, 30]; // TODO: implement breakpoints
 
   constructor(
@@ -31,6 +31,7 @@ export class Machine {
     private detachedMode = false,
     public settings: MachineSettings = new MachineSettings()
   ) {
+    this.stats = new Statistics(this.detachedMode);
     this.memory = new Memory(this.detachedMode ? null : Nodes.registerScrollList);
     this.inputTape = this.detachedMode
       ? new InputTapeArray()

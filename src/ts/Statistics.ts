@@ -12,6 +12,8 @@ export class Statistics {
   private memoryTracker = new SparseArray<bigint>();
   public timer: Timer = new Timer();
 
+  constructor(private readonly detachedMode: boolean) {}
+
   processSilently(instruction: Instruction, contentsOfRegister: (i: bigint) => bigint, peekInput: () => bigint) {
     this.instructionCounters[instruction.operation] += 1n;
     this.timeComplexitySimple += 1n;
@@ -20,7 +22,7 @@ export class Statistics {
 
   processAndUpdateDOM(instruction: Instruction, contentsOfRegister: (i: bigint) => bigint, peekInput: () => bigint) {
     this.processSilently(instruction, contentsOfRegister, peekInput);
-    // TODO: this can be improved by not replacing the entire statistics table every time
+    // TODO(optimize): this can be improved by not replacing the entire statistics table every time
     this.replaceStatisticsDOM();
   }
 
@@ -88,7 +90,8 @@ export class Statistics {
   }
 
   replaceStatisticsDOM() {
-    // TODO: make this class detachable from DOM - stats tables are also updated during simulations for charts
+    if (this.detachedMode) return;
+
     Nodes.stats.textContent = "";
 
     function generateRow(titleText: string, valueText: string) {
