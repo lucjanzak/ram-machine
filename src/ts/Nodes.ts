@@ -5,7 +5,13 @@ import { formatString, t } from "./Localization";
 import { CompilerMessage } from "./Compiler";
 import { initSettingsDOM } from "./Settings";
 import { assertEq, assertNever, expect } from "./Util";
-import { compileAndRunEditorSourceCode, compileEditorSourceCode, goToLine, highlightLine } from "./MonacoEditor";
+import {
+  compileAndRunEditorSourceCode,
+  compileEditorSourceCode,
+  goToLine,
+  highlightLine,
+  showProblems,
+} from "./MonacoEditor";
 import { changePaneVisibility, PaneName } from "./Panes";
 import { CompilerError } from "./CompileError";
 
@@ -64,6 +70,7 @@ export namespace Nodes {
   export const outputTapeLength = element("#output-tape-length");
   export const compileButton = element("#compile-button");
   export const compileAndRunButton = element("#compile-and-run-button");
+  export const showProblemsButton = element("#show-problems-button");
 
   // Load file dialog
   // export const loadFileForm = element<HTMLFormElement>("#load-file-form");
@@ -187,6 +194,9 @@ export function initDOM() {
   Nodes.compileAndRunButton.addEventListener("click", () => {
     compileAndRunEditorSourceCode();
   });
+  Nodes.showProblemsButton.addEventListener("click", () => {
+    showProblems();
+  });
 
   initChartDOM();
   initSettingsDOM();
@@ -243,7 +253,10 @@ export function makeCompilerMessageBox(msg: CompilerMessage): DocumentFragment {
         Dialogs.loadFile.close();
       }
       goToLine(line, col);
-      highlightLine(line, msg.body.message, "editor-highlight-error-line");
+      const highlightError = false;
+      if (highlightError) {
+        highlightLine(line, msg.body.message, "editor-highlight-error-line");
+      }
     });
   }
   return f;

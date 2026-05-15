@@ -76,6 +76,21 @@
       "compile": "Compile",
       "compileAndRun": "Compile And Run"
     },
+    "problems": {
+      "template": "%0, %1",
+      "errorCount": {
+        "zero": "%0 errors",
+        "one": "%0 error",
+        "multiple1": "%0 errors",
+        "multiple2": "%0 errors"
+      },
+      "warningCount": {
+        "zero": "%0 warnings",
+        "one": "%0 error",
+        "multiple1": "%0 warnings",
+        "multiple2": "%0 warnings"
+      }
+    },
     "actions": {
       "compile": "Compile",
       "compileAndRun": "Compile And Run"
@@ -95,21 +110,35 @@
       "HALT": "Stop program execution"
     },
     "snippets": {
-      "iflte": "if statement with JGTZ",
-      "ifne": "if statement with JZERO",
-      "ifge": "if statement with JGTZ",
-      "ifeq": "if statement with JZERO",
-      "ifelselte": "if-else statement with JGTZ",
-      "ifelsene": "if-else statement with JZERO",
-      "whilelte": "while loop with JGTZ",
-      "whilene": "while loop with JZERO",
-      "whilegt": "while loop with JGTZ",
-      "whileeq": "while loop with JZERO",
-      "dowhilegt": "do-while loop with JGTZ",
-      "dowhileeq": "do-while loop with JZERO",
-      "dowhilelte": "do-while loop with JGTZ",
-      "dowhilene": "do-while loop with JZERO",
-      "loop": "Endless loop"
+      "name": {
+        "iflte": "if statement with JGTZ",
+        "ifne": "if statement with JZERO",
+        "ifge": "if statement with JGTZ",
+        "ifeq": "if statement with JZERO",
+        "ifelselte": "if-else statement with JGTZ",
+        "ifelsene": "if-else statement with JZERO",
+        "whilelte": "while loop with JGTZ",
+        "whilene": "while loop with JZERO",
+        "whilegt": "while loop with JGTZ",
+        "whileeq": "while loop with JZERO",
+        "dowhilegt": "do-while loop with JGTZ",
+        "dowhileeq": "do-while loop with JZERO",
+        "dowhilelte": "do-while loop with JGTZ",
+        "dowhilene": "do-while loop with JZERO",
+        "loop": "Endless loop"
+      },
+      "codePlaceholder": "code ...",
+      "codeIfTrue": "... code if true",
+      "codeIfFalse": "... code if false",
+      "endlessLoopComment": "endless loop",
+      "label": {
+        "if": "if",
+        "else": "else",
+        "endif": "endif",
+        "loop": "loop",
+        "loopcheck": "loopcheck",
+        "endloop": "endloop"
+      }
     }
   },
   "loadFile": {
@@ -193,6 +222,7 @@
       "setInvalidValue": "invalid value for .SET directive with key",
       "setInvalidKey": "invalid setting key for .SET directive",
       "unknownDirective": "unknown preprocessor directive",
+      "expectedDirective": "expected preprocessor directive",
       "genericIgnoreWarning": "ignoring"
     },
     "parser": {

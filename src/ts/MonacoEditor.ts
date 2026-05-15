@@ -2,8 +2,9 @@ import * as monaco from "monaco-editor";
 import { getTitleForMessageBox, makeCompilerMessageBox, makeStatusBox, Nodes } from "./Nodes";
 import { DEFAULT_PROGRAM_ASSEMBLY } from "./Examples";
 import { preferences } from "./Settings";
-import { t } from "./Localization";
+import { formatString, plural, t } from "./Localization";
 import { Compiler, CompilerMessage, MessageSeverity } from "./Compiler";
+import { unwrap } from "./Util";
 
 function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage {
   return {
@@ -79,96 +80,176 @@ function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage 
   };
 }
 
+const s = t.editor.snippets;
 const snippetsSource = [
   [
     "if r₀ <= 0",
-    t.editor.snippets.iflte,
-    ["; if r₀ <= 0", "JGTZ ${1:endif}", "\t${0:; code ...}", "$1:", ""].join("\n"),
+    s.name.iflte,
+    ["; if r₀ <= 0", "JGTZ ${1:" + s.label.endif + "}", "\t${0:; " + s.codePlaceholder + "}", "$1:", ""].join("\n"),
   ],
   [
     "if r₀ != 0",
-    t.editor.snippets.ifne,
-    ["; if r₀ != 0", "JZERO ${1:endif}", "\t${0:; code ...}", "$1:", ""].join("\n"),
+    s.name.ifne,
+    ["; if r₀ != 0", "JZERO ${1:" + s.label.endif + "}", "\t${0:; " + s.codePlaceholder + "}", "$1:", ""].join("\n"),
   ],
   [
     "if r₀ > 0",
-    t.editor.snippets.ifge,
-    ["; if r₀ > 0", "JGTZ ${1:if}", "JUMP ${2:endif}", "$1:", "\t${0:; code ...}", "$2:", ""].join("\n"),
+    s.name.ifge,
+    [
+      "; if r₀ > 0",
+      "JGTZ ${1:" + s.label.if + "}",
+      "JUMP ${2:" + s.label.endif + "}",
+      "$1:",
+      "\t${0:; " + s.codePlaceholder + "}",
+      "$2:",
+      "",
+    ].join("\n"),
   ],
   [
     "if r₀ == 0",
-    t.editor.snippets.ifeq,
-    ["; if r₀ == 0", "JZERO ${1:if}", "JUMP ${2:endif}", "$1:", "\t${0:; code ...}", "$2:", ""].join("\n"),
+    s.name.ifeq,
+    [
+      "; if r₀ == 0",
+      "JZERO ${1:" + s.label.if + "}",
+      "JUMP ${2:" + s.label.endif + "}",
+      "$1:",
+      "\t${0:; " + s.codePlaceholder + "}",
+      "$2:",
+      "",
+    ].join("\n"),
   ],
   [
     "if-else r₀ <= 0",
-    t.editor.snippets.ifelselte,
+    s.name.ifelselte,
     [
       "; if r₀ <= 0",
-      "JGTZ ${1:else}",
-      "\t${2:; ... code if true (r₀ <= 0)}",
-      "JUMP ${3:endif}",
+      "JGTZ ${1:" + s.label.else + "}",
+      "\t${2:; " + s.codeIfTrue + " (r₀ <= 0)}",
+      "JUMP ${3:" + s.label.endif + "}",
       "$1:",
-      "\t${4:; ... code if false (r₀ > 0)}",
+      "\t${4:; " + s.codeIfFalse + " (r₀ > 0)}",
       "$3:",
       "",
     ].join("\n"),
   ],
   [
     "if-else r₀ != 0",
-    t.editor.snippets.ifelsene,
+    s.name.ifelsene,
     [
       "; if r₀ != 0",
-      "JZERO ${1:else}",
-      "\t${2:; ... code if true (r₀ != 0)}",
-      "JUMP ${3:endif}",
+      "JZERO ${1:" + s.label.else + "}",
+      "\t${2:; " + s.codeIfTrue + " (r₀ != 0)}",
+      "JUMP ${3:" + s.label.endif + "}",
       "$1:",
-      "\t${4:; ... code if false (r₀ == 0)}",
+      "\t${4:; " + s.codeIfFalse + " (r₀ == 0)}",
       "$3:",
       "",
     ].join("\n"),
   ],
   [
     "while r₀ <= 0",
-    t.editor.snippets.whilelte,
-    ["; while r₀ <= 0", "${1:loop}:", "JGTZ ${2:endloop}", "\t${0:; code ...}", "JUMP $1", "$2:", ""].join("\n"),
+    s.name.whilelte,
+    [
+      "; while r₀ <= 0",
+      "${1:" + s.label.loop + "}:",
+      "JGTZ ${2:" + s.label.endloop + "}",
+      "\t${0:; " + s.codePlaceholder + "}",
+      "JUMP $1",
+      "$2:",
+      "",
+    ].join("\n"),
   ],
   [
     "while r₀ != 0",
-    t.editor.snippets.whilene,
-    ["; while r₀ != 0", "${1:loop}:", "JZERO ${2:endloop}", "\t${0:; code ...}", "JUMP $1", "$2:", ""].join("\n"),
+    s.name.whilene,
+    [
+      "; while r₀ != 0",
+      "${1:" + s.label.loop + "}:",
+      "JZERO ${2:" + s.label.endloop + "}",
+      "\t${0:; " + s.codePlaceholder + "}",
+      "JUMP $1",
+      "$2:",
+      "",
+    ].join("\n"),
   ],
   [
     "while r₀ > 0",
-    t.editor.snippets.whilegt,
-    ["; while r₀ > 0", "JUMP ${1:loopcheck}", "${2:loop}:", "\t${0:; code ...}", "$1:", "JGTZ $2", ""].join("\n"),
+    s.name.whilegt,
+    [
+      "; while r₀ > 0",
+      "JUMP ${1:" + s.label.loopcheck + "}",
+      "${2:" + s.label.loop + "}:",
+      "\t${0:; " + s.codePlaceholder + "}",
+      "$1:",
+      "JGTZ $2",
+      "",
+    ].join("\n"),
   ],
   [
     "while r₀ == 0",
-    t.editor.snippets.whileeq,
-    ["; while r₀ == 0", "JUMP ${1:loopcheck}", "${2:loop}:", "\t${0:; code ...}", "$1:", "JZERO $2", ""].join("\n"),
+    s.name.whileeq,
+    [
+      "; while r₀ == 0",
+      "JUMP ${1:" + s.label.loopcheck + "}",
+      "${2:" + s.label.loop + "}:",
+      "\t${0:; " + s.codePlaceholder + "}",
+      "$1:",
+      "JZERO $2",
+      "",
+    ].join("\n"),
   ],
   [
     "do-while r₀ > 0",
-    t.editor.snippets.dowhilegt,
-    ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ > 0;", "JGTZ $1", ""].join("\n"),
+    s.name.dowhilegt,
+    ["; do", "${1:" + s.label.loop + "}:", "\t${0:; " + s.codePlaceholder + "}", "; while r₀ > 0;", "JGTZ $1", ""].join(
+      "\n"
+    ),
   ],
   [
     "do-while r₀ == 0",
-    t.editor.snippets.dowhileeq,
-    ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ == 0;", "JZERO $1", ""].join("\n"),
+    s.name.dowhileeq,
+    [
+      "; do",
+      "${1:" + s.label.loop + "}:",
+      "\t${0:; " + s.codePlaceholder + "}",
+      "; while r₀ == 0;",
+      "JZERO $1",
+      "",
+    ].join("\n"),
   ],
   [
     "do-while r₀ <= 0",
-    t.editor.snippets.dowhilelte,
-    ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ <= 0;", "JGTZ ${2:endloop}", "JUMP $1", "$2:"].join("\n"),
+    s.name.dowhilelte,
+    [
+      "; do",
+      "${1:" + s.label.loop + "}:",
+      "\t${0:; " + s.codePlaceholder + "}",
+      "; while r₀ <= 0;",
+      "JGTZ ${2:" + s.label.endloop + "}",
+      "JUMP $1",
+      "$2:",
+    ].join("\n"),
   ],
   [
     "do-while r₀ != 0",
-    t.editor.snippets.dowhilene,
-    ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ != 0;", "JZERO ${2:endloop}", "JUMP $1", "$2:"].join("\n"),
+    s.name.dowhilene,
+    [
+      "; do",
+      "${1:" + s.label.loop + "}:",
+      "\t${0:; " + s.codePlaceholder + "}",
+      "; while r₀ != 0;",
+      "JZERO ${2:" + s.label.endloop + "}",
+      "JUMP $1",
+      "$2:",
+    ].join("\n"),
   ],
-  ["loop", t.editor.snippets.loop, ["; endless loop", "${1:loop}:", "\t${0:; code ...}", "JUMP $1"].join("\n")],
+  [
+    "loop",
+    s.name.loop,
+    ["; " + s.endlessLoopComment, "${1:" + s.label.loop + "}:", "\t${0:; " + s.codePlaceholder + "}", "JUMP $1"].join(
+      "\n"
+    ),
+  ],
 ];
 
 function provideCompletionItems(
@@ -304,8 +385,14 @@ export function compileAndRunEditorSourceCode() {
   const output = window.RAMMachine.machine.loadAssemblyAndReset(sourceText, false);
   if (output.success) {
     window.RAMMachine.machine.runAll(false, { timeoutAutoKill: 500 });
-    // TODO: display errors in status pane for all undetached runAll calls
+    // TODO: display runtime errors in status pane for all undetached runAll calls
   }
+}
+
+export function showProblems() {
+  // let actions = window.RAMMachine.editor.getSupportedActions().map((a) => a.id);
+  // console.log(actions);
+  unwrap(window.RAMMachine.editor.getAction("editor.action.marker.next")).run();
 }
 
 export function goToLine(lineNumber: number, column: number = 999, selectLine = false) {
@@ -359,6 +446,22 @@ const messageSeverityMap: { [K in MessageSeverity]: monaco.MarkerSeverity } = {
 };
 
 export function updateCompileProblems(success: boolean, compilerMessages: CompilerMessage[]) {
+  // Update count of errors in editor pane
+  let errorCount = 0;
+  let warningCount = 0;
+  compilerMessages.forEach((msg) => {
+    if (msg.type === "error") {
+      errorCount++;
+    } else if (msg.type === "warning") {
+      warningCount++;
+    }
+  });
+  Nodes.showProblemsButton.textContent = formatString(
+    t.editor.problems.template,
+    plural(errorCount, t.editor.problems.errorCount),
+    plural(warningCount, t.editor.problems.warningCount)
+  );
+
   // List compile errors in status pane
   Nodes.compileErrorsContainer.innerHTML = "";
   compilerMessages.forEach((msg) => {

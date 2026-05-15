@@ -11,6 +11,7 @@ export type PreprocessorError = { message: string } & (
   | { id: "setInvalidKey"; key: string }
   | { id: "setInvalidValue"; key: string; value: string }
   | { id: "unknownDirective"; commandName: string }
+  | { id: "expectedDirective" }
 );
 const pp = t.compiler.preprocessor;
 const p = t.compiler.parser;
@@ -47,12 +48,12 @@ export namespace ParserError {
 
 export namespace PreprocessorError {
   export function setInvalidKey(key: string): PreprocessorError {
-    return { id: "setInvalidKey", message: `${pp.setInvalidKey}: ${key}, ${pp.genericIgnoreWarning}`, key };
+    return { id: "setInvalidKey", message: `${pp.setInvalidKey}: ${key}; ${pp.genericIgnoreWarning}`, key };
   }
   export function setInvalidValue(key: string, value: string): PreprocessorError {
     return {
       id: "setInvalidValue",
-      message: `${pp.setInvalidValue} '${key}': ${value}, ${pp.genericIgnoreWarning}`,
+      message: `${pp.setInvalidValue} '${key}': ${value}; ${pp.genericIgnoreWarning}`,
       key,
       value,
     };
@@ -60,8 +61,14 @@ export namespace PreprocessorError {
   export function unknownDirective(commandName: string): PreprocessorError {
     return {
       id: "unknownDirective",
-      message: `${pp.unknownDirective}: ${commandName}, ${pp.genericIgnoreWarning}`,
+      message: `${pp.unknownDirective}: ${commandName}; ${pp.genericIgnoreWarning}`,
       commandName,
+    };
+  }
+  export function expectedDirective(): PreprocessorError {
+    return {
+      id: "expectedDirective",
+      message: `${pp.expectedDirective}; ${pp.genericIgnoreWarning}`,
     };
   }
 }

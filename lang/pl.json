@@ -76,6 +76,21 @@
       "compile": "Kompiluj",
       "compileAndRun": "Kompiluj i uruchom"
     },
+    "problems": {
+      "template": "%0, %1",
+      "errorCount": {
+        "zero": "%0 błędów",
+        "one": "%0 błąd",
+        "multiple1": "%0 błędy",
+        "multiple2": "%0 błędów"
+      },
+      "warningCount": {
+        "zero": "%0 ostrzeżeń",
+        "one": "%0 ostrzeżenie",
+        "multiple1": "%0 ostrzeżenia",
+        "multiple2": "%0 ostrzeżeń"
+      }
+    },
     "actions": {
       "compile": "Kompiluj",
       "compileAndRun": "Kompiluj i uruchom"
@@ -95,21 +110,35 @@
       "HALT": "Zakończ wykonywanie programu"
     },
     "snippets": {
-      "iflte": "Klauzula 'jeżeli' z instrukcją JGTZ",
-      "ifne": "Klauzula 'jeżeli' z instrukcją JZERO",
-      "ifge": "Klauzula 'jeżeli' z instrukcją JGTZ",
-      "ifeq": "Klauzula 'jeżeli' z instrukcją JZERO",
-      "ifelselte": "Klauzula 'jeżeli-w przeciwnym razie' z instrukcją JGTZ",
-      "ifelsene": "Klauzula 'jeżeli-w przeciwnym razie' z instrukcją JZERO",
-      "whilelte": "Pętla 'dopóki' z instrukcją JGTZ",
-      "whilene": "Pętla 'dopóki' z instrukcją JZERO",
-      "whilegt": "Pętla 'dopóki' z instrukcją JGTZ",
-      "whileeq": "Pętla 'dopóki' z instrukcją JZERO",
-      "dowhilegt": "Pętla 'wykonuj-dopóki' z instrukcją JGTZ",
-      "dowhileeq": "Pętla 'wykonuj-dopóki' z instrukcją JZERO",
-      "dowhilelte": "Pętla 'wykonuj-dopóki' z instrukcją JGTZ",
-      "dowhilene": "Pętla 'wykonuj-dopóki' z instrukcją JZERO",
-      "loop": "Nieskończona pętla"
+      "name": {
+        "iflte": "Klauzula 'jeżeli' z instrukcją JGTZ",
+        "ifne": "Klauzula 'jeżeli' z instrukcją JZERO",
+        "ifge": "Klauzula 'jeżeli' z instrukcją JGTZ",
+        "ifeq": "Klauzula 'jeżeli' z instrukcją JZERO",
+        "ifelselte": "Klauzula 'jeżeli-w przeciwnym razie' z instrukcją JGTZ",
+        "ifelsene": "Klauzula 'jeżeli-w przeciwnym razie' z instrukcją JZERO",
+        "whilelte": "Pętla 'dopóki' z instrukcją JGTZ",
+        "whilene": "Pętla 'dopóki' z instrukcją JZERO",
+        "whilegt": "Pętla 'dopóki' z instrukcją JGTZ",
+        "whileeq": "Pętla 'dopóki' z instrukcją JZERO",
+        "dowhilegt": "Pętla 'wykonuj-dopóki' z instrukcją JGTZ",
+        "dowhileeq": "Pętla 'wykonuj-dopóki' z instrukcją JZERO",
+        "dowhilelte": "Pętla 'wykonuj-dopóki' z instrukcją JGTZ",
+        "dowhilene": "Pętla 'wykonuj-dopóki' z instrukcją JZERO",
+        "loop": "Nieskończona pętla"
+      },
+      "codePlaceholder": "kod ...",
+      "codeIfTrue": "... kod jeżeli prawda",
+      "codeIfFalse": "... kod jeżeli fałsz",
+      "endlessLoopComment": "nieskończona pętla",
+      "label": {
+        "if": "jeżeli",
+        "else": "w_przeciwnym_razie",
+        "endif": "koniec_jeżeli",
+        "loop": "pętla",
+        "loopcheck": "warunek_pętli",
+        "endloop": "koniec_pętli"
+      }
     }
   },
   "loadFile": {
@@ -193,7 +222,8 @@
       "setInvalidValue": "nieprawidłowa wartość dla dyrektywy .SET z kluczem",
       "setInvalidKey": "nieprawidłowy klucz dla dyrektywy .SET",
       "unknownDirective": "nieznana dyrektywa preprocesora",
-      "genericIgnoreWarning": "ignorowanie"
+      "expectedDirective": "oczekiwano dyrektywy preprocesora",
+      "genericIgnoreWarning": "dyrektywa zostanie zignorowana"
     },
     "parser": {
       "bigintParseError": "nieprawidłowa liczba całkowita",

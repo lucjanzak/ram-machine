@@ -32,6 +32,23 @@
   display: flex;
   padding: 0.5rem 1rem;
   overflow-x: auto;
+  color: #fff;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+#show-problems-button {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  user-select: none;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+#show-problems-button:hover {
+  background-color: #ffffff1f;
 }
 
 .editor-highlight-error-line {

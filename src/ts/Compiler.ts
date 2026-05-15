@@ -177,7 +177,9 @@ export class Compiler {
     let [commandName, remaining, _] = directive.split(/\s+(.*)/s);
     commandName = commandName.toUpperCase();
 
-    if (commandName === "INPUT_TAPE") {
+    if (commandName.trim() === "") {
+      preprocessorWarn(PreprocessorError.expectedDirective());
+    } else if (commandName === "INPUT_TAPE") {
       state.inputTapeString = remaining;
     } else if (commandName === "SET") {
       let [settingKey, settingValue, _] = remaining.split(/\s+(.*)/s);

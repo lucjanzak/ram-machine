@@ -115,9 +115,12 @@
             </section>
             <section id="code-editor-pane">
               <div id="code-editor-container"></div>
-              <div id="code-editor-buttons" class="nav-buttons">
-                <button class="nav-button nav-button-auto" id="compile-button"><%= t.editor.buttons.compile %></button>
-                <button class="nav-button nav-button-auto" id="compile-and-run-button"><%= t.editor.buttons.compileAndRun %></button>
+              <div id="code-editor-buttons">
+                <div  class="nav-buttons">
+                  <button class="nav-button nav-button-auto" id="compile-button"><%= t.editor.buttons.compile %></button>
+                  <button class="nav-button nav-button-auto" id="compile-and-run-button"><%= t.editor.buttons.compileAndRun %></button>
+                </div>
+                <div id="show-problems-button"></div>
               </div>
             </section>
           </div>

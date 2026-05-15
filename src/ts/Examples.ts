@@ -45,7 +45,7 @@ SUB 1         ; ${abs.comments[3]}
 ${abs.labels.print}:
 WRITE 0       ; ${abs.comments[4]}
 HALT
-  `,
+`,
   N_TO_THE_N: `; ${ntn.title}
 ; ${hdiv}
 ; ${ntn.description}
