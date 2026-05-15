@@ -99,13 +99,14 @@ export class Program {
   }
 
   static fromAssembly(assemblyText: string): {
+    success: boolean;
     program: Program;
     compilerMessages: CompilerMessage[];
     preprocessorState: PreprocessorState;
   } {
     const compiler = new Compiler();
-    const { tiles, messages, preprocessorState } = compiler.compile(assemblyText);
-    return { program: new Program(tiles), compilerMessages: messages, preprocessorState };
+    const { success, tiles, messages, preprocessorState } = compiler.compile(assemblyText);
+    return { success, program: new Program(tiles), compilerMessages: messages, preprocessorState };
   }
 
   constructor(tiles: Tile[] = []) {

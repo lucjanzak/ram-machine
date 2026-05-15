@@ -50,10 +50,10 @@
           <button id="about-button" class="nav-button nav-button-auto"><%= t.nav.about %></button>
         </div>
         <div class="nav-buttons" id="view-buttons">
-          <button id="view-register-pane-button" class="nav-button nav-button-auto active">View Registers</button> <!-- TODO: translate -->
-          <button id="view-program-listing-pane-button" class="nav-button nav-button-auto active">View Program Listing</button>
-          <button id="view-status-pane-button" class="nav-button nav-button-auto">View Status</button>
-          <button id="view-code-editor-pane-button" class="nav-button nav-button-auto active">View Code Editor</button>
+          <button id="view-register-pane-button" class="nav-button nav-button-auto active"><%= t.nav.viewRegisterPane %></button> <!-- TODO: translate -->
+          <button id="view-program-listing-pane-button" class="nav-button nav-button-auto active"><%= t.nav.viewProgramListingPane %></button>
+          <button id="view-status-pane-button" class="nav-button nav-button-auto"><%= t.nav.viewStatusPane %></button>
+          <button id="view-code-editor-pane-button" class="nav-button nav-button-auto active"><%= t.nav.viewCodeEditorPane %></button>
         </div>
       </nav>
       <main>
@@ -113,9 +113,10 @@
             </section>
             <section id="code-editor-pane">
               <div id="code-editor-container"></div>
-              <nav>
-                <button class="nav-button nav-button-auto" id="compile-button"><%= t.editor.compile %></button>
-              </nav>
+              <div id="code-editor-buttons" class="nav-buttons">
+                <button class="nav-button nav-button-auto" id="compile-button"><%= t.editor.buttons.compile %></button>
+                <button class="nav-button nav-button-auto" id="compile-and-run-button"><%= t.editor.buttons.compileAndRun %></button>
+              </div>
             </section>
           </div>
         </div>

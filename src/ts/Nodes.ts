@@ -6,7 +6,7 @@ import { CompilerMessage } from "./Compiler";
 import { initSettingsDOM } from "./Settings";
 import { assertEq, assertNever, expect } from "./Util";
 import { Program } from "./Program";
-import { compileEditorSourceCode } from "./MonacoEditor";
+import { compileAndRunEditorSourceCode, compileEditorSourceCode } from "./MonacoEditor";
 import { changePaneVisibility, PaneName } from "./Panes";
 
 export namespace Nodes {
@@ -61,6 +61,7 @@ export namespace Nodes {
   export const outputTape = element<HTMLElement>("#output-tape");
   export const outputTapeLength = element("#output-tape-length");
   export const compileButton = element("#compile-button");
+  export const compileAndRunButton = element("#compile-and-run-button");
 
   // Load file dialog
   // export const loadFileForm = element<HTMLFormElement>("#load-file-form");
@@ -180,6 +181,9 @@ export function initDOM() {
   });
   Nodes.compileButton.addEventListener("click", () => {
     compileEditorSourceCode();
+  });
+  Nodes.compileAndRunButton.addEventListener("click", () => {
+    compileAndRunEditorSourceCode();
   });
 
   initChartDOM();

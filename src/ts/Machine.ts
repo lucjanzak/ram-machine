@@ -70,6 +70,7 @@ export class Machine {
   }
 
   loadAssemblyAndReset(assemblySourceCode: string): {
+    success: boolean;
     compilerMessages: CompilerMessage[];
     preprocessorState: PreprocessorState;
   } {
@@ -85,7 +86,7 @@ export class Machine {
         window.history.pushState(null, "", document.location.pathname + newEncodedData.hash);
       }
     }
-    const { program, compilerMessages, preprocessorState: pre } = Program.fromAssembly(assemblySourceCode);
+    const { success, program, compilerMessages, preprocessorState: pre } = Program.fromAssembly(assemblySourceCode);
 
     // Load settings included within the file in preprocessor directives
     if (pre.inputTapeString !== null) this.loadTapeFromText(pre.inputTapeString);
@@ -98,8 +99,8 @@ export class Machine {
 
     // Load program
     this.loadProgramAndReset(program);
-    console.log("Program loaded. Compiler messages: ", compilerMessages, pre);
-    return { compilerMessages, preprocessorState: pre };
+    console.log("Program loaded. Compiler messages:", compilerMessages, "Preprocessor data:", pre);
+    return { success, compilerMessages, preprocessorState: pre };
   }
 
   loadProgramAndReset(program: Program) {

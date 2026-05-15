@@ -24,7 +24,11 @@
     "debugContinue": "Kontynuuj",
     "debugStep": "Wykonaj krok",
     "charts": "Wykresy",
-    "about": "O programie"
+    "about": "O programie",
+    "viewRegisterPane": "Pokaż rejestry",
+    "viewProgramListingPane": "Pokaż listing",
+    "viewStatusPane": "Pokaż status",
+    "viewCodeEditorPane": "Pokaż edytor"
   },
   "inputTape": {
     "header": "Taśma wejściowa (długość: ",
@@ -64,7 +68,14 @@
     }
   },
   "editor": {
-    "compile": "Kompiluj"
+    "buttons": {
+      "compile": "Kompiluj",
+      "compileAndRun": "Kompiluj i uruchom"
+    },
+    "actions": {
+      "compile": "Kompiluj",
+      "compileAndRun": "Kompiluj i uruchom"
+    }
   },
   "loadFile": {
     "loadExample": "Wybierz program poniżej:",

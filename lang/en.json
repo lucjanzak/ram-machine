@@ -24,7 +24,11 @@
     "debugContinue": "Continue",
     "debugStep": "Step",
     "charts": "Charts",
-    "about": "About"
+    "about": "About",
+    "viewRegisterPane": "View Registers",
+    "viewProgramListingPane": "View Program Listing",
+    "viewStatusPane": "View Status",
+    "viewCodeEditorPane": "View Code Editor"
   },
   "inputTape": {
     "header": "Input tape (length: ",
@@ -64,7 +68,14 @@
     }
   },
   "editor": {
-    "compile": "Compile"
+    "buttons": {
+      "compile": "Compile",
+      "compileAndRun": "Compile And Run"
+    },
+    "actions": {
+      "compile": "Compile",
+      "compileAndRun": "Compile And Run"
+    }
   },
   "loadFile": {
     "loadExample": "Select a program below:",

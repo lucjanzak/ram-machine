@@ -2,6 +2,7 @@ import * as monaco from "monaco-editor";
 import { Nodes } from "./Nodes";
 import { DEFAULT_PROGRAM_ASSEMBLY } from "./Examples";
 import { preferences } from "./Settings";
+import { t } from "./Localization";
 
 function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage {
   return {
@@ -169,6 +170,92 @@ const snippetsSource = [
   ["loop", "Endless loop", ["; endless loop", "${1:loop}:", "\t${0:; code ...}", "JUMP $1"].join("\n")],
 ];
 
+function provideCompletionItems(
+  model: monaco.editor.ITextModel,
+  position: monaco.Position,
+  _context: monaco.languages.CompletionContext,
+  _token: monaco.CancellationToken
+): monaco.languages.ProviderResult<monaco.languages.CompletionList> {
+  const word = model.getWordUntilPosition(position);
+  const range = {
+    startLineNumber: position.lineNumber,
+    endLineNumber: position.lineNumber,
+    startColumn: word.startColumn,
+    endColumn: word.endColumn,
+  };
+
+  const snippets: monaco.languages.CompletionItem[] = preferences.getCodeSnippetsEnabled()
+    ? [
+        ...snippetsSource.map(
+          ([label, detail, insertText]): monaco.languages.CompletionItem => ({
+            label,
+            detail,
+            sortText: "zzzzzzzz" + label,
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            insertText,
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range,
+          })
+        ),
+      ]
+    : [];
+  const keywords: monaco.languages.CompletionItem[] = [
+    ...[
+      ["LOAD", "Load a value into r₀"],
+      ["STORE", "Store a value from r₀"],
+      ["ADD", "Increment r₀ by a value"],
+      ["SUB", "Decrement r₀ by a value"],
+      ["MULT", "Multiply r₀ by a value"],
+      ["DIV", "Divide r₀ by a value"],
+      ["READ", "Read from the tape"],
+      ["WRITE", "Write to the tape"],
+      ["JUMP", "Unconditional jump"],
+      ["JGTZ", "Jump only if r₀ > 0"],
+      ["JZERO", "Jump only if r₀ == 0"],
+      ["HALT", "Stop program execution"],
+    ].map(([instruction, detail]) => ({
+      label: instruction,
+      detail: detail,
+      kind: monaco.languages.CompletionItemKind.Keyword,
+      insertText: instruction + "",
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      range: range,
+    })),
+  ];
+  const suggestions: monaco.languages.CompletionItem[] = [...keywords, ...snippets];
+  return { suggestions: suggestions };
+}
+
+function initializeEditorKeybinds(editor: monaco.editor.IStandaloneCodeEditor) {
+  monaco.editor.addKeybindingRules([
+    {
+      keybinding: monaco.KeyMod.Alt | monaco.KeyCode.Enter,
+      command: "editor.action.insertLineAfter",
+    },
+  ]);
+
+  monaco.editor.addEditorAction({
+    id: "ramMachine.action.compile",
+    label: t.editor.actions.compile,
+    run: () => {
+      compileEditorSourceCode();
+    },
+    contextMenuGroupId: "compile",
+    contextMenuOrder: 0,
+    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
+  });
+  monaco.editor.addEditorAction({
+    id: "ramMachine.action.compileAndRun",
+    label: t.editor.actions.compileAndRun,
+    run: () => {
+      compileAndRunEditorSourceCode();
+    },
+    contextMenuGroupId: "compile",
+    contextMenuOrder: 1,
+    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.Enter],
+  });
+}
+
 export function createEditor(): monaco.editor.IStandaloneCodeEditor {
   // Adapted from playground:
   // https://microsoft.github.io/monaco-editor/playground.html?source=v0.55.1#example-extending-language-services-custom-languages
@@ -180,70 +267,19 @@ export function createEditor(): monaco.editor.IStandaloneCodeEditor {
   monaco.languages.setMonarchTokensProvider("ramMachineAssembly", ramMachineAssemblyMonarchLanguage());
 
   // Register a completion item provider for the new language
-  monaco.languages.registerCompletionItemProvider("ramMachineAssembly", {
-    provideCompletionItems: (model, position) => {
-      const word = model.getWordUntilPosition(position);
-      const range = {
-        startLineNumber: position.lineNumber,
-        endLineNumber: position.lineNumber,
-        startColumn: word.startColumn,
-        endColumn: word.endColumn,
-      };
+  monaco.languages.registerCompletionItemProvider("ramMachineAssembly", { provideCompletionItems });
 
-      const snippets: monaco.languages.CompletionItem[] = preferences.getCodeSnippetsEnabled()
-        ? [
-            ...snippetsSource.map(
-              ([label, detail, insertText]): monaco.languages.CompletionItem => ({
-                label,
-                detail,
-                sortText: "zzzzzzzz" + label,
-                kind: monaco.languages.CompletionItemKind.Snippet,
-                insertText,
-                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                range: range,
-              })
-            ),
-          ]
-        : [];
-      const keywords: monaco.languages.CompletionItem[] = [
-        ...[
-          ["LOAD", "Load a value into r₀"],
-          ["STORE", "Store a value from r₀"],
-          ["ADD", "Increment r₀ by a value"],
-          ["SUB", "Decrement r₀ by a value"],
-          ["MULT", "Multiply r₀ by a value"],
-          ["DIV", "Divide r₀ by a value"],
-          ["READ", "Read from the tape"],
-          ["WRITE", "Write to the tape"],
-          ["JUMP", "Unconditional jump"],
-          ["JGTZ", "Jump only if r₀ > 0"],
-          ["JZERO", "Jump only if r₀ == 0"],
-          ["HALT", "Stop program execution"],
-        ].map(([instruction, detail]) => ({
-          label: instruction,
-          detail: detail,
-          kind: monaco.languages.CompletionItemKind.Keyword,
-          insertText: instruction + "",
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-          range: range,
-        })),
-      ];
-      const suggestions: monaco.languages.CompletionItem[] = [...keywords, ...snippets];
-      return { suggestions: suggestions };
-    },
-  });
-  Nodes.codeEditorContainer.style.display = "flex";
-  Nodes.codeEditorContainer.style.flexDirection = "column";
-  Nodes.codeEditorContainer.style.alignItems = "stretch";
-  Nodes.codeEditorContainer.style.width = "100%";
-  Nodes.codeEditorContainer.style.height = "100%";
-
+  // Create editor
   const editor = monaco.editor.create(Nodes.codeEditorContainer, {
     value: DEFAULT_PROGRAM_ASSEMBLY,
     language: "ramMachineAssembly",
     wordBasedSuggestions: "allDocuments",
   });
 
+  // Initialize keybinds
+  initializeEditorKeybinds(editor);
+
+  // Responsive layout
   let timeout: number | null = null;
   const resizeObserver = new ResizeObserver(() => {
     if (timeout !== null) {
@@ -260,4 +296,13 @@ export function createEditor(): monaco.editor.IStandaloneCodeEditor {
 export function compileEditorSourceCode() {
   const sourceText = window.RAMMachine.editor.getValue();
   window.RAMMachine.machine.loadAssemblyAndReset(sourceText);
+}
+
+export function compileAndRunEditorSourceCode() {
+  const sourceText = window.RAMMachine.editor.getValue();
+  const output = window.RAMMachine.machine.loadAssemblyAndReset(sourceText);
+  if (output.success) {
+    window.RAMMachine.machine.runAll(false, { timeoutAutoKill: 500 });
+    // TODO: display errors in status pane for all undetached runAll calls
+  }
 }
