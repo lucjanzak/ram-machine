@@ -9,6 +9,7 @@ import { Program, ProgramCounter } from "./Program";
 import { MachineSettings, preferences, updateSettingsDOM } from "./Settings";
 import { Statistics } from "./Statistics";
 import { assertNever } from "./Util";
+import { encodeURLHashData } from "./URLCode";
 
 export type StopReason = "halt" | "error" | "kill" | "timeout";
 
@@ -68,31 +69,44 @@ export class Machine {
     this.stats.replaceStatisticsDOM();
   }
 
-  loadAssemblyAndReset(assemblySourceText: string): {
+  loadAssemblyAndReset(assemblySourceCode: string): {
     compilerMessages: CompilerMessage[];
     preprocessorState: PreprocessorState;
   } {
-    window.RAMMachine.editor.setValue(assemblySourceText);
-    const { program, compilerMessages, preprocessorState: pre } = Program.fromAssembly(assemblySourceText);
+    if (!this.detachedMode) {
+      window.RAMMachine.editor.setValue(assemblySourceCode);
+
+      const newHash = encodeURLHashData(assemblySourceCode);
+      if (window.location.hash !== newHash) {
+        window.history.pushState(null, "", document.location.pathname + newHash);
+      }
+    }
+    const { program, compilerMessages, preprocessorState: pre } = Program.fromAssembly(assemblySourceCode);
 
     // Load settings included within the file in preprocessor directives
     if (pre.inputTapeString !== null) this.loadTapeFromText(pre.inputTapeString);
     if (pre.inputTapeUnderflow !== null) this.settings.inputTapeUnderflow = pre.inputTapeUnderflow;
     if (pre.uninitializedRegisterRead !== null) this.settings.uninitializedRegisterRead = pre.uninitializedRegisterRead;
     if (pre.programCounterOutOfBounds !== null) this.settings.programCounterOutOfBounds = pre.programCounterOutOfBounds;
-    updateSettingsDOM(this.settings, preferences);
+    if (!this.detachedMode) {
+      updateSettingsDOM(this.settings, preferences);
+    }
 
     // Load program
     this.loadProgramAndReset(program);
-    console.log(compilerMessages, pre);
+    console.log("Program loaded. Compiler messages: ", compilerMessages, pre);
     return { compilerMessages, preprocessorState: pre };
   }
 
   loadProgramAndReset(program: Program) {
     this.program = program;
-    window.RAMMachine.chart.clearDataAndUpdate();
+    if (!this.detachedMode) {
+      window.RAMMachine.chart.clearDataAndUpdate();
+    }
     this.reset();
-    this.program.refreshListingWithAnimation();
+    if (!this.detachedMode) {
+      this.program.refreshListingWithAnimation();
+    }
   }
 
   loadTapeFromText(text: string) {

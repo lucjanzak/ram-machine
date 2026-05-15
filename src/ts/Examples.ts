@@ -280,7 +280,7 @@ function compileExamplePrograms(): { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBL
     if (key === "PARSER_ERROR_TEST") {
       const { program, compilerMessages } = Program.fromAssembly(sourceCode);
       assertEq(compilerMessages.length, 5);
-      console.log(compilerMessages);
+      // console.log(compilerMessages);
       programs[key] = program;
     } else {
       const { program } = Program.fromAssembly(sourceCode);
