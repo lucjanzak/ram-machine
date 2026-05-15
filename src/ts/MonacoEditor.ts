@@ -295,12 +295,12 @@ export function createEditor(): monaco.editor.IStandaloneCodeEditor {
 
 export function compileEditorSourceCode() {
   const sourceText = window.RAMMachine.editor.getValue();
-  window.RAMMachine.machine.loadAssemblyAndReset(sourceText);
+  window.RAMMachine.machine.loadAssemblyAndReset(sourceText, false);
 }
 
 export function compileAndRunEditorSourceCode() {
   const sourceText = window.RAMMachine.editor.getValue();
-  const output = window.RAMMachine.machine.loadAssemblyAndReset(sourceText);
+  const output = window.RAMMachine.machine.loadAssemblyAndReset(sourceText, false);
   if (output.success) {
     window.RAMMachine.machine.runAll(false, { timeoutAutoKill: 500 });
     // TODO: display errors in status pane for all undetached runAll calls

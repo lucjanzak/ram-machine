@@ -69,13 +69,18 @@ export class Machine {
     this.stats.replaceStatisticsDOM();
   }
 
-  loadAssemblyAndReset(assemblySourceCode: string): {
+  loadAssemblyAndReset(
+    assemblySourceCode: string,
+    updateEditorContents: boolean = true
+  ): {
     success: boolean;
     compilerMessages: CompilerMessage[];
     preprocessorState: PreprocessorState;
   } {
     if (!this.detachedMode) {
-      window.RAMMachine.editor.setValue(assemblySourceCode);
+      if (updateEditorContents) {
+        window.RAMMachine.editor.setValue(assemblySourceCode);
+      }
 
       let newEncodedData = encodeURLHashData(assemblySourceCode);
       const forceUncompressed = false;
