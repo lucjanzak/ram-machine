@@ -1,7 +1,6 @@
 import { t } from "./Localization";
-import { makeCompilerMessageBox, makeStatusBox, Nodes } from "./Nodes";
-import { CompilerMessage, Compiler } from "./Compiler";
-import { updateCompileProblems } from "./MonacoEditor";
+import { Nodes } from "./Nodes";
+import { Compiler, makeStatusBox, makeCompilerMessageBox } from "./Compiler";
 
 function fileFinishedLoading(fileContents: string) {
   Nodes.loadFileTextareaPreview.value = fileContents;

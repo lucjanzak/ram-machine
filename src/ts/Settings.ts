@@ -1,4 +1,5 @@
 import { Dialogs, Nodes, select } from "./Nodes";
+import { getPane, getPaneButton, PaneName } from "./Panes";
 
 export type InputTapeUnderflowBehavior = "error" | "zero" | "random";
 export type UninitializedRegisterReadBehavior = "error" | "zero" | "random" | "superpositionCollapse";
@@ -57,6 +58,12 @@ export class Preferences {
   // Placeholder values, defaults are in revertToDefaults();
   private animationsEnabled = false;
   private codeSnippetsEnabled = false;
+  private paneVisibility: { [K in PaneName]: boolean } = {
+    register: true,
+    programListing: true,
+    status: false,
+    codeEditor: true,
+  };
 
   static loadOrNew() {
     const item = localStorage.getItem("RAMMachine.preferences");
@@ -76,6 +83,18 @@ export class Preferences {
     if (typeof json.codeSnippetsEnabled === "boolean") {
       preferences.setCodeSnippetsEnabled(json.codeSnippetsEnabled);
     }
+    if (typeof json.viewRegisterPane === "boolean") {
+      preferences.setPaneVisibility("register", json.viewRegisterPane);
+    }
+    if (typeof json.viewProgramListingPane === "boolean") {
+      preferences.setPaneVisibility("programListing", json.viewProgramListingPane);
+    }
+    if (typeof json.viewStatusPane === "boolean") {
+      preferences.setPaneVisibility("status", json.viewStatusPane);
+    }
+    if (typeof json.viewCodeEditorPane === "boolean") {
+      preferences.setPaneVisibility("codeEditor", json.viewCodeEditorPane);
+    }
     return preferences;
   }
 
@@ -85,6 +104,10 @@ export class Preferences {
       JSON.stringify({
         animationsEnabled: this.animationsEnabled === !prefersReducedMotion ? undefined : this.animationsEnabled,
         codeSnippetsEnabled: this.codeSnippetsEnabled,
+        viewRegisterPane: this.paneVisibility.register,
+        viewProgramListingPane: this.paneVisibility.programListing,
+        viewStatusPane: this.paneVisibility.status,
+        viewCodeEditorPane: this.paneVisibility.codeEditor,
       })
     );
     console.trace("save", localStorage.getItem("RAMMachine.preferences"));
@@ -135,6 +158,29 @@ export class Preferences {
 
   getCodeSnippetsEnabled() {
     return this.codeSnippetsEnabled;
+  }
+
+  setPaneVisibility(paneName: PaneName, visible: boolean) {
+    this.paneVisibility[paneName] = visible;
+
+    const pane = getPane(paneName);
+    const button = getPaneButton(paneName);
+    if (pane !== null) pane.classList.toggle("active", visible);
+    if (button !== null) button.classList.toggle("active", visible);
+  }
+
+  getPaneVisibility(paneName: PaneName) {
+    return this.paneVisibility[paneName];
+  }
+
+  refreshPaneVisibility() {
+    Object.entries(this.paneVisibility).forEach(([key, visible]) => {
+      const paneName = key as PaneName;
+      const pane = getPane(paneName);
+      const button = getPaneButton(paneName);
+      if (pane !== null) pane.classList.toggle("active", visible);
+      if (button !== null) button.classList.toggle("active", visible);
+    });
   }
 }
 

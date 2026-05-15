@@ -16,6 +16,10 @@ import {
   ProgramCounterOutOfBoundsBehavior,
   UninitializedRegisterReadBehavior,
 } from "./Settings";
+import { Dialogs, select, Templates, useTemplate } from "./Nodes";
+import { assertNever } from "./Util";
+import { formatString, t } from "./Localization";
+import { goToLine, highlightLine } from "./MonacoEditor";
 
 export type MessageSeverity = "error" | "warning";
 
@@ -308,4 +312,64 @@ export class Compiler {
   }
 
   constructor(private readonly settings = Compiler.defaultSettings()) {}
+}
+
+export function makeStatusBox(message: string, type: "error" | "warning" | "success"): DocumentFragment {
+  const f = useTemplate(Templates.statusBox);
+
+  const box = select(f, ".status-box");
+  box.classList.add(type);
+
+  const messageSpan = select(f, ".message");
+  messageSpan.textContent = message;
+  return f;
+}
+
+export function getTitleForMessageBox(category: CompilerError["category"]) {
+  if (category === "preprocessor") {
+    return `${t.compiler.preprocessorErrorTitle}`;
+  } else if (category === "parser") {
+    return `${t.compiler.parserErrorTitle}`;
+  } else {
+    assertNever(category);
+  }
+}
+
+export function makeCompilerMessageBox(msg: CompilerMessage): DocumentFragment {
+  const f = useTemplate(Templates.compilerMessage);
+
+  const box = select(f, ".compiler-message");
+  box.classList.add(msg.type);
+
+  const titleSpan = select(f, ".title");
+  titleSpan.textContent = getTitleForMessageBox(msg.body.category);
+
+  const errorIdSpan = select(f, ".error-id");
+  errorIdSpan.textContent = `<${msg.body.id}>`;
+
+  const messageSpan = select(f, ".message");
+  messageSpan.textContent = `${msg.body.message}`;
+
+  const lineLocation = select(f, ".line-location");
+  lineLocation.textContent =
+    msg.line === undefined
+      ? ""
+      : msg.col === undefined
+      ? formatString(t.compiler.atLine, `${msg.line}`)
+      : formatString(t.compiler.atLineCol, `${msg.line}`, `${msg.col}`);
+  if (msg.line !== undefined) {
+    const line = msg.line;
+    const col = msg.col;
+    lineLocation.addEventListener("click", () => {
+      if (Dialogs.loadFile.open) {
+        Dialogs.loadFile.close();
+      }
+      goToLine(line, col);
+      const highlightError = false;
+      if (highlightError) {
+        highlightLine(line, msg.body.message, "editor-highlight-error-line");
+      }
+    });
+  }
+  return f;
 }

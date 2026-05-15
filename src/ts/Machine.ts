@@ -2,7 +2,7 @@ import { InputTape, InputTapeArray, InputTapeArrayDOM } from "./InputTape";
 import { Instruction, ReadableOperand, WriteableOperand } from "./Instruction";
 import { t } from "./Localization";
 import { Memory } from "./Memory";
-import { makeCompilerMessageBox, makeStatusBox, Nodes } from "./Nodes";
+import { Nodes } from "./Nodes";
 import { OutputTape, OutputTapeArray, OutputTapeArrayDOM } from "./OutputTape";
 import { CompilerMessage, PreprocessorState } from "./Compiler";
 import { Program, ProgramCounter } from "./Program";

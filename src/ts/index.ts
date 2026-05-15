@@ -8,8 +8,8 @@ import { testingArea } from "./testing";
 import * as monaco from "monaco-editor";
 import "../css/index.module.css";
 import { ComplexityChart, initChart } from "./Chart";
-import { changePaneVisibility } from "./Panes";
 import { loadInitialHash } from "./URLCode";
+import { preferences } from "./Settings";
 
 const machine = new Machine();
 const editor = createEditor();
@@ -48,9 +48,7 @@ window.lang = {
 
 // Initialization
 initDOM();
-changePaneVisibility("register", true);
-changePaneVisibility("programListing", true);
-changePaneVisibility("codeEditor", true);
+preferences.refreshPaneVisibility();
 loadInitialHash();
 
 // Testing

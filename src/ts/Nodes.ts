@@ -1,19 +1,11 @@
 /// @no-format
 import { initChartDOM } from "./Chart";
 import { initFileDrop } from "./LoadFile";
-import { formatString, t } from "./Localization";
-import { CompilerMessage } from "./Compiler";
 import { initSettingsDOM } from "./Settings";
-import { assertEq, assertNever, expect } from "./Util";
-import {
-  compileAndRunEditorSourceCode,
-  compileEditorSourceCode,
-  goToLine,
-  highlightLine,
-  showProblems,
-} from "./MonacoEditor";
-import { changePaneVisibility, PaneName } from "./Panes";
-import { CompilerError } from "./CompileError";
+import { assertEq, expect } from "./Util";
+import { initEditorPaneDOM } from "./MonacoEditor";
+import { PaneName } from "./Panes";
+import { initNavDOM } from "./Nav";
 
 export namespace Nodes {
   function element<T extends Element = Element>(selector: string) {
@@ -170,120 +162,8 @@ export function select<T extends Element = Element>(f: ParentNode, selector: str
 
 export function initDOM() {
   initFileDrop();
-  Nodes.newProgramButton.addEventListener("click", () => {
-    window.RAMMachine.machine.loadAssemblyAndReset("");
-  });
-  Nodes.loadProgramButton.addEventListener("click", () => {
-    Nodes.loadFileTextareaPreview.value = "";
-    Nodes.loadFileStatusContainer.innerHTML = "";
-    Dialogs.loadFile.showModal();
-  });
-  Nodes.settingsButton.addEventListener("click", () => {
-    Dialogs.settings.showModal();
-  });
-  Nodes.clearInputTapeButton.addEventListener("click", () => {
-    const answer = confirm(t.nav.clearInputTapePrompt);
-    if (answer) {
-      window.RAMMachine.machine.loadTapeFromText("");
-    }
-  });
-  Nodes.editInputTapeButton.addEventListener("click", () => {
-    const currentTape = window.RAMMachine.machine.inputTape.asString();
-    const answer = prompt(t.nav.editInputTapePrompt, currentTape);
-    if (answer !== null) {
-      window.RAMMachine.machine.loadTapeFromText(answer);
-    }
-  });
-  Nodes.runAllButton.addEventListener("click", () => {
-    window.RAMMachine.machine.runAll(false);
-  });
-  Nodes.resetButton.addEventListener("click", () => {
-    window.RAMMachine.machine.reset();
-  });
-  Nodes.stepButton.addEventListener("click", () => {
-    window.RAMMachine.machine.step();
-  });
-  Nodes.chartsButton.addEventListener("click", () => {
-    Dialogs.chartWindow.showModal();
-  });
-  Nodes.aboutButton.addEventListener("click", () => {
-    Dialogs.about.showPopover();
-  });
-  Object.entries(Nodes.viewButtons).forEach(([key, button]) => {
-    button.addEventListener("click", () => {
-      changePaneVisibility(key as PaneName, undefined);
-    });
-  });
-  Nodes.compileButton.addEventListener("click", () => {
-    compileEditorSourceCode();
-  });
-  Nodes.compileAndRunButton.addEventListener("click", () => {
-    compileAndRunEditorSourceCode();
-  });
-  Nodes.showProblemsButton.addEventListener("click", () => {
-    showProblems();
-  });
-
+  initNavDOM();
+  initEditorPaneDOM();
   initChartDOM();
   initSettingsDOM();
-}
-
-export function makeStatusBox(message: string, type: "error" | "warning" | "success"): DocumentFragment {
-  const f = useTemplate(Templates.statusBox);
-
-  const box = select(f, ".status-box");
-  box.classList.add(type);
-
-  const messageSpan = select(f, ".message");
-  messageSpan.textContent = message;
-  return f;
-}
-
-export function getTitleForMessageBox(category: CompilerError["category"]) {
-  if (category === "preprocessor") {
-    return `${t.compiler.preprocessorErrorTitle}`;
-  } else if (category === "parser") {
-    return `${t.compiler.parserErrorTitle}`;
-  } else {
-    assertNever(category);
-  }
-}
-
-export function makeCompilerMessageBox(msg: CompilerMessage): DocumentFragment {
-  const f = useTemplate(Templates.compilerMessage);
-
-  const box = select(f, ".compiler-message");
-  box.classList.add(msg.type);
-
-  const titleSpan = select(f, ".title");
-  titleSpan.textContent = getTitleForMessageBox(msg.body.category);
-
-  const errorIdSpan = select(f, ".error-id");
-  errorIdSpan.textContent = `<${msg.body.id}>`;
-
-  const messageSpan = select(f, ".message");
-  messageSpan.textContent = `${msg.body.message}`;
-
-  const lineLocation = select(f, ".line-location");
-  lineLocation.textContent =
-    msg.line === undefined
-      ? ""
-      : msg.col === undefined
-      ? formatString(t.compiler.atLine, `${msg.line}`)
-      : formatString(t.compiler.atLineCol, `${msg.line}`, `${msg.col}`);
-  if (msg.line !== undefined) {
-    const line = msg.line;
-    const col = msg.col;
-    lineLocation.addEventListener("click", () => {
-      if (Dialogs.loadFile.open) {
-        Dialogs.loadFile.close();
-      }
-      goToLine(line, col);
-      const highlightError = false;
-      if (highlightError) {
-        highlightLine(line, msg.body.message, "editor-highlight-error-line");
-      }
-    });
-  }
-  return f;
 }

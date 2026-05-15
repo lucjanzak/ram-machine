@@ -1,9 +1,16 @@
 import * as monaco from "monaco-editor";
-import { getTitleForMessageBox, makeCompilerMessageBox, makeStatusBox, Nodes } from "./Nodes";
+import { Nodes } from "./Nodes";
 import { DEFAULT_PROGRAM_ASSEMBLY } from "./Examples";
 import { preferences } from "./Settings";
 import { formatString, plural, t } from "./Localization";
-import { Compiler, CompilerMessage, MessageSeverity } from "./Compiler";
+import {
+  Compiler,
+  CompilerMessage,
+  getTitleForMessageBox,
+  makeCompilerMessageBox,
+  makeStatusBox,
+  MessageSeverity,
+} from "./Compiler";
 import { unwrap } from "./Util";
 
 function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage {
@@ -389,7 +396,7 @@ export function compileAndRunEditorSourceCode() {
   }
 }
 
-export function showProblems() {
+export function showNextProblem() {
   // let actions = window.RAMMachine.editor.getSupportedActions().map((a) => a.id);
   // console.log(actions);
   unwrap(window.RAMMachine.editor.getAction("editor.action.marker.next")).run();
@@ -502,7 +509,6 @@ export function updateCompileProblems(success: boolean, compilerMessages: Compil
 }
 
 let oldSourceText = "";
-
 export function quickCompile(force = false) {
   const sourceText = window.RAMMachine.editor.getValue();
   if (!force && sourceText === oldSourceText) return;
@@ -511,4 +517,16 @@ export function quickCompile(force = false) {
   const compiler = new Compiler();
   const { success, messages } = compiler.compile(sourceText);
   updateCompileProblems(success, messages);
+}
+
+export function initEditorPaneDOM() {
+  Nodes.compileButton.addEventListener("click", () => {
+    compileEditorSourceCode();
+  });
+  Nodes.compileAndRunButton.addEventListener("click", () => {
+    compileAndRunEditorSourceCode();
+  });
+  Nodes.showProblemsButton.addEventListener("click", () => {
+    showNextProblem();
+  });
 }

@@ -2,17 +2,14 @@ import { Nodes } from "./Nodes";
 
 export type PaneName = "register" | "programListing" | "status" | "codeEditor";
 
-function getPane(name: PaneName) {
+export function getPane(name: PaneName): Element | null {
+  // This method can get called before Nodes is initialized
+  if (Nodes === undefined) return null;
   return Nodes.panes[name];
 }
-function getPaneButton(name: PaneName) {
+
+export function getPaneButton(name: PaneName): Element | null {
+  // This method can get called before Nodes is initialized
+  if (Nodes === undefined) return null;
   return Nodes.viewButtons[name];
-}
-
-export function changePaneVisibility(name: PaneName, state: boolean | undefined) {
-  const pane = getPane(name);
-  const button = getPaneButton(name);
-
-  pane.classList.toggle("active", state);
-  button.classList.toggle("active", state);
 }
