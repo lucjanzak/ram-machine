@@ -54,6 +54,8 @@ export namespace Nodes {
   // export const codeEditorBasic = element<HTMLTextAreaElement>("#code-editor-basic");
   export const codeEditorContainer = element<HTMLElement>("#code-editor-container");
   export const programListing = element("#program-listing");
+  export const compileErrorsContainer = element("#compile-errors-container");
+  export const runtimeErrorsContainer = element("#runtime-errors-container");
   export const stats = element("#stats");
   export const registerScrollList = element<HTMLElement>("#register-scroll-list");
   export const inputTape = element<HTMLElement>("#input-tape");

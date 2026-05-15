@@ -100,7 +100,9 @@
             </section>
             <section id="status-pane">
               <h3><%= t.status.title %></h3>
-              <%= t.status.stats.title %>
+              <div id="compile-errors-container"></div>
+              <div id="runtime-errors-container"></div>
+              <span><%= t.status.stats.title %></span>
               <!-- TODO: Add current machine state here - running/paused/stopped/halted/error -->
               <!-- TODO: show compile errors and runtime errors -->
               <table>
@@ -201,9 +203,10 @@
     <template id="compiler-message">
       <div class="compiler-message">
         <span class="title"></span>&nbsp;
-        <span class="line-location"></span>
         <span class="message"></span>&nbsp;
-        <span class="error-id"></span>
+        <span class="error-id"></span>&nbsp;
+        <span class="line-location"></span>
+        <div style="clear: both;"></div>
       </div>
     </template>
 

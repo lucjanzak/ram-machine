@@ -2,7 +2,7 @@ import { InputTape, InputTapeArray, InputTapeArrayDOM } from "./InputTape";
 import { Instruction, ReadableOperand, WriteableOperand } from "./Instruction";
 import { t } from "./Localization";
 import { Memory } from "./Memory";
-import { Nodes } from "./Nodes";
+import { makeCompilerMessageBox, makeStatusBox, Nodes } from "./Nodes";
 import { OutputTape, OutputTapeArray, OutputTapeArrayDOM } from "./OutputTape";
 import { CompilerMessage, PreprocessorState } from "./Compiler";
 import { Program, ProgramCounter } from "./Program";
@@ -92,6 +92,20 @@ export class Machine {
       }
     }
     const { success, program, compilerMessages, preprocessorState: pre } = Program.fromAssembly(assemblySourceCode);
+    if (!this.detachedMode) {
+      Nodes.compileErrorsContainer.innerHTML = "";
+      compilerMessages.forEach((msg) => {
+        const box = makeCompilerMessageBox(msg);
+        Nodes.compileErrorsContainer.appendChild(box);
+      });
+      if (success) {
+        const box = makeStatusBox("Compilation finished successfully", "success");
+        Nodes.compileErrorsContainer.appendChild(box);
+      } else {
+        const box = makeStatusBox("Compilation finished with errors", "warning");
+        Nodes.compileErrorsContainer.appendChild(box);
+      }
+    }
 
     // Load settings included within the file in preprocessor directives
     if (pre.inputTapeString !== null) this.loadTapeFromText(pre.inputTapeString);
