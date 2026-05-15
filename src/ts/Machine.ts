@@ -9,7 +9,7 @@ import { Program, ProgramCounter } from "./Program";
 import { MachineSettings, preferences, updateSettingsDOM } from "./Settings";
 import { Statistics } from "./Statistics";
 import { assertNever } from "./Util";
-import { encodeURLHashData } from "./URLCode";
+import { BASE64_RATIO, encodeURLHashData } from "./URLCode";
 
 export type StopReason = "halt" | "error" | "kill" | "timeout";
 
@@ -84,7 +84,7 @@ export class Machine {
 
       let newEncodedData = encodeURLHashData(assemblySourceCode);
       const forceUncompressed = false;
-      if (newEncodedData.ratio > 1 || forceUncompressed) {
+      if (newEncodedData.ratio > BASE64_RATIO || forceUncompressed) {
         newEncodedData = encodeURLHashData(assemblySourceCode, 0);
       }
       if (window.location.hash !== newEncodedData.hash) {
