@@ -307,7 +307,47 @@ export function compileAndRunEditorSourceCode() {
   }
 }
 
-export function goToLine(lineNumber: number, column: number = 999) {
+export function goToLine(lineNumber: number, column: number = 999, selectLine = false) {
   window.RAMMachine.editor.setPosition({ lineNumber, column });
+  if (selectLine) {
+    window.RAMMachine.editor.setSelection({
+      startLineNumber: lineNumber,
+      startColumn: 0,
+      endLineNumber: lineNumber,
+      endColumn: 999,
+    });
+  }
+  window.RAMMachine.editor.revealLineInCenterIfOutsideViewport(lineNumber);
   window.RAMMachine.editor.focus();
+}
+
+let editorDecorations: monaco.editor.IEditorDecorationsCollection | null = null;
+
+export function highlightLine(lineNumber: number, hoverMessage: string, className?: string, inlineClassName?: string) {
+  if (editorDecorations === null) {
+    editorDecorations = window.RAMMachine.editor.createDecorationsCollection();
+  }
+  editorDecorations.clear();
+  editorDecorations.set([
+    {
+      range: {
+        startLineNumber: lineNumber,
+        startColumn: 0,
+        endLineNumber: lineNumber,
+        endColumn: 999,
+      },
+      options: {
+        isWholeLine: false,
+        className,
+        inlineClassName,
+        hoverMessage: { value: hoverMessage },
+      },
+    },
+  ]);
+}
+
+export function clearDecorations() {
+  if (editorDecorations !== null) {
+    editorDecorations.clear();
+  }
 }

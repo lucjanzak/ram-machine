@@ -1,14 +1,14 @@
-import { formatString, t } from "./Localization";
+import { t } from "./Localization";
 import { makeCompilerMessageBox, makeStatusBox, Nodes } from "./Nodes";
 import { CompilerMessage, Compiler } from "./Compiler";
 
-function fileFinishedLoading(sourceText: string) {
-  Nodes.loadFileTextareaPreview.value = sourceText;
+function fileFinishedLoading(fileContents: string) {
+  Nodes.loadFileTextareaPreview.value = fileContents;
 
   // TODO: add confirm button
 
   const compiler = new Compiler();
-  const compilerOutput = compiler.compile(sourceText);
+  const compilerOutput = compiler.compile(fileContents);
   console.log(compilerOutput.messages);
 
   if (compilerOutput.messages.length === 0) {
@@ -18,6 +18,8 @@ function fileFinishedLoading(sourceText: string) {
       Nodes.loadFileStatusContainer.append(makeCompilerMessageBox(msg));
     });
   }
+
+  window.RAMMachine.machine.loadAssemblyAndReset(fileContents);
 }
 
 function fileChanged(file: File | null) {

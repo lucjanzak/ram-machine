@@ -81,16 +81,19 @@ body.animations-enabled .compiler-message {
 
 .compiler-message .title {
   font-weight: bold;
+  display: none;
 }
 
 .compiler-message .error-id {
   font-family: monospace;
   opacity: 0.5;
+  font-size: 8pt;
 }
 
 .compiler-message .message {
   font-family: monospace;
   white-space-collapse: preserve;
+  font-size: 10pt;
 }
 
 .compiler-message .line-location {

@@ -1,7 +1,7 @@
 #program-listing-pane {
   width: 50%;
   flex-grow: 1;
-  min-width: 200px;
+  min-width: 100px;
   border-left: var(--generic-border);
   background-color: #fff;
 

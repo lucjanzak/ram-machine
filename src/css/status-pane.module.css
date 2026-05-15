@@ -1,13 +1,19 @@
 #status-pane {
-  width: 25%;
+  width: 30%;
   flex-grow: 1;
-  min-width: 200px;
+  min-width: 250px;
+
   border-left: var(--generic-border);
   background-color: #fff;
   padding: 1rem;
+  box-sizing: border-box;
 
   overflow-x: auto;
   overflow-y: auto;
+}
+
+#status-pane:not(.active) {
+  display: none;
 }
 
 #status-pane h1,
@@ -15,8 +21,4 @@
 #status-pane h3 {
   margin-block: 0;
   margin-bottom: 1rem;
-}
-
-#status-pane:not(.active) {
-  display: none;
 }

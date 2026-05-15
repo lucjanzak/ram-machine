@@ -1,7 +1,7 @@
 #register-pane {
   min-width: 150px;
   width: 15%;
-  max-width: 300px;
+  max-width: 250px;
 
   display: flex;
   flex-direction: column;

@@ -10,6 +10,7 @@ import { MachineSettings, preferences, updateSettingsDOM } from "./Settings";
 import { Statistics } from "./Statistics";
 import { assertNever } from "./Util";
 import { BASE64_RATIO, encodeURLHashData } from "./URLCode";
+import { clearDecorations } from "./MonacoEditor";
 
 export type StopReason = "halt" | "error" | "kill" | "timeout";
 
@@ -81,6 +82,7 @@ export class Machine {
       if (updateEditorContents) {
         window.RAMMachine.editor.setValue(assemblySourceCode);
       }
+      clearDecorations();
 
       let newEncodedData = encodeURLHashData(assemblySourceCode);
       const forceUncompressed = false;

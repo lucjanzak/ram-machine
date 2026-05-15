@@ -44,8 +44,23 @@ hr {
   text-align: center;
 }
 
+.clear-both {
+  clear: both;
+}
+
 @import url(header.module.css);
 @import url(nav.module.css);
 @import url(panes.module.css);
 @import url(dialog.module.css);
 @import url(status-box.module.css);
+
+#big-scroll-list-test {
+  height: 100px;
+}
+
+#big-scroll-list-test-row > div {
+  width: 90px;
+  height: 50px;
+  background-color: #0000ff1f;
+  word-break: break-all;
+}

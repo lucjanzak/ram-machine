@@ -5,8 +5,7 @@ import { formatString, t } from "./Localization";
 import { CompilerMessage } from "./Compiler";
 import { initSettingsDOM } from "./Settings";
 import { assertEq, assertNever, expect } from "./Util";
-import { Program } from "./Program";
-import { compileAndRunEditorSourceCode, compileEditorSourceCode, goToLine } from "./MonacoEditor";
+import { compileAndRunEditorSourceCode, compileEditorSourceCode, goToLine, highlightLine } from "./MonacoEditor";
 import { changePaneVisibility, PaneName } from "./Panes";
 
 export namespace Nodes {
@@ -235,7 +234,11 @@ export function makeCompilerMessageBox(msg: CompilerMessage): DocumentFragment {
     const line = msg.line;
     const col = msg.col;
     lineLocation.addEventListener("click", () => {
+      if (Dialogs.loadFile.open) {
+        Dialogs.loadFile.close();
+      }
       goToLine(line, col);
+      highlightLine(line, msg.body.message, "editor-highlight-error-line");
     });
   }
   return f;

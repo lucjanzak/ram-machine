@@ -33,3 +33,9 @@
   padding: 0.5rem 1rem;
   overflow-x: auto;
 }
+
+.editor-highlight-error-line {
+  background-color: #ff00003f;
+  border: #ff0000 1px solid;
+  box-sizing: border-box;
+}
