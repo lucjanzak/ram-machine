@@ -9,6 +9,7 @@ import * as monaco from "monaco-editor";
 import "../css/index.module.css";
 import { ComplexityChart, initChart } from "./Chart";
 import { changePaneVisibility } from "./Panes";
+import { loadInitialHash } from "./URLCode";
 
 const machine = new Machine();
 const editor = createEditor();
@@ -50,7 +51,7 @@ initDOM();
 changePaneVisibility("register", true);
 changePaneVisibility("programListing", true);
 changePaneVisibility("codeEditor", true);
-machine.loadAssemblyAndReset(DEFAULT_PROGRAM_ASSEMBLY);
+loadInitialHash();
 
 // Testing
 testingArea();

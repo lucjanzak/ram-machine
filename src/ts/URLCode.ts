@@ -1,3 +1,4 @@
+import { DEFAULT_PROGRAM_ASSEMBLY } from "./Examples";
 import { assertEq, assertJSON, assertThrows, unwrap } from "./Util";
 
 export type URLData = {
@@ -79,3 +80,16 @@ window.addEventListener("hashchange", (e) => {
     console.error("could not open file from hash:", e);
   }
 });
+
+export function loadInitialHash() {
+  try {
+    const decoded = decodeURLHashData(window.location.hash);
+    if (decoded === null) {
+      window.RAMMachine.machine.loadAssemblyAndReset(DEFAULT_PROGRAM_ASSEMBLY);
+    } else {
+      window.RAMMachine.machine.loadAssemblyAndReset(decoded.sourceCode);
+    }
+  } catch {
+    window.RAMMachine.machine.loadAssemblyAndReset(DEFAULT_PROGRAM_ASSEMBLY);
+  }
+}
