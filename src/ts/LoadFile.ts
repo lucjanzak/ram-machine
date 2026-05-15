@@ -1,17 +1,15 @@
 import { t } from "./Localization";
 import { makeCompilerMessageBox, makeStatusBox, Nodes } from "./Nodes";
 import { CompilerMessage, Compiler } from "./Compiler";
+import { updateCompileProblems } from "./MonacoEditor";
 
 function fileFinishedLoading(fileContents: string) {
   Nodes.loadFileTextareaPreview.value = fileContents;
 
-  // TODO: add confirm button
-
   const compiler = new Compiler();
   const compilerOutput = compiler.compile(fileContents);
-  console.log(compilerOutput.messages);
 
-  if (compilerOutput.messages.length === 0) {
+  if (compilerOutput.success) {
     Nodes.loadFileStatusContainer.append(makeStatusBox(t.loadFile.loadSuccess, "success"));
   } else {
     compilerOutput.messages.forEach((msg) => {
@@ -19,6 +17,7 @@ function fileFinishedLoading(fileContents: string) {
     });
   }
 
+  // TODO: add confirm button???
   window.RAMMachine.machine.loadAssemblyAndReset(fileContents);
 }
 

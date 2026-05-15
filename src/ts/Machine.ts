@@ -10,7 +10,7 @@ import { MachineSettings, preferences, updateSettingsDOM } from "./Settings";
 import { Statistics } from "./Statistics";
 import { assertNever } from "./Util";
 import { BASE64_RATIO, encodeURLHashData } from "./URLCode";
-import { clearDecorations } from "./MonacoEditor";
+import { clearDecorations, updateCompileProblems } from "./MonacoEditor";
 
 export type StopReason = "halt" | "error" | "kill" | "timeout";
 
@@ -95,18 +95,7 @@ export class Machine {
     }
     const { success, program, compilerMessages, preprocessorState: pre } = Program.fromAssembly(assemblySourceCode);
     if (!this.detachedMode) {
-      Nodes.compileErrorsContainer.innerHTML = "";
-      compilerMessages.forEach((msg) => {
-        const box = makeCompilerMessageBox(msg);
-        Nodes.compileErrorsContainer.appendChild(box);
-      });
-      if (success) {
-        const box = makeStatusBox("Compilation finished successfully", "success");
-        Nodes.compileErrorsContainer.appendChild(box);
-      } else {
-        const box = makeStatusBox("Compilation finished with errors", "warning");
-        Nodes.compileErrorsContainer.appendChild(box);
-      }
+      updateCompileProblems(success, compilerMessages);
     }
 
     // Load settings included within the file in preprocessor directives

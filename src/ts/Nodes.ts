@@ -7,6 +7,7 @@ import { initSettingsDOM } from "./Settings";
 import { assertEq, assertNever, expect } from "./Util";
 import { compileAndRunEditorSourceCode, compileEditorSourceCode, goToLine, highlightLine } from "./MonacoEditor";
 import { changePaneVisibility, PaneName } from "./Panes";
+import { CompilerError } from "./CompileError";
 
 export namespace Nodes {
   function element<T extends Element = Element>(selector: string) {
@@ -202,6 +203,16 @@ export function makeStatusBox(message: string, type: "error" | "warning" | "succ
   return f;
 }
 
+export function getTitleForMessageBox(category: CompilerError["category"]) {
+  if (category === "preprocessor") {
+    return `${t.compiler.preprocessorErrorTitle}`;
+  } else if (category === "parser") {
+    return `${t.compiler.parserErrorTitle}`;
+  } else {
+    assertNever(category);
+  }
+}
+
 export function makeCompilerMessageBox(msg: CompilerMessage): DocumentFragment {
   const f = useTemplate(Templates.compilerMessage);
 
@@ -209,13 +220,7 @@ export function makeCompilerMessageBox(msg: CompilerMessage): DocumentFragment {
   box.classList.add(msg.type);
 
   const titleSpan = select(f, ".title");
-  if (msg.body.category === "preprocessor") {
-    titleSpan.textContent = `${t.compiler.preprocessorErrorTitle}`;
-  } else if (msg.body.category === "parser") {
-    titleSpan.textContent = `${t.compiler.parserErrorTitle}`;
-  } else {
-    assertNever(msg.body);
-  }
+  titleSpan.textContent = getTitleForMessageBox(msg.body.category);
 
   const errorIdSpan = select(f, ".error-id");
   errorIdSpan.textContent = `<${msg.body.id}>`;

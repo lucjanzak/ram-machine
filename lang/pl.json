@@ -61,6 +61,10 @@
   },
   "status": {
     "title": "Status maszyny",
+    "compilation": {
+      "failure": "Kompilacja zakończyła się błędem",
+      "success": "Kompilacja zakończyła się pomyślnie"
+    },
     "stats": {
       "title": "Statystyki: ",
       "instruction": "Instrukcja",
@@ -75,6 +79,37 @@
     "actions": {
       "compile": "Kompiluj",
       "compileAndRun": "Kompiluj i uruchom"
+    },
+    "keywords": {
+      "LOAD": "Załaduj wartość do r₀",
+      "STORE": "Zapisz wartość z r₀ do operandu",
+      "ADD": "Zwiększ r₀ o operand",
+      "SUB": "Zmniejsz r₀ o operand",
+      "MULT": "Pomnóż r₀ przez operand",
+      "DIV": "Podziel r₀ przez operand",
+      "READ": "Odczytaj wartość z taśmy",
+      "WRITE": "Zapisz wartość na taśmę",
+      "JUMP": "Bezwarunkowy skok",
+      "JGTZ": "Przeskocz jeżeli r₀ > 0",
+      "JZERO": "Przeskocz jeżeli r₀ == 0",
+      "HALT": "Zakończ wykonywanie programu"
+    },
+    "snippets": {
+      "iflte": "Klauzula 'jeżeli' z instrukcją JGTZ",
+      "ifne": "Klauzula 'jeżeli' z instrukcją JZERO",
+      "ifge": "Klauzula 'jeżeli' z instrukcją JGTZ",
+      "ifeq": "Klauzula 'jeżeli' z instrukcją JZERO",
+      "ifelselte": "Klauzula 'jeżeli-w przeciwnym razie' z instrukcją JGTZ",
+      "ifelsene": "Klauzula 'jeżeli-w przeciwnym razie' z instrukcją JZERO",
+      "whilelte": "Pętla 'dopóki' z instrukcją JGTZ",
+      "whilene": "Pętla 'dopóki' z instrukcją JZERO",
+      "whilegt": "Pętla 'dopóki' z instrukcją JGTZ",
+      "whileeq": "Pętla 'dopóki' z instrukcją JZERO",
+      "dowhilegt": "Pętla 'wykonuj-dopóki' z instrukcją JGTZ",
+      "dowhileeq": "Pętla 'wykonuj-dopóki' z instrukcją JZERO",
+      "dowhilelte": "Pętla 'wykonuj-dopóki' z instrukcją JGTZ",
+      "dowhilene": "Pętla 'wykonuj-dopóki' z instrukcją JZERO",
+      "loop": "Nieskończona pętla"
     }
   },
   "loadFile": {
@@ -162,6 +197,7 @@
     },
     "parser": {
       "bigintParseError": "nieprawidłowa liczba całkowita",
+      "bigintExpected": "oczekiwano liczby całkowitej",
       "immediateWritableOperand": "operand bezpośredni nie jest dozwolony dla tej instrukcji",
       "negativeRegister": "numer rejestru nie może być ujemny",
       "negativeImmediate": "operand bezpośredni nie może być ujemny",

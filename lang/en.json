@@ -61,6 +61,10 @@
   },
   "status": {
     "title": "Machine Status",
+    "compilation": {
+      "failure": "Compilation finished with errors",
+      "success": "Compilation finished successfully"
+    },
     "stats": {
       "title": "Statistics: ",
       "instruction": "Instruction",
@@ -75,6 +79,37 @@
     "actions": {
       "compile": "Compile",
       "compileAndRun": "Compile And Run"
+    },
+    "keywords": {
+      "LOAD": "Load a value into r₀",
+      "STORE": "Store a value from r₀",
+      "ADD": "Increment r₀ by a value",
+      "SUB": "Decrement r₀ by a value",
+      "MULT": "Multiply r₀ by a value",
+      "DIV": "Divide r₀ by a value",
+      "READ": "Read from the tape",
+      "WRITE": "Write to the tape",
+      "JUMP": "Unconditional jump",
+      "JGTZ": "Jump only if r₀ > 0",
+      "JZERO": "Jump only if r₀ == 0",
+      "HALT": "Stop program execution"
+    },
+    "snippets": {
+      "iflte": "if statement with JGTZ",
+      "ifne": "if statement with JZERO",
+      "ifge": "if statement with JGTZ",
+      "ifeq": "if statement with JZERO",
+      "ifelselte": "if-else statement with JGTZ",
+      "ifelsene": "if-else statement with JZERO",
+      "whilelte": "while loop with JGTZ",
+      "whilene": "while loop with JZERO",
+      "whilegt": "while loop with JGTZ",
+      "whileeq": "while loop with JZERO",
+      "dowhilegt": "do-while loop with JGTZ",
+      "dowhileeq": "do-while loop with JZERO",
+      "dowhilelte": "do-while loop with JGTZ",
+      "dowhilene": "do-while loop with JZERO",
+      "loop": "Endless loop"
     }
   },
   "loadFile": {
@@ -162,6 +197,7 @@
     },
     "parser": {
       "bigintParseError": "could not parse bigint",
+      "bigintExpected": "integer expected",
       "immediateWritableOperand": "immediate operand is not allowed for this instruction",
       "negativeRegister": "register number cannot be negative",
       "negativeImmediate": "immediate value cannot be negative",

@@ -1,8 +1,9 @@
 import * as monaco from "monaco-editor";
-import { Nodes } from "./Nodes";
+import { getTitleForMessageBox, makeCompilerMessageBox, makeStatusBox, Nodes } from "./Nodes";
 import { DEFAULT_PROGRAM_ASSEMBLY } from "./Examples";
 import { preferences } from "./Settings";
 import { t } from "./Localization";
+import { Compiler, CompilerMessage, MessageSeverity } from "./Compiler";
 
 function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage {
   return {
@@ -81,27 +82,27 @@ function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage 
 const snippetsSource = [
   [
     "if r₀ <= 0",
-    "if statement with JGTZ",
+    t.editor.snippets.iflte,
     ["; if r₀ <= 0", "JGTZ ${1:endif}", "\t${0:; code ...}", "$1:", ""].join("\n"),
   ],
   [
     "if r₀ != 0",
-    "if statement with JZERO",
+    t.editor.snippets.ifne,
     ["; if r₀ != 0", "JZERO ${1:endif}", "\t${0:; code ...}", "$1:", ""].join("\n"),
   ],
   [
     "if r₀ > 0",
-    "if statement with JGTZ",
+    t.editor.snippets.ifge,
     ["; if r₀ > 0", "JGTZ ${1:if}", "JUMP ${2:endif}", "$1:", "\t${0:; code ...}", "$2:", ""].join("\n"),
   ],
   [
     "if r₀ == 0",
-    "if statement with JZERO",
+    t.editor.snippets.ifeq,
     ["; if r₀ == 0", "JZERO ${1:if}", "JUMP ${2:endif}", "$1:", "\t${0:; code ...}", "$2:", ""].join("\n"),
   ],
   [
     "if-else r₀ <= 0",
-    "if-else statement with JGTZ",
+    t.editor.snippets.ifelselte,
     [
       "; if r₀ <= 0",
       "JGTZ ${1:else}",
@@ -115,7 +116,7 @@ const snippetsSource = [
   ],
   [
     "if-else r₀ != 0",
-    "if-else statement with JZERO",
+    t.editor.snippets.ifelsene,
     [
       "; if r₀ != 0",
       "JZERO ${1:else}",
@@ -129,45 +130,45 @@ const snippetsSource = [
   ],
   [
     "while r₀ <= 0",
-    "while loop with JGTZ",
+    t.editor.snippets.whilelte,
     ["; while r₀ <= 0", "${1:loop}:", "JGTZ ${2:endloop}", "\t${0:; code ...}", "JUMP $1", "$2:", ""].join("\n"),
   ],
   [
     "while r₀ != 0",
-    "while loop with JZERO",
+    t.editor.snippets.whilene,
     ["; while r₀ != 0", "${1:loop}:", "JZERO ${2:endloop}", "\t${0:; code ...}", "JUMP $1", "$2:", ""].join("\n"),
   ],
   [
     "while r₀ > 0",
-    "while loop with JGTZ",
+    t.editor.snippets.whilegt,
     ["; while r₀ > 0", "JUMP ${1:loopcheck}", "${2:loop}:", "\t${0:; code ...}", "$1:", "JGTZ $2", ""].join("\n"),
   ],
   [
     "while r₀ == 0",
-    "while loop with JZERO",
+    t.editor.snippets.whileeq,
     ["; while r₀ == 0", "JUMP ${1:loopcheck}", "${2:loop}:", "\t${0:; code ...}", "$1:", "JZERO $2", ""].join("\n"),
   ],
   [
     "do-while r₀ > 0",
-    "do-while loop with JGTZ",
+    t.editor.snippets.dowhilegt,
     ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ > 0;", "JGTZ $1", ""].join("\n"),
   ],
   [
     "do-while r₀ == 0",
-    "do-while loop with JZERO",
+    t.editor.snippets.dowhileeq,
     ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ == 0;", "JZERO $1", ""].join("\n"),
   ],
   [
     "do-while r₀ <= 0",
-    "do-while loop with JGTZ",
+    t.editor.snippets.dowhilelte,
     ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ <= 0;", "JGTZ ${2:endloop}", "JUMP $1", "$2:"].join("\n"),
   ],
   [
     "do-while r₀ != 0",
-    "do-while loop with JZERO",
+    t.editor.snippets.dowhilene,
     ["; do", "${1:loop}:", "\t${0:; code ...}", "; while r₀ != 0;", "JZERO ${2:endloop}", "JUMP $1", "$2:"].join("\n"),
   ],
-  ["loop", "Endless loop", ["; endless loop", "${1:loop}:", "\t${0:; code ...}", "JUMP $1"].join("\n")],
+  ["loop", t.editor.snippets.loop, ["; endless loop", "${1:loop}:", "\t${0:; code ...}", "JUMP $1"].join("\n")],
 ];
 
 function provideCompletionItems(
@@ -200,20 +201,7 @@ function provideCompletionItems(
       ]
     : [];
   const keywords: monaco.languages.CompletionItem[] = [
-    ...[
-      ["LOAD", "Load a value into r₀"],
-      ["STORE", "Store a value from r₀"],
-      ["ADD", "Increment r₀ by a value"],
-      ["SUB", "Decrement r₀ by a value"],
-      ["MULT", "Multiply r₀ by a value"],
-      ["DIV", "Divide r₀ by a value"],
-      ["READ", "Read from the tape"],
-      ["WRITE", "Write to the tape"],
-      ["JUMP", "Unconditional jump"],
-      ["JGTZ", "Jump only if r₀ > 0"],
-      ["JZERO", "Jump only if r₀ == 0"],
-      ["HALT", "Stop program execution"],
-    ].map(([instruction, detail]) => ({
+    ...Object.entries(t.editor.keywords).map(([instruction, detail]) => ({
       label: instruction,
       detail: detail,
       kind: monaco.languages.CompletionItemKind.Keyword,
@@ -280,16 +268,29 @@ export function createEditor(): monaco.editor.IStandaloneCodeEditor {
   initializeEditorKeybinds(editor);
 
   // Responsive layout
-  let timeout: number | null = null;
+  let resizeTimeout: number | null = null;
   const resizeObserver = new ResizeObserver(() => {
-    if (timeout !== null) {
-      window.clearTimeout(timeout);
+    if (resizeTimeout !== null) {
+      window.clearTimeout(resizeTimeout);
     }
-    timeout = window.setTimeout(() => {
+    resizeTimeout = window.setTimeout(() => {
       editor.layout();
     }, 50);
   });
   resizeObserver.observe(Nodes.codeEditorPane);
+
+  // Auto error checking
+  const quickCompileTimeoutMs = 500;
+  let quickCompileTimeout: number | null = null;
+  editor.getModel()?.onDidChangeContent(() => {
+    if (quickCompileTimeout !== null) {
+      window.clearTimeout(quickCompileTimeout);
+    }
+    quickCompileTimeout = window.setTimeout(() => {
+      quickCompile();
+    }, quickCompileTimeoutMs);
+  });
+
   return editor;
 }
 
@@ -350,4 +351,61 @@ export function clearDecorations() {
   if (editorDecorations !== null) {
     editorDecorations.clear();
   }
+}
+
+const messageSeverityMap: { [K in MessageSeverity]: monaco.MarkerSeverity } = {
+  error: monaco.MarkerSeverity.Error,
+  warning: monaco.MarkerSeverity.Warning,
+};
+
+export function updateCompileProblems(success: boolean, compilerMessages: CompilerMessage[]) {
+  // List compile errors in status pane
+  Nodes.compileErrorsContainer.innerHTML = "";
+  compilerMessages.forEach((msg) => {
+    const box = makeCompilerMessageBox(msg);
+    Nodes.compileErrorsContainer.appendChild(box);
+  });
+
+  // Add success box
+  if (success) {
+    const box = makeStatusBox(t.status.compilation.success, "success");
+    Nodes.compileErrorsContainer.appendChild(box);
+  } else {
+    const box = makeStatusBox(t.status.compilation.failure, "warning");
+    Nodes.compileErrorsContainer.appendChild(box);
+  }
+
+  // Add markers in the editor
+  const model = window.RAMMachine.editor.getModel();
+  if (model === null) return;
+
+  const markers: monaco.editor.IMarkerData[] = [];
+  compilerMessages.forEach((msg) => {
+    const line = msg.line || 1;
+    markers.push({
+      message: `${getTitleForMessageBox(msg.body.category)}${msg.body.message}`,
+      severity: messageSeverityMap[msg.type],
+      startLineNumber: line,
+      startColumn: 1,
+      endLineNumber: line,
+      endColumn: model.getLineLength(line) + 1,
+    });
+  });
+  try {
+    monaco.editor.setModelMarkers(model, "owner", markers);
+  } catch (e) {
+    console.warn("Could not set compile error markers in monaco editor:", e);
+  }
+}
+
+let oldSourceText = "";
+
+export function quickCompile(force = false) {
+  const sourceText = window.RAMMachine.editor.getValue();
+  if (!force && sourceText === oldSourceText) return;
+  oldSourceText = sourceText;
+
+  const compiler = new Compiler();
+  const { success, messages } = compiler.compile(sourceText);
+  updateCompileProblems(success, messages);
 }

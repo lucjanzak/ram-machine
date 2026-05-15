@@ -17,8 +17,10 @@ import {
   UninitializedRegisterReadBehavior,
 } from "./Settings";
 
+export type MessageSeverity = "error" | "warning";
+
 export type CompilerMessage = {
-  type: "error" | "warning";
+  type: MessageSeverity;
   body: CompilerError;
   line?: number;
   col?: number;
@@ -52,6 +54,10 @@ export type CompilerSettings = {
 
 export class Compiler {
   parseBigInt(operand: string): bigint {
+    if (operand.trim() === "") {
+      throw new ParserException(ParserError.bigintExpected());
+    }
+
     try {
       return BigInt(operand);
     } catch (e) {
