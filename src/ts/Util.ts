@@ -73,3 +73,7 @@ export function assertJSON(actual: any, expected: any, msg: string = "") {
 export function unreachable(msg?: string): never {
   throw new Error(msg ?? "unreachable code block reached");
 }
+
+export function todo(msg?: string): never {
+  throw new Error(msg ?? "not implemented yet");
+}

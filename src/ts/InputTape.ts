@@ -1,6 +1,7 @@
 import { ContiguousArray } from "./BigArray";
 import { bigintMax, bigintParse } from "./BigIntUtils";
 import { BigScrollList } from "./BigScrollList";
+import { InputDataSettings as InputDataConfig, parseSequenceType, Sequence } from "./Chart";
 import { t } from "./Localization";
 import { randomBigint } from "./Memory";
 import { select, Templates, useTemplate } from "./Nodes";
@@ -40,26 +41,25 @@ export abstract class InputTape {
   clearAndReset(): void {
     this.reset();
   }
-  abstract asString(): string;
+  abstract asString(maxCount?: number): string;
   refreshActiveCell(): void {}
 }
 
 export function valuesFromString(text: string) {
-  if (text === "") {
-    return [];
-  }
+  text.trim();
+  if (text === "") return [];
 
-  const split = text.split(/[\s,]+/);
-  const values = split
-    .map((x): bigint | undefined => {
-      if (x === "") {
+  const textValues = text.split(/[\t\f\v ,]+/);
+  const values = textValues
+    .map((textValue): bigint | undefined => {
+      if (textValue === "") {
         return undefined;
       }
       try {
-        const value = BigInt(x);
+        const value = BigInt(textValue);
         return value;
       } catch (e) {
-        console.warn(`Could not convert string '${x}' to bigint: `, e);
+        console.warn(`Could not convert string '${textValue}' to bigint: `, e);
         return undefined;
       }
     })
@@ -91,8 +91,12 @@ export class InputTapeArray extends InputTape {
     this.reset();
   }
 
-  asString(): string {
-    return this.values.asArray().join(",");
+  asString(maxCount?: number): string {
+    if (maxCount !== undefined) {
+      return this.values.asArray().slice(0, maxCount).join(",");
+    } else {
+      return this.values.asArray().join(",");
+    }
   }
 
   static fromString(text: string): InputTapeArray {
@@ -332,9 +336,9 @@ export class InputTapeGenerator extends InputTape {
     this.activeGenerator = this.createGenerator();
   }
 
-  asString(): string {
+  asString(maxCount: number = 10000): string {
     const newGenerator = this.createGenerator();
-    return newGenerator.take(10000).toArray().join(",");
+    return newGenerator.take(maxCount).toArray().join(",");
   }
 
   constructor(private createGenerator: () => Generator<bigint, void, void>) {
@@ -349,147 +353,168 @@ export class InputTapeGenerator extends InputTape {
   }
 }
 
-// TODO
-// value variable  : "oneValueSingle" | "oneValueEndless"
-// length variable : "natural" | "positive" | "negative" | "constant" | "prime" | "composite" | "arithmetic" | "geometric" | "random" | "custom1d"
-// sized array     : "natural" | "positive" | "negative" | "constant" | "prime" | "composite" | "arithmetic" | "geometric" | "random" | "custom1d"
-// custom 2d       : "custom2d"
+function genConst(num: bigint, length: bigint | undefined) {
+  return function* () {
+    for (let i = 0; length === undefined || i < length; i++) {
+      yield num;
+    }
+  };
+}
 
-export type SimulationInputTapeSettings =
-  | {
-      type: "singleValue" | "natural" | "positive" | "negative" | "constant" | "prime" | "composite";
-    }
-  | {
-      type: "arithmetic" | "geometric";
-      from: bigint;
-      step: bigint;
-    }
-  | {
-      type: "random";
-      minInclusive: bigint;
-      maxExclusive: bigint;
-    }
-  | {
-      type: "custom";
-      tapeList: bigint[][];
-    };
-
-export function createSimulationInputTape(x: bigint, sequence: SimulationInputTapeSettings): InputTape {
-  function genRange(from: bigint, to: bigint | undefined, step: bigint = 1n) {
-    if (step > 0n) {
-      return function* () {
-        for (let i = from; to === undefined || i <= to; i += step) {
-          yield i;
-        }
-      };
-    } else {
-      return function* () {
-        for (let i = from; to === undefined || i >= to; i += step) {
-          yield i;
-        }
-      };
-    }
-  }
-
-  function genArithmeticSeq(from: bigint, step: bigint, length: bigint | undefined) {
+function genRange(from: bigint, to: bigint | undefined, step: bigint = 1n) {
+  if (step > 0n) {
     return function* () {
-      let value = from;
-      for (let i = 0; length === undefined || i < length; i++) {
-        yield value;
-        value += step;
+      for (let i = from; to === undefined || i <= to; i += step) {
+        yield i;
+      }
+    };
+  } else {
+    return function* () {
+      for (let i = from; to === undefined || i >= to; i += step) {
+        yield i;
       }
     };
   }
+}
 
-  function genGeometricSeq(from: bigint, step: bigint, length: bigint | undefined) {
-    return function* () {
-      let value = from;
-      for (let i = 0; length === undefined || i < length; i++) {
-        yield value;
-        value *= step;
-      }
-    };
-  }
-
-  function genConst(num: bigint, length: bigint | undefined) {
-    return function* () {
-      for (let i = 0; length === undefined || i < length; i++) {
-        yield num;
-      }
-    };
-  }
-
-  function genRandom(minRandValue: bigint, maxRandValue: bigint, length: bigint | undefined) {
-    return function* () {
-      for (let i = 0; length === undefined || i < length; i++) {
-        yield minRandValue + randomBigint(Number(maxRandValue - minRandValue));
-      }
-    };
-  }
-
-  function isPrime(i: bigint) {
-    for (let j = 2n, sqrt = Math.sqrt(Number(i)); j <= sqrt; j++) {
-      if (i % j === 0n) {
-        return false;
-      }
+function genArithmeticSeq(from: bigint, step: bigint, length: bigint | undefined) {
+  return function* () {
+    let value = from;
+    for (let i = 0; length === undefined || i < length; i++) {
+      yield value;
+      value += step;
     }
-    return i > 1;
-  }
+  };
+}
 
-  function genPrime(length: bigint | undefined) {
-    return function* () {
-      let x = 2n;
-      for (let i = 0; length === undefined || i < length; i++) {
-        while (!isPrime(x)) {
-          x++;
-        }
-        yield x;
+function genGeometricSeq(from: bigint, step: bigint, length: bigint | undefined) {
+  return function* () {
+    let value = from;
+    for (let i = 0; length === undefined || i < length; i++) {
+      yield value;
+      value *= step;
+    }
+  };
+}
+
+function genRandom(minRandValue: bigint, maxRandValue: bigint, length: bigint | undefined) {
+  return function* () {
+    for (let i = 0; length === undefined || i < length; i++) {
+      yield minRandValue + randomBigint(Number(maxRandValue - minRandValue));
+    }
+  };
+}
+
+function isPrime(i: bigint) {
+  for (let j = 2n, sqrt = Math.sqrt(Number(i)); j <= sqrt; j++) {
+    if (i % j === 0n) {
+      return false;
+    }
+  }
+  return i > 1;
+}
+
+function genPrime(length: bigint | undefined) {
+  return function* () {
+    let x = 2n;
+    for (let i = 0; length === undefined || i < length; i++) {
+      while (!isPrime(x)) {
         x++;
       }
-    };
-  }
+      yield x;
+      x++;
+    }
+  };
+}
 
-  function genComposite(length: bigint | undefined) {
-    return function* () {
-      let x = 2n;
-      for (let i = 0; length === undefined || i < length; i++) {
-        while (isPrime(x)) {
-          x++;
-        }
-        yield x;
+function genComposite(length: bigint | undefined) {
+  return function* () {
+    let x = 2n;
+    for (let i = 0; length === undefined || i < length; i++) {
+      while (isPrime(x)) {
         x++;
       }
-    };
-  }
+      yield x;
+      x++;
+    }
+  };
+}
 
+function genCustom(tape: bigint[], length: bigint | undefined) {
+  return function* () {
+    for (let i = 0; length === undefined || i < length; i++) {
+      if (tape[i] === undefined) {
+        break;
+      }
+      yield tape[i];
+    }
+  };
+}
+
+export function createSimulationSequenceGen(sequence: Sequence, length: bigint): () => Generator<bigint, void, void> {
   if (sequence.type === "natural") {
-    return new InputTapeGenerator(genRange(0n, x));
+    return genRange(0n, length);
   } else if (sequence.type === "positive") {
-    return new InputTapeGenerator(genRange(1n, x));
+    return genRange(1n, length);
   } else if (sequence.type === "negative") {
-    return new InputTapeGenerator(genRange(-1n, -x, -1n));
-  } else if (sequence.type === "singleValue") {
-    return new InputTapeGenerator(genConst(x, 1n));
+    return genRange(-1n, -length, -1n);
   } else if (sequence.type === "constant") {
-    return new InputTapeGenerator(genConst(x, undefined));
+    return genConst(sequence.value, length);
   } else if (sequence.type === "prime") {
-    return new InputTapeGenerator(genPrime(x));
+    return genPrime(length);
   } else if (sequence.type === "composite") {
-    return new InputTapeGenerator(genComposite(x));
+    return genComposite(length);
   } else if (sequence.type === "arithmetic") {
-    return new InputTapeGenerator(genArithmeticSeq(sequence.from, sequence.step, x));
+    return genArithmeticSeq(sequence.from, sequence.step, length);
   } else if (sequence.type === "geometric") {
-    return new InputTapeGenerator(genGeometricSeq(sequence.from, sequence.step, x));
+    return genGeometricSeq(sequence.from, sequence.step, length);
   } else if (sequence.type === "random") {
-    return new InputTapeGenerator(genRandom(sequence.minInclusive, sequence.maxExclusive, x));
+    return genRandom(sequence.minInclusive, sequence.maxExclusive, length);
   } else if (sequence.type === "custom") {
-    const values = sequence.tapeList.at(Number(x));
-    if (values === undefined) {
-      return InputTapeArray.fromValues([]);
-    } else {
-      return InputTapeArray.fromValues(values);
-    }
+    return genCustom(sequence.tape, length);
   } else {
     assertNever(sequence.type);
+  }
+}
+
+export function createSimulationInputTape(x: bigint, inputDataConfig: InputDataConfig): InputTape {
+  if (inputDataConfig.simulationType === "valueVariable") {
+    const valueType = inputDataConfig.valueType;
+    if (valueType === "oneValueSingle") {
+      return new InputTapeGenerator(genConst(x, 1n));
+    } else if (valueType === "oneValueEndless") {
+      return new InputTapeGenerator(genConst(x, undefined));
+    } else {
+      assertNever(valueType);
+    }
+  } else if (inputDataConfig.simulationType === "lengthVariable") {
+    const sequence = inputDataConfig.sequence;
+    const genCreator = createSimulationSequenceGen(sequence, x);
+    return new InputTapeGenerator(genCreator);
+  } else if (inputDataConfig.simulationType === "sizedArray") {
+    const sequence = inputDataConfig.sequence;
+    const innerGenCreator = createSimulationSequenceGen(sequence, x);
+    const genCreator = (): Generator<bigint, void, unknown> => {
+      const innerGen = innerGenCreator();
+      return (function* () {
+        yield x;
+        let a = innerGen.next();
+        while (!a.done) {
+          yield a.value;
+          a = innerGen.next();
+        }
+      })();
+    };
+    return new InputTapeGenerator(genCreator);
+  } else if (inputDataConfig.simulationType === "customData") {
+    const tapeIndex = Number(x) - 1; // x starts at 1, but the index starts at 0
+    const values = inputDataConfig.customData[tapeIndex];
+    if (values !== undefined) {
+      return InputTapeArray.fromValues(values);
+    } else {
+      return InputTapeArray.fromValues([]);
+    }
+  } else {
+    assertNever(inputDataConfig.simulationType);
   }
 }

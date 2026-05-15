@@ -202,9 +202,15 @@
       "sizedArray": "Tablica z rozmiarem (zmienna długość taśmy, z wartością n dołączoną na początku)",
       "customData": "Własne dane wejściowe"
     },
-    "inputDataLabel": "Dane wejściowe:",
+    "inputDataValueLabel": "Dane wejściowe:",
+    "inputDataSequenceLabel": "Dane wejściowe:",
+    "inputDataCustomLabel": "Sekwencje:",
+    "inputDataValue": {
+      "oneValueSingle": "Jedna komórka z wartością",
+      "oneValueEndless": "Wszystkie komórki z jedną wartością"
+    },
     "inputDataSequence": {
-      "natural": "Liczby naturalne (nieujemne)",
+      "natural": "Liczby naturalne (od zera)",
       "positive": "Liczby dodatnie",
       "negative": "Liczby ujemne",
       "constant": "Funkcja stała",
@@ -215,16 +221,13 @@
       "random": "Ciąg losowy",
       "custom": "Własny ciąg liczb"
     },
-    "inputDataValue": {
-      "oneValueSingle": "Jedna komórka z wartością",
-      "oneValueEndless": "Wszystkie komórki z jedną wartością"
-    },
-    "inputDataCustomLabel": "Sekwencje:",
     "inputDataCustomPlaceholder": "1,2,3; 2,4,6; 3,6,9; 4,8,12; ...",
-    "sequenceStart": "Początek sekwencji: ",
-    "sequenceStep": "Krok sekwencji: ",
-    "randomMin": "Minimalna wartość: ",
-    "randomMax": "Maksymalna wartość: ",
+    "sequenceConst": "Wartość stała:",
+    "sequenceStart": "Początek sekwencji:",
+    "sequenceStep": "Krok sekwencji:",
+    "randomMinInclusive": "Min. (włącznie):",
+    "randomMaxExclusive": "Maks. (wyłącznie):",
+    "sequenceCustomPlaceholder": "1,2,3,6,9, ...",
     "generateMorePoints": "Wygeneruj więcej punktów:",
     "generate": "Generuj",
     "chooseComparisonFunction": "Wybierz funkcję do porównania:",

@@ -202,11 +202,17 @@
       "sizedArray": "Sized array (tape length is variable, with n included at the beginning)",
       "customData": "Custom data"
     },
-    "inputDataLabel": "Input data:",
+    "inputDataValueLabel": "Input data:",
+    "inputDataSequenceLabel": "Input data:",
+    "inputDataCustomLabel": "Sequences:",
+    "inputDataValue": {
+      "oneValueSingle": "One cell with value",
+      "oneValueEndless": "All cells filled with one value"
+    },
     "inputDataSequence": {
-      "natural": "Natural numbers (non-negative)",
-      "positive": "Positive numbers",
-      "negative": "Negative numbers",
+      "natural": "Natural numbers (including zero)",
+      "positive": "Positive integers",
+      "negative": "Negative integers",
       "constant": "Constant function",
       "prime": "Prime numbers",
       "composite": "Composite numbers",
@@ -215,16 +221,13 @@
       "random": "Random sequence",
       "custom": "Custom sequence"
     },
-    "inputDataValue": {
-      "oneValueSingle": "One cell with value",
-      "oneValueEndless": "All cells filled with one value"
-    },
-    "inputDataCustomLabel": "Sequences:",
     "inputDataCustomPlaceholder": "1,2,3; 2,4,6; 3,6,9; 4,8,12; ...",
-    "sequenceStart": "Sequence start: ",
-    "sequenceStep": "Sequence step: ",
-    "randomMin": "Minimum value: ",
-    "randomMax": "Maximum value: ",
+    "sequenceConst": "Const value:",
+    "sequenceStart": "Sequence start:",
+    "sequenceStep": "Sequence step:",
+    "randomMinInclusive": "Min. (inclusive):",
+    "randomMaxExclusive": "Max. (exclusive):",
+    "sequenceCustomPlaceholder": "1,2,3,6,9, ...",
     "generateMorePoints": "Generate more points:",
     "generate": "Generate",
     "chooseComparisonFunction": "Choose a function to compare to:",

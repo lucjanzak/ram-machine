@@ -48,6 +48,10 @@ hr {
   clear: both;
 }
 
+.hidden {
+  display: none;
+}
+
 @import url(header.module.css);
 @import url(nav.module.css);
 @import url(panes.module.css);

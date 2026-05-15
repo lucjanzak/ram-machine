@@ -86,6 +86,30 @@ export namespace Nodes {
   // Chart dialog
   export const chartCanvas = element<HTMLCanvasElement>("#chart-canvas");
   export const chartSettingsForm = element<HTMLFormElement>("#chart-settings-form");
+  //
+  export const simulationTypeSelect = element<HTMLSelectElement>("#simulation-type-select");
+  //
+  export const inputDataValueLabel = element("#input-data-value-label");
+  export const inputDataSequenceLabel = element("#input-data-sequence-label");
+  export const inputDataCustomLabel = element("#input-data-custom-label");
+  //
+  export const inputDataValueSelect = element<HTMLInputElement>("#input-data-value-select");
+  export const inputDataSequenceSelect = element<HTMLInputElement>("#input-data-sequence-select");
+  export const inputDataCustom = element<HTMLInputElement>("#input-data-custom");
+  //
+  export const inputDataSequenceConstLabel = element("#input-data-sequence-const-label");
+  export const inputDataSequenceConst = element<HTMLInputElement>("#input-data-sequence-const");
+  export const inputDataSequenceStartLabel = element("#input-data-sequence-start-label");
+  export const inputDataSequenceStart = element<HTMLInputElement>("#input-data-sequence-start");
+  export const inputDataSequenceStepLabel = element("#input-data-sequence-step-label");
+  export const inputDataSequenceStep = element<HTMLInputElement>("#input-data-sequence-step");
+  export const inputDataSequenceRandomMinLabel = element("#input-data-sequence-random-min-label");
+  export const inputDataSequenceRandomMin = element<HTMLInputElement>("#input-data-sequence-random-min");
+  export const inputDataSequenceRandomMaxLabel = element("#input-data-sequence-random-max-label");
+  export const inputDataSequenceRandomMax = element<HTMLInputElement>("#input-data-sequence-random-max");
+  export const inputDataSequenceCustomLabel = element("#input-data-sequence-custom-label");
+  export const inputDataSequenceCustom = element<HTMLInputElement>("#input-data-sequence-custom");
+  //
   export const generatePointsInput = element<HTMLInputElement>("#generate-points-input");
   export const generatePointsButton = element("#generate-points-button");
   export const comparisonFunctionMultiplierInput = element<HTMLInputElement>("#comparison-function-multiplier-input");

@@ -327,9 +327,15 @@
             </select>
           </div>
           <div class="text-align-right">
-            <label for="input-data-select"><%= t.chartScreen.inputDataLabel %></label>
+            <label id="input-data-value-label" for="input-data-value-select"><%= t.chartScreen.inputDataValueLabel %></label>
+            <label id="input-data-sequence-label" for="input-data-sequence-select"><%= t.chartScreen.inputDataSequenceLabel %></label>
+            <label id="input-data-custom-label" for="input-data-custom"><%= t.chartScreen.inputDataCustomLabel %></label>
           </div>
           <div class="wide-column">
+            <select id="input-data-value-select">
+              <option value="oneValueSingle" selected><%= t.chartScreen.inputDataValue.oneValueSingle %></option>
+              <option value="oneValueEndless"><%= t.chartScreen.inputDataValue.oneValueEndless %></option>
+            </select>
             <select id="input-data-sequence-select">
               <option value="natural" selected><%= t.chartScreen.inputDataSequence.natural %></option>
               <option value="positive"><%= t.chartScreen.inputDataSequence.positive %></option>
@@ -342,20 +348,19 @@
               <option value="random"><%= t.chartScreen.inputDataSequence.random %></option>
               <option value="custom"><%= t.chartScreen.inputDataSequence.custom %></option>
             </select>
-            <select id="input-data-value-select">
-              <option value="oneValueSingle" selected><%= t.chartScreen.inputDataValue.oneValueSingle %></option>
-              <option value="oneValueEndless"><%= t.chartScreen.inputDataValue.oneValueEndless %></option>
-            </select>
-            <label for="input-data-custom-input"><%= t.chartScreen.inputDataCustomLabel %></label>
-            <input id="input-data-custom-input" placeholder="<%= t.chartScreen.inputDataCustomPlaceholder %>" size="50" />
-            <label for="input-data-sequence-start-input"><%= t.chartScreen.sequenceStart %></label>
-            <input type="number" id="input-data-sequence-start-input" value="2" size="3" />
-            <label for="input-data-sequence-step-input"><%= t.chartScreen.sequenceStep %></label>
-            <input type="number" id="input-data-sequence-step-input" value="3" size="3" />
-            <label for="input-data-random-min-input"><%= t.chartScreen.randomMin %></label>
-            <input type="number" id="input-data-random-min-input" value="1" size="6" />
-            <label for="input-data-random-max-input"><%= t.chartScreen.randomMax %></label>
-            <input type="number" id="input-data-random-max-input" value="10000" size="6" />
+            <input id="input-data-custom" placeholder="<%= t.chartScreen.inputDataCustomPlaceholder %>" size="50" />
+            <label id="input-data-sequence-const-label" for="input-data-sequence-const"><%= t.chartScreen.sequenceConst %></label>
+            <input id="input-data-sequence-const" type="number" value="1" size="3" />
+            <label id="input-data-sequence-start-label" for="input-data-sequence-start"><%= t.chartScreen.sequenceStart %></label>
+            <input id="input-data-sequence-start" type="number" value="2" size="3" />
+            <label id="input-data-sequence-step-label" for="input-data-sequence-step"><%= t.chartScreen.sequenceStep %></label>
+            <input id="input-data-sequence-step" type="number" value="3" size="3" />
+            <label id="input-data-sequence-random-min-label" for="input-data-sequence-random-min"><%= t.chartScreen.randomMinInclusive %></label>
+            <input id="input-data-sequence-random-min" type="number" value="1" size="6" />
+            <label id="input-data-sequence-random-max-label" for="input-data-sequence-random-max"><%= t.chartScreen.randomMaxExclusive %></label>
+            <input id="input-data-sequence-random-max" type="number" value="10000" size="6" />
+            <label id="input-data-sequence-custom-label" for="input-data-sequence-custom"><%= t.chartScreen.inputSequenceCustomLabel %></label>
+            <input id="input-data-sequence-custom" placeholder="<%= t.chartScreen.sequenceCustomPlaceholder %>" size="50" />
           </div>
           <div class="text-align-right">
             <label for="generate-points-input"><%= t.chartScreen.generateMorePoints %></label>
@@ -378,17 +383,15 @@
               <option value="cubic"><%= t.chartScreen.comparisonFunction.cubic %></option>
               <option value="quartic"><%= t.chartScreen.comparisonFunction.quartic %></option>
               <option value="logarithmic"><%= t.chartScreen.comparisonFunction.logarithmic %></option>
-              <option value="linear_logarithmic"><%= t.chartScreen.comparisonFunction.linear_logarithmic %></option>
-              <option value="quadratic_logarithmic"><%= t.chartScreen.comparisonFunction.quadratic_logarithmic %></option>
+              <option value="linearLogarithmic"><%= t.chartScreen.comparisonFunction.linearLogarithmic %></option>
+              <option value="quadraticLogarithmic"><%= t.chartScreen.comparisonFunction.quadraticLogarithmic %></option>
             </select>
           </div>
           <div class="text-align-right">
             <label for="execution-timeout-input"><%= t.chartScreen.executionTimeoutInput %></label>
           </div>
-          <div>
+          <div clas="wide-column">
             <input type="number" id="execution-timeout-input" value="100" size="6" /> <%= t.chartScreen.executionTimeoutInputMs %>
-          </div>
-          <div style="grid-column: 3 / 5;">
             <input type="checkbox" id="toggle-realtime-axis">
             <label for="toggle-realtime-axis"><%= t.chartScreen.showRealTimeAxis %></label>
           </div>
