@@ -2,6 +2,7 @@ import { SparseArray } from "./BigArray";
 import { DataPoint } from "./Chart";
 import { instructionComplexity, lengthOfNumber } from "./Complexity";
 import { ALL_INSTRUCTIONS, Instruction } from "./Instruction";
+import { t } from "./Localization";
 import { Nodes, select, Templates, useTemplate } from "./Nodes";
 import { Timer } from "./Timer";
 
@@ -120,13 +121,12 @@ export class Statistics {
     const timeMsBigInt = BigInt(Math.round(timeMs * 1000));
     const speed = timeMsBigInt === 0n ? 0 : (total * 1000000n) / timeMsBigInt;
 
-    // TODO: translate these:
-    generateRow("Total", `${total}`);
-    generateRow("Time", `${Math.round(timeMs * 1000) / 1000} ms`);
-    generateRow("Avg. Speed", `${speed} inst. / s`);
-    generateRow("Mem Cmplx", `${this.fetchMemoryComplexitySimple()}`);
-    generateRow("Mem Cmplx (Log)", `${this.fetchMemoryComplexityLog()}`);
-    generateRow("Time Cmplx", `${this.fetchTimeComplexitySimple()}`);
-    generateRow("Time Cmplx (Log)", `${this.fetchTimeComplexityLog()}`);
+    // generateRow(t.status.stats.total, `${total}`); // total === fetchTimeComplexitySimple
+    generateRow(t.status.stats.realTime, `${Math.round(timeMs * 1000) / 1000} ms`);
+    generateRow(t.status.stats.averageSpeed, `${speed} inst. / s`);
+    generateRow(t.status.stats.memoryComplexity, `${this.fetchMemoryComplexitySimple()}`);
+    generateRow(t.status.stats.memoryComplexityLog, `${this.fetchMemoryComplexityLog()}`);
+    generateRow(t.status.stats.timeComplexity, `${this.fetchTimeComplexitySimple()}`);
+    generateRow(t.status.stats.timeComplexityLog, `${this.fetchTimeComplexityLog()}`);
   }
 }

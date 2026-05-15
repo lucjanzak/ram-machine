@@ -420,10 +420,10 @@ export class Machine {
       return;
     }
 
-    this.setDebugLineHighlight(this.programCounter);
-
     this.stats.timer.pause();
     this.paused = true;
+
+    this.setDebugLineHighlight(this.programCounter);
   }
 
   static runSimulation(

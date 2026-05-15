@@ -68,7 +68,13 @@
     "stats": {
       "title": "Statystyki: ",
       "instruction": "Instrukcja",
-      "count": "Licznik"
+      "count": "Licznik",
+      "realTime": "Czas rzeczywisty (ms)",
+      "averageSpeed": "Średnia prędkość",
+      "memoryComplexity": "Złożoność pamięciowa",
+      "memoryComplexityLog": "Złożoność pamięciowa (log)",
+      "timeComplexity": "Złożoność czasowa",
+      "timeComplexityLog": "Złożoność czasowa (log)"
     }
   },
   "editor": {

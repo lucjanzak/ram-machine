@@ -68,7 +68,13 @@
     "stats": {
       "title": "Statistics: ",
       "instruction": "Instruction",
-      "count": "Count"
+      "count": "Count",
+      "realTime": "Real Time",
+      "averageSpeed": "Average Speed",
+      "memoryComplexity": "Memory Complexity",
+      "memoryComplexityLog": "Memory Complexity (log)",
+      "timeComplexity": "Time Complexity",
+      "timeComplexityLog": "Time Complexity (log)"
     }
   },
   "editor": {
