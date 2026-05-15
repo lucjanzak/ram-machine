@@ -40,3 +40,19 @@
   /* Two column layout */
   /* grid-column: auto; */
 }
+
+.chart-form-right-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-left: 1rem;
+}
+
+.input-data-preview-container {
+  display: flex;
+  flex-direction: column;
+}
+
+#input-data-preview {
+  width: 100%;
+}

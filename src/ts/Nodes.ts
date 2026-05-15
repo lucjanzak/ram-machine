@@ -108,6 +108,7 @@ export namespace Nodes {
   export const comparisonFunctionSelect = element<HTMLSelectElement>("#comparison-function-select");
   export const executionTimeoutInput = element<HTMLInputElement>("#execution-timeout-input");
   export const toggleRealTimeAxis = element<HTMLInputElement>("#toggle-realtime-axis");
+  export const inputDataPreview = element<HTMLTextAreaElement>("#input-data-preview");
   export const clearChartButton = element("#clear-chart-button");
   export const closeChartButton = element("#close-chart-button");
 

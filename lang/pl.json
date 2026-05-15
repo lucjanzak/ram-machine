@@ -245,6 +245,7 @@
     "executionTimeoutInput": "Limit czasu wykonywania:",
     "executionTimeoutInputMs": "ms",
     "showRealTimeAxis": "Pokaż oś czasu rzeczywistego",
+    "inputDataPreview": "Podgląd danych wejściowych:",
     "reset": "Przywróć ustawienia domyślne",
     "clear": "Wyczyść",
     "close": "Zamknij"
@@ -254,10 +255,11 @@
     "license": "Licencja:",
     "sourceCode": "Kod źródłowy:",
     "externalLibraries": "Zewnętrzne biblioteki:",
-    "monacoEditorCredit": "stworzony przez Microsoft, z licencją:",
-    "vscodeCodiconsCredit": "font stworzony przez Microsoft, z licencją:",
-    "chartJsCredit": "biblioteka stworzona przez wielu współtwórców, z liczencją:",
-    "close": "Close"
+    "monacoEditorCredit": "- biblioteka stworzona przez Microsoft, z licencją:",
+    "vscodeCodiconsCredit": "- font stworzony przez Microsoft, z licencją:",
+    "chartJsCredit": "- biblioteka stworzona przez współtwórców Chart.js, z licencją:",
+    "lzStringCredit": "- biblioteka stworzona przez Pieroxy, z licencją:",
+    "close": "Zamknij"
   },
   "compiler": {
     "parserErrorTitle": "Błąd parsera: ",

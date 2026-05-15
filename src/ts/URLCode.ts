@@ -86,7 +86,7 @@ export function encodeURLHashData(
         `Compressed source code; compression ratio: ${(ratio * 100).toFixed(2)}% (~${(
           (ratio / BASE64_RATIO) *
           100
-        ).toFixed(2)}% when compared to BASE64)`
+        ).toFixed(2)}% when compared to Base64)`
       );
     const encodedInfo = `#${version}-${compressedSourceCode}`;
     return { hash: encodedInfo, ratio };

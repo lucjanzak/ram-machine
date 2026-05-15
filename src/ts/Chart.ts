@@ -408,12 +408,26 @@ export class ComplexityChart {
       assertNever(simulationType);
     }
 
-    // TODO: display
-    console.log(
-      "Simulation input data preview:",
-      this.inputDataConfig,
-      [1n, 2n, 3n, 4n, 5n].map((x) => createSimulationInputTape(x, this.inputDataConfig).asString(10))
-    );
+    const preview = [...Array(15).keys()].map((i) => {
+      const x = BigInt(i + 1);
+      return {
+        x,
+        tape: createSimulationInputTape(x, this.inputDataConfig),
+      };
+    });
+
+    console.log("Simulation input data preview:", this.inputDataConfig, preview);
+    Nodes.inputDataPreview.value =
+      preview
+        .map(({ x, tape }) => {
+          const tapeString = tape.asString(10);
+          for (let i = 0; i < 10; i++) {
+            tape.read(true);
+          }
+          const finished = tape.read(true) === undefined;
+          return finished ? `n = ${x}: ${tapeString}` : `n = ${x}: ${tapeString}...`;
+        })
+        .join("\n") + "\n...";
     this.clearDataAndUpdate();
   }
 

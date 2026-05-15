@@ -39,6 +39,10 @@ hr {
   border-bottom-width: 1px;
 }
 
+textarea {
+  resize: none;
+}
+
 .centered-text {
   margin: auto;
   text-align: center;

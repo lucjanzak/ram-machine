@@ -245,6 +245,7 @@
     "executionTimeoutInput": "Execution timeout:",
     "executionTimeoutInputMs": "ms",
     "showRealTimeAxis": "Show real-time axis",
+    "inputDataPreview": "Input data preview:",
     "reset": "Revert to defaults",
     "clear": "Clear",
     "close": "Close"
@@ -256,7 +257,8 @@
     "externalLibraries": "External libraries used:",
     "monacoEditorCredit": "by Microsoft, licensed under",
     "vscodeCodiconsCredit": "font by Microsoft, licensed under",
-    "chartJsCredit": "library by many contributors, licensed under",
+    "chartJsCredit": "by Chart.js contributors, licensed under",
+    "lzStringCredit": "by Pieroxy, licensed under",
     "close": "Close"
   },
   "compiler": {

@@ -390,16 +390,22 @@
           <div class="text-align-right">
             <label for="execution-timeout-input"><%= t.chartScreen.executionTimeoutInput %></label>
           </div>
-          <div clas="wide-column">
+          <div class="wide-column">
             <input type="number" id="execution-timeout-input" value="100" size="6" /> <%= t.chartScreen.executionTimeoutInputMs %>
             <input type="checkbox" id="toggle-realtime-axis">
             <label for="toggle-realtime-axis"><%= t.chartScreen.showRealTimeAxis %></label>
           </div>
         </div>
-        <div>
-          <button type="reset"><%= t.chartScreen.reset %></button>
-          <button type="button" id="clear-chart-button"><%= t.chartScreen.clear %></button>
-          <button type="button" id="close-chart-button"><%= t.chartScreen.close %></button>
+        <div class="chart-form-right-side">
+          <div class="input-data-preview-container">
+            <span><%= t.chartScreen.inputDataPreview %></span>
+            <textarea id="input-data-preview" disabled cols="50" rows="5"></textarea>
+          </div>
+          <div>
+            <button type="reset"><%= t.chartScreen.reset %></button>
+            <button type="button" id="clear-chart-button"><%= t.chartScreen.clear %></button>
+            <button type="button" id="close-chart-button"><%= t.chartScreen.close %></button>
+          </div>
         </div>
       </form>
     </dialog>
@@ -423,9 +429,13 @@
       <span><%= t.about.vscodeCodiconsCredit %></span>
       <a href="https://github.com/microsoft/vscode-codicons/blob/main/LICENSE" target="_blank">CC-BY 4.0 International</a>
       <br>
-        <a href="https://github.com/chartjs/Chart.js" target="_blank">Chart.js</a>
+      <a href="https://github.com/chartjs/Chart.js" target="_blank">Chart.js</a>
       <span><%= t.about.chartJsCredit %></span>
       <a href="https://github.com/chartjs/Chart.js/blob/master/LICENSE.md" target="_blank">MIT License</a>
+      <br>
+      <a href="https://github.com/pieroxy/lz-string" target="_blank">lz-string</a>
+      <span><%= t.about.lzStringCredit %></span>
+      <a href="https://github.com/pieroxy/lz-string/blob/master/LICENSE.md" target="_blank">MIT License</a>
       <hr>
       <button popovertarget="about" popovertargetaction="hide"><%= t.about.close %></button>
     </dialog>
