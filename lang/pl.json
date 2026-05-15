@@ -189,13 +189,26 @@
         "memoryComplexityLog": "Złożoność pamięciowa (log)",
         "timeComplexity": "Złożoność czasowa",
         "timeComplexityLog": "Złożoność czasowa (log)",
-        "realTime": "Czas rzeczywisty (ms)"
+        "realTime": "Czas rzeczywisty (ms)",
+        "comparisonFunction": "Funkcja do porównania"
       },
       "realTimeAxis": "Czas rzeczywisty",
       "realTimeAxisUnits": " ms"
     },
     "generateMorePoints": "Wygeneruj więcej punktów:",
     "generate": "Generuj",
+    "chooseComparisonFunction": "Wybierz funkcję do porównania:",
+    "comparisonFunction": {
+      "none": "(brak)",
+      "constant": "O(1)",
+      "linear": "O(n)",
+      "quadratic": "O(n²)",
+      "cubic": "O(n³)",
+      "quartic": "O(n⁴)",
+      "logarithmic": "O(log(n))",
+      "linear_logarithmic": "O(n log(n))",
+      "quadratic_logarithmic": "O(n² log(n))"
+    },
     "executionTimeoutInput": "Limit czasu wykonywania:",
     "executionTimeoutInputMs": "ms",
     "showRealTimeAxis": "Pokaż oś czasu rzeczywistego",

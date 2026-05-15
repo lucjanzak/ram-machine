@@ -17,9 +17,38 @@ export type DataPoint = {
   realTime: number;
 };
 
+export type FunctionType =
+  | "none"
+  | "constant"
+  | "linear"
+  | "quadratic"
+  | "cubic"
+  | "quartic"
+  | "logarithmic"
+  | "linear_logarithmic"
+  | "quadratic_logarithmic";
+
+function parseFunctionType(input: FormDataEntryValue | string | null): FunctionType | null {
+  if (
+    input === "none" ||
+    input === "constant" ||
+    input === "linear" ||
+    input === "quadratic" ||
+    input === "cubic" ||
+    input === "quartic" ||
+    input === "logarithmic" ||
+    input === "linear_logarithmic" ||
+    input === "quadratic_logarithmic"
+  )
+    return input;
+  return null;
+}
+
 export class ComplexityChart {
   public chart: Chart<"line", (number | undefined)[], number>;
   private currentXPosition = 0n;
+  private comparisonFunctionType: FunctionType = "none";
+  private comparisonFunctionMultiplier: number = 1;
 
   private genScales(): {
     [key: string]: ScaleOptions<"linear">;
@@ -101,6 +130,11 @@ export class ComplexityChart {
             yAxisID: "realTimeScale",
             hidden: !this.showRealTimeAxis,
           },
+          {
+            label: t.chartScreen.chart.legend.comparisonFunction,
+            data: data.map((row) => this.comparisonFn(row.n)),
+            yAxisID: "complexityScale",
+          },
         ],
       },
       options: {
@@ -148,6 +182,37 @@ export class ComplexityChart {
     this.chart.update();
   }
 
+  comparisonFn(n: number): number | undefined {
+    const functions: { [K in FunctionType]: (n: number) => number | undefined } = {
+      none: (_n: number) => undefined,
+      constant: (_n: number) => 1,
+      linear: (n: number) => n,
+      quadratic: (n: number) => n * n,
+      cubic: (n: number) => n * n * n,
+      quartic: (n: number) => n * n * n * n,
+      logarithmic: (n: number) => Math.log2(n),
+      linear_logarithmic: (n: number) => n * Math.log2(n),
+      quadratic_logarithmic: (n: number) => n * n * Math.log2(n),
+    };
+    const value = functions[this.comparisonFunctionType](n);
+    if (value === undefined) {
+      return undefined;
+    } else {
+      return this.comparisonFunctionMultiplier * value;
+    }
+  }
+
+  changeComparisonFunction(type: FunctionType, multiplier: number) {
+    this.comparisonFunctionType = type;
+    this.comparisonFunctionMultiplier = multiplier;
+    const array: (number | undefined)[] = [];
+    this.chart.data.labels?.forEach((n) => {
+      array.push(this.comparisonFn(n));
+    });
+    this.chart.data.datasets[5].data = array;
+    this.chart.update();
+  }
+
   addDataPointWithoutUpdate(dataPoint: DataPoint) {
     this.chart.data.labels?.push(dataPoint.n);
     this.chart.data.datasets[0].data.push(dataPoint.memoryComplexity);
@@ -155,6 +220,7 @@ export class ComplexityChart {
     this.chart.data.datasets[2].data.push(dataPoint.timeComplexity);
     this.chart.data.datasets[3].data.push(dataPoint.timeComplexityLog);
     this.chart.data.datasets[4].data.push(dataPoint.realTime);
+    this.chart.data.datasets[5].data.push(this.comparisonFn(dataPoint.n));
   }
 
   clearDataAndUpdate() {
@@ -179,7 +245,7 @@ export class ComplexityChart {
       this.currentXPosition++;
       // TODO: make it possible to put the sequence (of prime numbers for example) as a singlevalue sequence.
       // TODO: make it possible to change sequences
-      const inputTape = createSimulationInputTape(this.currentXPosition, { type: "singleValue" });
+      const inputTape = createSimulationInputTape(this.currentXPosition, { type: "positive" });
       // console.log(inputTape);
       const machine = Machine.runSimulation(window.RAMMachine.machine.getProgram(), inputTape, {
         timeout: this.timeoutMs,
@@ -213,6 +279,22 @@ export function initChartDOM() {
     const newPointsToGenerate = Nodes.generatePointsInput.valueAsNumber;
     window.RAMMachine.chart.generateMorePoints(newPointsToGenerate);
   });
+  Nodes.comparisonFunctionMultiplierInput.addEventListener("change", () => {
+    window.RAMMachine.chart.changeComparisonFunction(
+      unwrap(parseFunctionType(Nodes.comparisonFunctionSelect.value)),
+      Nodes.comparisonFunctionMultiplierInput.valueAsNumber
+    );
+  });
+  Nodes.comparisonFunctionSelect.addEventListener("change", () => {
+    window.RAMMachine.chart.changeComparisonFunction(
+      unwrap(parseFunctionType(Nodes.comparisonFunctionSelect.value)),
+      Nodes.comparisonFunctionMultiplierInput.valueAsNumber
+    );
+  });
+  window.RAMMachine.chart.changeComparisonFunction(
+    unwrap(parseFunctionType(Nodes.comparisonFunctionSelect.value)),
+    Nodes.comparisonFunctionMultiplierInput.valueAsNumber
+  );
   Nodes.executionTimeoutInput.addEventListener("change", () => {
     window.RAMMachine.chart.changeTimeoutMs(Nodes.executionTimeoutInput.valueAsNumber);
   });
@@ -222,6 +304,10 @@ export function initChartDOM() {
   Nodes.chartSettingsForm.addEventListener("reset", () => {
     window.RAMMachine.chart.changeTimeoutMs(parseInt(Nodes.executionTimeoutInput.defaultValue));
     window.RAMMachine.chart.changeRealTimeAxisVisibility(Nodes.toggleRealTimeAxis.defaultChecked);
+    window.RAMMachine.chart.changeComparisonFunction(
+      unwrap(parseFunctionType(Nodes.comparisonFunctionSelect.value)),
+      parseInt(Nodes.comparisonFunctionMultiplierInput.defaultValue)
+    );
   });
   Nodes.clearChartButton.addEventListener("click", () => {
     window.RAMMachine.chart.clearDataAndUpdate();

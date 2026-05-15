@@ -88,6 +88,8 @@ export namespace Nodes {
   export const chartSettingsForm = element<HTMLFormElement>("#chart-settings-form");
   export const generatePointsInput = element<HTMLInputElement>("#generate-points-input");
   export const generatePointsButton = element("#generate-points-button");
+  export const comparisonFunctionMultiplierInput = element<HTMLInputElement>("#comparison-function-multiplier-input");
+  export const comparisonFunctionSelect = element<HTMLSelectElement>("#comparison-function-select");
   export const executionTimeoutInput = element<HTMLInputElement>("#execution-timeout-input");
   export const toggleRealTimeAxis = element<HTMLInputElement>("#toggle-realtime-axis");
   export const clearChartButton = element("#clear-chart-button");

@@ -189,13 +189,26 @@
         "memoryComplexityLog": "Memory Complexity (log)",
         "timeComplexity": "Time Complexity",
         "timeComplexityLog": "Time Complexity (log)",
-        "realTime": "Real Time (ms)"
+        "realTime": "Real Time (ms)",
+        "comparisonFunction": "Comparison Function"
       },
       "realTimeAxis": "Real Time",
       "realTimeAxisUnits": " ms"
     },
     "generateMorePoints": "Generate more points:",
     "generate": "Generate",
+    "chooseComparisonFunction": "Choose a function to compare to:",
+    "comparisonFunction": {
+      "none": "(none)",
+      "constant": "O(1)",
+      "linear": "O(n)",
+      "quadratic": "O(n²)",
+      "cubic": "O(n³)",
+      "quartic": "O(n⁴)",
+      "logarithmic": "O(log(n))",
+      "linear_logarithmic": "O(n log(n))",
+      "quadratic_logarithmic": "O(n² log(n))"
+    },
     "executionTimeoutInput": "Execution timeout:",
     "executionTimeoutInputMs": "ms",
     "showRealTimeAxis": "Show real-time axis",
