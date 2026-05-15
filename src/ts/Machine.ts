@@ -76,9 +76,13 @@ export class Machine {
     if (!this.detachedMode) {
       window.RAMMachine.editor.setValue(assemblySourceCode);
 
-      const newHash = encodeURLHashData(assemblySourceCode);
-      if (window.location.hash !== newHash) {
-        window.history.pushState(null, "", document.location.pathname + newHash);
+      let newEncodedData = encodeURLHashData(assemblySourceCode);
+      const forceUncompressed = false;
+      if (newEncodedData.ratio > 1 || forceUncompressed) {
+        newEncodedData = encodeURLHashData(assemblySourceCode, 0);
+      }
+      if (window.location.hash !== newEncodedData.hash) {
+        window.history.pushState(null, "", document.location.pathname + newEncodedData.hash);
       }
     }
     const { program, compilerMessages, preprocessorState: pre } = Program.fromAssembly(assemblySourceCode);
