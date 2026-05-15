@@ -306,3 +306,8 @@ export function compileAndRunEditorSourceCode() {
     // TODO: display errors in status pane for all undetached runAll calls
   }
 }
+
+export function goToLine(lineNumber: number, column: number = 999) {
+  window.RAMMachine.editor.setPosition({ lineNumber, column });
+  window.RAMMachine.editor.focus();
+}

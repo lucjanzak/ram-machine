@@ -6,7 +6,7 @@ import { CompilerMessage } from "./Compiler";
 import { initSettingsDOM } from "./Settings";
 import { assertEq, assertNever, expect } from "./Util";
 import { Program } from "./Program";
-import { compileAndRunEditorSourceCode, compileEditorSourceCode } from "./MonacoEditor";
+import { compileAndRunEditorSourceCode, compileEditorSourceCode, goToLine } from "./MonacoEditor";
 import { changePaneVisibility, PaneName } from "./Panes";
 
 export namespace Nodes {
@@ -231,5 +231,12 @@ export function makeCompilerMessageBox(msg: CompilerMessage): DocumentFragment {
       : msg.col === undefined
       ? formatString(t.compiler.atLine, `${msg.line}`)
       : formatString(t.compiler.atLineCol, `${msg.line}`, `${msg.col}`);
+  if (msg.line !== undefined) {
+    const line = msg.line;
+    const col = msg.col;
+    lineLocation.addEventListener("click", () => {
+      goToLine(line, col);
+    });
+  }
   return f;
 }
