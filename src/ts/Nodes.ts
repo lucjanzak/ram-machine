@@ -1,11 +1,12 @@
 /// @no-format
 import { initChartDOM } from "./Chart";
-import { initFileDrop } from "./LoadFile";
+import { initFileDrop as initLoadFileDOM } from "./LoadFile";
 import { initSettingsDOM } from "./Settings";
 import { assertEq, expect } from "./Util";
 import { initEditorPaneDOM } from "./MonacoEditor";
 import { PaneName } from "./Panes";
 import { initNavDOM } from "./Nav";
+import { initSaveFileDOM } from "./SaveFile";
 
 export namespace Nodes {
   function element<T extends Element = Element>(selector: string) {
@@ -71,6 +72,13 @@ export namespace Nodes {
   export const loadFileTextareaPreview = element<HTMLTextAreaElement>("#load-file-textarea-preview");
   export const loadFileStatusContainer = element("#load-file-status-container");
   export const loadProgramButtons = element("#load-program-buttons");
+
+  // Save file dialog
+  export const saveFileTextareaPreview = element<HTMLTextAreaElement>("#save-file-textarea-preview");
+  export const saveFileFilename = element<HTMLInputElement>("#save-file-filename");
+  export const saveFileIncludeTape = element<HTMLInputElement>("#save-file-include-tape");
+  export const saveFileIncludeSettings = element<HTMLInputElement>("#save-file-include-settings");
+  export const saveFileConfirm = element<HTMLInputElement>("#save-file-confirm");
 
   // Settings dialog
   export const settingsForm = element<HTMLFormElement>("#settings-form");
@@ -148,6 +156,7 @@ export namespace Dialogs {
   }
 
   export const loadFile = dialog("#load-file");
+  export const saveFile = dialog("#save-file");
   export const settings = dialog("#settings");
   export const chartWindow = dialog("#chart-window");
   export const about = dialog("#about");
@@ -162,7 +171,8 @@ export function select<T extends Element = Element>(f: ParentNode, selector: str
 }
 
 export function initDOM() {
-  initFileDrop();
+  initLoadFileDOM();
+  initSaveFileDOM();
   initNavDOM();
   initEditorPaneDOM();
   initChartDOM();

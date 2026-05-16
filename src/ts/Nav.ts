@@ -1,6 +1,7 @@
 import { t } from "./Localization";
 import { Dialogs, Nodes } from "./Nodes";
 import { PaneName } from "./Panes";
+import { showSaveDialog, updateSaveDataPreview } from "./SaveFile";
 import { preferences } from "./Settings";
 
 export function initNavDOM() {
@@ -11,6 +12,9 @@ export function initNavDOM() {
     Nodes.loadFileTextareaPreview.value = "";
     Nodes.loadFileStatusContainer.innerHTML = "";
     Dialogs.loadFile.showModal();
+  });
+  Nodes.saveProgramButton.addEventListener("click", () => {
+    showSaveDialog();
   });
   Nodes.settingsButton.addEventListener("click", () => {
     Dialogs.settings.showModal();

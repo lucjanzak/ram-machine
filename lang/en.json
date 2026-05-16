@@ -99,7 +99,9 @@
     },
     "actions": {
       "compile": "Compile",
-      "compileAndRun": "Compile And Run"
+      "compileAndRun": "Compile and run",
+      "save": "Save file",
+      "saveAs": "Save file as..."
     },
     "keywords": {
       "LOAD": "Load a value into r₀",
@@ -148,14 +150,24 @@
     }
   },
   "loadFile": {
+    "header": "Load file",
     "loadExample": "Select a program below:",
     "loadFromFile": "...or load a program from file:",
     "dropZoneHint": "Drag and drop a file here, or click to choose a file.",
     "loadedData": "Loaded data:",
     "loadSuccess": "File loaded successfully"
   },
+  "saveFile": {
+    "header": "Save file",
+    "filePreview": "File preview:",
+    "fileName": "File name:",
+    "defaultFileName": "program.ram",
+    "includeTape": "Include current input tape contents in file",
+    "includeSettings": "Include current machine behavior settings in file",
+    "save": "Save file"
+  },
   "settings": {
-    "title": "Settings",
+    "header": "Settings",
     "sections": {
       "machineEmulation": "Emulation settings",
       "preferences": "Preferences"
@@ -188,7 +200,7 @@
     "close": "Save and Close"
   },
   "chartScreen": {
-    "title": "Chart",
+    "header": "Chart",
     "chart": {
       "legend": {
         "memoryComplexity": "Memory Complexity",

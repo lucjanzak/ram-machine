@@ -99,7 +99,9 @@
     },
     "actions": {
       "compile": "Kompiluj",
-      "compileAndRun": "Kompiluj i uruchom"
+      "compileAndRun": "Kompiluj i uruchom",
+      "save": "Zapisz plik",
+      "saveAs": "Zapisz plik jako..."
     },
     "keywords": {
       "LOAD": "Załaduj wartość do r₀",
@@ -148,14 +150,24 @@
     }
   },
   "loadFile": {
+    "header": "Wczytaj plik",
     "loadExample": "Wybierz program poniżej:",
     "loadFromFile": "...lub załaduj swój program z pliku:",
     "dropZoneHint": "Przeciągnij i upuść plik tutaj, albo kliknij aby wybrać plik z komputera.",
     "loadedData": "Załadowane dane:",
     "loadSuccess": "Plik załadowano pomyślnie"
   },
+  "saveFile": {
+    "header": "Zapisz plik",
+    "filePreview": "Podgląd pliku:",
+    "fileName": "Nazwa pliku:",
+    "defaultFileName": "program.ram",
+    "includeTape": "Dołącz aktualną zawartość taśmy wejściowej do pliku",
+    "includeSettings": "Dołącz aktualne ustawienia zachowania maszyny do pliku",
+    "save": "Zapisz plik"
+  },
   "settings": {
-    "title": "Ustawienia",
+    "header": "Ustawienia",
     "sections": {
       "machineEmulation": "Ustawienia emulacji",
       "preferences": "Preferencje"
@@ -188,7 +200,7 @@
     "close": "Zapisz i zamknij"
   },
   "chartScreen": {
-    "title": "Wykres",
+    "header": "Wykres",
     "chart": {
       "legend": {
         "memoryComplexity": "Złożoność pamięciowa",

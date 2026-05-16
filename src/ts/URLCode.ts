@@ -60,7 +60,7 @@ export function decodeURLHashData(locationHash: string, silent = false): null | 
         `Decompressed source code; compression ratio: ${(ratio * 100).toFixed(2)}% (~${(
           (ratio / BASE64_RATIO) *
           100
-        ).toFixed(2)}% when compared to BASE64)`
+        ).toFixed(2)}% when compared to Base64)`
       );
     return { version: 1, sourceCode, compressedSourceCode, ratio };
   } else {

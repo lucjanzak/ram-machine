@@ -32,7 +32,7 @@
         <div class="nav-buttons">
           <button id="new-program-button" class="nav-button nav-button-auto"><%= t.nav.new %></button>
           <button id="load-program-button" class="nav-button nav-button-auto"><%= t.nav.load %></button>
-          <button id="save-program-button" class="nav-button nav-button-auto" disabled title="<%= t.general.notImplementedYet %>"><%= t.nav.save %></button>
+          <button id="save-program-button" class="nav-button nav-button-auto"><%= t.nav.save %></button>
           <button id="settings-button" class="nav-button nav-button-auto"><%= t.nav.settings %></button>
         </div>
         <div class="nav-buttons">
@@ -214,6 +214,7 @@
     </template>
 
     <dialog id="load-file">
+      <h1><%= t.loadFile.header %></h1>
       <span><%= t.loadFile.loadExample %></span>
       <div class="nav-buttons nav-buttons-light" id="load-program-buttons"></div>
       <hr>
@@ -227,9 +228,26 @@
       <div id="load-file-status-container"></div>
     </dialog>
 
+    <dialog id="save-file">
+      <h1><%= t.saveFile.header %></h1>
+      <span><%= t.saveFile.filePreview %></span>
+      <textarea id="save-file-textarea-preview" disabled cols="80" rows="20"></textarea>
+      <br>
+      <label for="save-file-filename"><%= t.saveFile.fileName %></span>
+      <input id="save-file-filename" value="<%= t.saveFile.defaultFileName %>" placeholder="<%= t.saveFile.defaultFileName %>">
+      <br>
+      <input type="checkbox" id="save-file-include-tape">
+      <label for="save-file-include-tape"><%= t.saveFile.includeTape %></span>
+      <br>
+      <input type="checkbox" id="save-file-include-settings">
+      <label for="save-file-include-settings"><%= t.saveFile.includeSettings %></span>
+      <br>
+      <button id="save-file-confirm"><%= t.saveFile.save %></button>
+    </dialog>
+
     <dialog id="settings">
       <form id="settings-form">
-      <h1><%= t.settings.title %></h1>
+      <h1><%= t.settings.header %></h1>
         <div id="settings-layout">
           <div>
           <h3><%= t.settings.sections.machineEmulation %></h3>
@@ -307,7 +325,7 @@
     </dialog>
 
     <dialog id="chart-window">
-    <h1><%= t.chartScreen.title %></h1>
+    <h1><%= t.chartScreen.header %></h1>
 
       <div id="chart-container">
         <canvas id="chart-canvas"></canvas>

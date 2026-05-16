@@ -12,6 +12,7 @@ import {
   MessageSeverity,
 } from "./Compiler";
 import { unwrap } from "./Util";
+import { saveFileAndDownload, showSaveDialog as showSaveDialog } from "./SaveFile";
 
 function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage {
   return {
@@ -329,6 +330,26 @@ function initializeEditorKeybinds(editor: monaco.editor.IStandaloneCodeEditor) {
     contextMenuGroupId: "compile",
     contextMenuOrder: 1,
     keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.Enter],
+  });
+  monaco.editor.addEditorAction({
+    id: "ramMachine.action.save",
+    label: t.editor.actions.save,
+    run: () => {
+      saveFileAndDownload();
+    },
+    contextMenuGroupId: "save",
+    contextMenuOrder: 0,
+    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
+  });
+  monaco.editor.addEditorAction({
+    id: "ramMachine.action.saveAs",
+    label: t.editor.actions.saveAs,
+    run: () => {
+      showSaveDialog();
+    },
+    contextMenuGroupId: "save",
+    contextMenuOrder: 1,
+    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyS],
   });
 }
 
