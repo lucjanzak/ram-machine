@@ -50,7 +50,7 @@
 }
 
 body.animations-enabled .compiler-message {
-  transition: 0.2s background-color;
+  transition: 0.5s background-color var(--ease-out-expo);
 }
 
 .compiler-message.success {
