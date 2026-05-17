@@ -1,3 +1,4 @@
+import { showLoadDialog } from "./LoadFile";
 import { t } from "./Localization";
 import { Dialogs, Nodes } from "./Nodes";
 import { PaneName } from "./Panes";
@@ -9,9 +10,7 @@ export function initNavDOM() {
     window.RAMMachine.machine.loadAssemblyAndReset("");
   });
   Nodes.loadProgramButton.addEventListener("click", () => {
-    Nodes.loadFileTextareaPreview.value = "";
-    Nodes.loadFileStatusContainer.innerHTML = "";
-    Dialogs.loadFile.showModal();
+    showLoadDialog();
   });
   Nodes.saveProgramButton.addEventListener("click", () => {
     showSaveDialog();

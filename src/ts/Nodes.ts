@@ -1,6 +1,6 @@
 /// @no-format
 import { initChartDOM } from "./Chart";
-import { initFileDrop as initLoadFileDOM } from "./LoadFile";
+import { initLoadFileDOM as initLoadFileDOM } from "./LoadFile";
 import { initSettingsDOM } from "./Settings";
 import { assertEq, expect } from "./Util";
 import { initEditorPaneDOM } from "./MonacoEditor";
@@ -72,7 +72,7 @@ export namespace Nodes {
   export const loadFileTextareaPreview = element<HTMLTextAreaElement>("#load-file-textarea-preview");
   export const loadFileStatusContainer = element("#load-file-status-container");
   export const loadProgramButtons = element("#load-program-buttons");
-  export const loadFileConfirm = element("#load-file-confirm");
+  export const loadFileConfirm = element<HTMLButtonElement>("#load-file-confirm");
   export const loadFileCancel = element("#load-file-cancel");
 
   // Save file dialog

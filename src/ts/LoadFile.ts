@@ -1,8 +1,12 @@
 import { t } from "./Localization";
-import { Nodes } from "./Nodes";
+import { Dialogs, Nodes } from "./Nodes";
 import { Compiler, makeStatusBox, makeCompilerMessageBox } from "./Compiler";
 
+let loadedFileContents: string | null  = null;
+
 function fileFinishedLoading(fileContents: string) {
+  loadedFileContents = fileContents;
+  Nodes.loadFileConfirm.disabled = false;
   Nodes.loadFileTextareaPreview.value = fileContents;
 
   const compiler = new Compiler();
@@ -15,12 +19,11 @@ function fileFinishedLoading(fileContents: string) {
       Nodes.loadFileStatusContainer.append(makeCompilerMessageBox(msg));
     });
   }
-
-  // TODO: add confirm button???
-  window.RAMMachine.machine.loadAssemblyAndReset(fileContents);
 }
 
 function fileChanged(file: File | null) {
+  loadedFileContents = null;
+  Nodes.loadFileConfirm.disabled = true;
   Nodes.loadFileStatusContainer.innerHTML = "";
   if (file === null) {
     Nodes.loadFileTextareaPreview.value = "";
@@ -37,7 +40,12 @@ function fileChanged(file: File | null) {
   console.log(file);
 }
 
-export function initFileDrop() {
+export function showLoadDialog() {
+  fileChanged(null);
+  Dialogs.loadFile.showModal();
+}
+
+export function initLoadFileDOM() {
   // File has been dropped
   Nodes.loadFileDropZone.addEventListener("drop", (event) => {
     const e = event as DragEvent;
@@ -98,4 +106,15 @@ export function initFileDrop() {
   });
 
   fileChanged(null);
+
+  
+  Nodes.loadFileConfirm.addEventListener("click", () => {
+    if (loadedFileContents !== null) {
+      window.RAMMachine.machine.loadAssemblyAndReset(loadedFileContents);
+      Dialogs.loadFile.close();
+    }
+  });
+  Nodes.loadFileCancel.addEventListener("click", () => {
+    Dialogs.loadFile.close();
+  });
 }
