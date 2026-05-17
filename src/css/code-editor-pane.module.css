@@ -7,10 +7,18 @@
 
   display: flex;
   flex-direction: column;
+
+  overflow: hidden;
+}
+
+body.animations-enabled #code-editor-pane {
+  transition: 0.5s width var(--ease-out-expo), 0.5s min-width var(--ease-out-expo), 0.5s flex-grow var(--ease-out-expo);
 }
 
 #code-editor-pane:not(.active) {
-  display: none;
+  width: 0;
+  min-width: 0;
+  flex-grow: 0;
 }
 
 #code-editor-basic {

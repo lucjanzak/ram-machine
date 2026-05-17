@@ -9,8 +9,14 @@
   position: relative;
 }
 
+body.animations-enabled #register-pane {
+  transition: 0.5s width var(--ease-out-expo), 0.5s min-width var(--ease-out-expo), 0.5s max-width var(--ease-out-expo);
+}
+
 #register-pane:not(.active) {
-  display: none;
+  width: 0;
+  min-width: 0;
+  max-width: 0;
 }
 
 #register-scroll-list-container {

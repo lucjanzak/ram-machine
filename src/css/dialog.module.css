@@ -1,49 +1,84 @@
-@keyframes scale-down {
+@keyframes dialog-opening-anim {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
   to {
-    transform: scale(75%)
+    transform: translateY(0%);
+    opacity: 1;
   }
 }
 
-@keyframes slide-in-up {
-  0% {
-    transform: translateY(100%)
+@keyframes dialog-closing-anim {
+  from {
+    transform: scale(100%);
+    opacity: 1;
+  }
+  to {
+    transform: scale(75%);
+    opacity: 0;
+  }
+}
+
+@keyframes dialog-backdrop-opening-anim {
+  from {
+    background-color: #00000000;
+    backdrop-filter: blur(0);
+  }
+  to {
+    background-color: #0000007f;
+    backdrop-filter: blur(0.5rem);
+  }
+}
+
+@keyframes dialog-backdrop-closing-anim {
+  from {
+    background-color: #0000007f;
+    backdrop-filter: blur(0.5rem);
+  }
+  to {
+    background-color: #00000000;
+    backdrop-filter: blur(0);
   }
 }
 
 dialog {
-  display: block;
+  display: flex;
+  position: fixed;
+  inset: 0;
   /* margin: 2rem; */
   padding: 1rem 2rem;
   box-sizing: border-box;
   border: #0000007f 2px solid;
   border-radius: 0.5rem;
   user-select: none;
-}
-
-body.animations-enabled dialog {
-  transition: opacity 0.5s var(--ease-out-expo);
-}
-
-body.animations-enabled dialog:not(:open) {
-  animation: scale-down 0.5s var(--ease-out-expo) forwards;
-}
-
-dialog:open {
-  animation: slide-in-up 0.0s var(--ease-out-expo) forwards;
-}
-
-body.animations-enabled dialog:open {
-  animation-duration: 0.5s;
-}
-
-dialog:not(:open) {
-  pointer-events: none;
   opacity: 0;
 }
 
-dialog::backdrop {
-  background-color: #0000003f;
-  backdrop-filter: blur(0.25rem);
+dialog:open {
+  animation: dialog-opening-anim 0s var(--ease-out-expo) forwards;
+}
+
+dialog:not(:open) {
+  animation: dialog-closing-anim 0s var(--ease-out-expo) forwards;
+  pointer-events: none;
+}
+
+
+dialog:open::backdrop {
+  animation: dialog-backdrop-opening-anim 0s var(--ease-out-expo) forwards;
+}
+
+dialog:not(:open)::backdrop {
+  animation: dialog-backdrop-closing-anim 0s var(--ease-out-expo) forwards;
+  /* TODO: this doesn't work (yet?) but whatever */
+}
+
+body.animations-enabled dialog:not(:open),
+body.animations-enabled dialog:open,
+body.animations-enabled dialog:not(:open)::backdrop,
+body.animations-enabled dialog:open::backdrop {
+  animation-duration: 0.5s;
 }
 
 dialog h1 {

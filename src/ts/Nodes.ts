@@ -112,6 +112,9 @@ export namespace Nodes {
   export const clearChartButton = element("#clear-chart-button");
   export const closeChartButton = element("#close-chart-button");
 
+  // About
+  export const closeAboutButton = element("#close-about-button");
+
   // Testing
   export const bigScrollListTest = element<HTMLElement>("#big-scroll-list-test");
 }
@@ -166,5 +169,8 @@ export function initDOM() {
   initNavDOM();
   initEditorPaneDOM();
   initChartDOM();
+  Nodes.closeAboutButton.addEventListener("click", () => {
+    Dialogs.about.close();
+  });
   initSettingsDOM();
 }

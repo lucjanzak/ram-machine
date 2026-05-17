@@ -99,19 +99,21 @@
               </table>
             </section>
             <section id="status-pane">
-              <h3><%= t.status.title %></h3>
-              <div id="compile-errors-container"></div>
-              <div id="runtime-errors-container"></div>
-              <span><%= t.status.stats.title %></span>
-              <!-- TODO: Add current machine state here - running/paused/stopped/halted/error -->
-              <!-- TODO: show compile errors and runtime errors -->
-              <table>
-                <thead>
-                  <td><%= t.status.stats.instruction %></td>
-                  <td><%= t.status.stats.count %></td>
-                </thead>
-                <tbody id="stats"></tbody>
-              </table>
+              <div>
+                <h3><%= t.status.title %></h3>
+                <div id="compile-errors-container"></div>
+                <div id="runtime-errors-container"></div>
+                <span><%= t.status.stats.title %></span>
+                <!-- TODO: Add current machine state here - running/paused/stopped/halted/error -->
+                <!-- TODO: show compile errors and runtime errors -->
+                <table>
+                  <thead>
+                    <td><%= t.status.stats.instruction %></td>
+                    <td><%= t.status.stats.count %></td>
+                  </thead>
+                  <tbody id="stats"></tbody>
+                </table>
+              </div>
             </section>
             <section id="code-editor-pane">
               <div id="code-editor-container"></div>
@@ -411,33 +413,35 @@
     </dialog>
 
     <dialog id="about" popover="auto">
-      <span><%= t.about.author %> <a href="https://lucjanzak.github.io" target=" _blank">Lucjan Żak</a></span>
-      <br>
-      <span><%= t.about.license %> <a href="LICENSE.txt" target="_blank">GNU General Public License v3</a></span>
-      <br>
-      <span><%= t.about.sourceCode %> <a href="https://github.com/lucjanzak/ram-machine" target="_blank">GitHub</a></span>
-      <br>
-        <span>2026</span>
-      <hr>
-      <span><%= t.about.externalLibraries %></span>
-      <br>
-      <a href="https://github.com/microsoft/monaco-editor" target="_blank">monaco-editor</a>
-      <span><%= t.about.monacoEditorCredit %></span>
-      <a href="https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt" target="_blank">MIT License</a>
-      <br>
-      <a href="https://github.com/microsoft/vscode-codicons" target="_blank">vscode-codicons</a>
-      <span><%= t.about.vscodeCodiconsCredit %></span>
-      <a href="https://github.com/microsoft/vscode-codicons/blob/main/LICENSE" target="_blank">CC-BY 4.0 International</a>
-      <br>
-      <a href="https://github.com/chartjs/Chart.js" target="_blank">Chart.js</a>
-      <span><%= t.about.chartJsCredit %></span>
-      <a href="https://github.com/chartjs/Chart.js/blob/master/LICENSE.md" target="_blank">MIT License</a>
-      <br>
-      <a href="https://github.com/pieroxy/lz-string" target="_blank">lz-string</a>
-      <span><%= t.about.lzStringCredit %></span>
-      <a href="https://github.com/pieroxy/lz-string/blob/master/LICENSE.md" target="_blank">MIT License</a>
-      <hr>
-      <button popovertarget="about" popovertargetaction="hide"><%= t.about.close %></button>
+      <div>
+        <span><%= t.about.author %> <a href="https://lucjanzak.github.io" target=" _blank">Lucjan Żak</a></span>
+        <br>
+        <span><%= t.about.license %> <a href="LICENSE.txt" target="_blank">GNU General Public License v3</a></span>
+        <br>
+        <span><%= t.about.sourceCode %> <a href="https://github.com/lucjanzak/ram-machine" target="_blank">GitHub</a></span>
+        <br>
+          <span>2026</span>
+        <hr>
+        <span><%= t.about.externalLibraries %></span>
+        <br>
+        <a href="https://github.com/microsoft/monaco-editor" target="_blank">monaco-editor</a>
+        <span><%= t.about.monacoEditorCredit %></span>
+        <a href="https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt" target="_blank">MIT License</a>
+        <br>
+        <a href="https://github.com/microsoft/vscode-codicons" target="_blank">vscode-codicons</a>
+        <span><%= t.about.vscodeCodiconsCredit %></span>
+        <a href="https://github.com/microsoft/vscode-codicons/blob/main/LICENSE" target="_blank">CC-BY 4.0 International</a>
+        <br>
+        <a href="https://github.com/chartjs/Chart.js" target="_blank">Chart.js</a>
+        <span><%= t.about.chartJsCredit %></span>
+        <a href="https://github.com/chartjs/Chart.js/blob/master/LICENSE.md" target="_blank">MIT License</a>
+        <br>
+        <a href="https://github.com/pieroxy/lz-string" target="_blank">lz-string</a>
+        <span><%= t.about.lzStringCredit %></span>
+        <a href="https://github.com/pieroxy/lz-string/blob/master/LICENSE.md" target="_blank">MIT License</a>
+        <hr>
+        <button id="close-about-button"><%= t.about.close %></button>
+      </div>
     </dialog>
   </body>
 
