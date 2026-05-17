@@ -155,7 +155,9 @@
     "loadFromFile": "...or load a program from file:",
     "dropZoneHint": "Drag and drop a file here, or click to choose a file.",
     "loadedData": "Loaded data:",
-    "loadSuccess": "File loaded successfully"
+    "loadSuccess": "File loaded successfully",
+    "load": "Load file",
+    "cancel": "Cancel"
   },
   "saveFile": {
     "header": "Save file",
@@ -164,7 +166,8 @@
     "defaultFileName": "program.ram",
     "includeTape": "Include current input tape contents in file",
     "includeSettings": "Include current machine behavior settings in file",
-    "save": "Save file"
+    "save": "Save file",
+    "cancel": "Cancel"
   },
   "settings": {
     "header": "Settings",

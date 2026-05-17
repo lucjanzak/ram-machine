@@ -155,7 +155,9 @@
     "loadFromFile": "...lub załaduj swój program z pliku:",
     "dropZoneHint": "Przeciągnij i upuść plik tutaj, albo kliknij aby wybrać plik z komputera.",
     "loadedData": "Załadowane dane:",
-    "loadSuccess": "Plik załadowano pomyślnie"
+    "loadSuccess": "Plik załadowano pomyślnie",
+    "load": "Wczytaj plik",
+    "cancel": "Anuluj"
   },
   "saveFile": {
     "header": "Zapisz plik",
@@ -164,7 +166,8 @@
     "defaultFileName": "program.ram",
     "includeTape": "Dołącz aktualną zawartość taśmy wejściowej do pliku",
     "includeSettings": "Dołącz aktualne ustawienia zachowania maszyny do pliku",
-    "save": "Zapisz plik"
+    "save": "Zapisz plik",
+    "cancel": "Anuluj"
   },
   "settings": {
     "header": "Ustawienia",

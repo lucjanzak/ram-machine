@@ -216,35 +216,63 @@
     </template>
 
     <dialog id="load-file">
-      <h1><%= t.loadFile.header %></h1>
-      <span><%= t.loadFile.loadExample %></span>
-      <div class="nav-buttons nav-buttons-light" id="load-program-buttons"></div>
-      <hr>
-      <span><%= t.loadFile.loadFromFile %></span>
-      <label id="load-file-drop-zone">
-        <%= t.loadFile.dropZoneHint %>
-        <input type="file" id="load-file-input" accept=".ram,text/*" />
-      </label>
-      <span><%= t.loadFile.loadedData %></span>
-      <textarea id="load-file-textarea-preview" disabled></textarea>
-      <div id="load-file-status-container"></div>
+      <div>
+        <h1><%= t.loadFile.header %></h1>
+      </div>
+      <div>
+        <span><%= t.loadFile.loadExample %></span>
+        <br>
+        <div class="nav-buttons nav-buttons-light" id="load-program-buttons"></div>
+        <br>
+        <hr>
+        <br>
+      </div>
+      <div>
+        <span><%= t.loadFile.loadFromFile %></span>
+        <br>
+        <label id="load-file-drop-zone">
+          <%= t.loadFile.dropZoneHint %>
+          <input type="file" id="load-file-input" accept=".ram,text/*" />
+        </label>
+      </div>
+      <div>
+        <span><%= t.loadFile.loadedData %></span>
+        <br>
+        <textarea id="load-file-textarea-preview" disabled></textarea>
+      </div>
+      <div>
+        <div id="load-file-status-container"></div>
+      </div>
+      <div class="load-file-buttons">
+        <button id="load-file-confirm"><%= t.loadFile.load %></button>
+        <button id="load-file-cancel"><%= t.loadFile.cancel %></button>
+      </div>
     </dialog>
 
     <dialog id="save-file">
-      <h1><%= t.saveFile.header %></h1>
-      <span><%= t.saveFile.filePreview %></span>
-      <textarea id="save-file-textarea-preview" disabled cols="80" rows="20"></textarea>
-      <br>
-      <label for="save-file-filename"><%= t.saveFile.fileName %></span>
-      <input id="save-file-filename" value="<%= t.saveFile.defaultFileName %>" placeholder="<%= t.saveFile.defaultFileName %>">
-      <br>
-      <input type="checkbox" id="save-file-include-tape">
-      <label for="save-file-include-tape"><%= t.saveFile.includeTape %></span>
-      <br>
-      <input type="checkbox" id="save-file-include-settings">
-      <label for="save-file-include-settings"><%= t.saveFile.includeSettings %></span>
-      <br>
-      <button id="save-file-confirm"><%= t.saveFile.save %></button>
+      <div>
+        <h1><%= t.saveFile.header %></h1>
+      </div>
+      <div>
+        <span><%= t.saveFile.filePreview %></span>
+        <br>
+        <textarea id="save-file-textarea-preview" disabled cols="80" rows="20"></textarea>
+      </div>
+      <div class="save-file-filename-container">
+        <label for="save-file-filename"><%= t.saveFile.fileName %></label>
+        <input id="save-file-filename" value="<%= t.saveFile.defaultFileName %>" placeholder="<%= t.saveFile.defaultFileName %>">
+      </div>
+      <div>
+        <input type="checkbox" id="save-file-include-tape">
+        <label for="save-file-include-tape"><%= t.saveFile.includeTape %></label>
+        <br>
+        <input type="checkbox" id="save-file-include-settings">
+        <label for="save-file-include-settings"><%= t.saveFile.includeSettings %></label>
+      </div>
+      <div class="save-file-buttons">
+        <button id="save-file-confirm"><%= t.saveFile.save %></button>
+        <button id="save-file-cancel"><%= t.saveFile.cancel %></button>
+      </div>
     </dialog>
 
     <dialog id="settings">

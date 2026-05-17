@@ -91,6 +91,7 @@ dialog h3 {
 }
 
 @import url(load-file.module.css);
+@import url(save-file.module.css);
 @import url(settings.module.css);
 @import url(about.module.css);
 @import url(chart.module.css);

@@ -77,4 +77,7 @@ export function initSaveFileDOM() {
     saveFileAndDownload();
     Dialogs.saveFile.close();
   });
+  Nodes.saveFileCancel.addEventListener("click", () => {
+    Dialogs.saveFile.close();
+  });
 }

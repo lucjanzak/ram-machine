@@ -72,13 +72,16 @@ export namespace Nodes {
   export const loadFileTextareaPreview = element<HTMLTextAreaElement>("#load-file-textarea-preview");
   export const loadFileStatusContainer = element("#load-file-status-container");
   export const loadProgramButtons = element("#load-program-buttons");
+  export const loadFileConfirm = element("#load-file-confirm");
+  export const loadFileCancel = element("#load-file-cancel");
 
   // Save file dialog
   export const saveFileTextareaPreview = element<HTMLTextAreaElement>("#save-file-textarea-preview");
   export const saveFileFilename = element<HTMLInputElement>("#save-file-filename");
   export const saveFileIncludeTape = element<HTMLInputElement>("#save-file-include-tape");
   export const saveFileIncludeSettings = element<HTMLInputElement>("#save-file-include-settings");
-  export const saveFileConfirm = element<HTMLInputElement>("#save-file-confirm");
+  export const saveFileConfirm = element("#save-file-confirm");
+  export const saveFileCancel = element("#save-file-cancel");
 
   // Settings dialog
   export const settingsForm = element<HTMLFormElement>("#settings-form");
