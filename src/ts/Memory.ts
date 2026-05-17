@@ -103,6 +103,7 @@ export class Memory {
   private updateRegisterRowElement(row: Element, value: bigint | undefined, animate: boolean) {
     const valueSpan = select(row, "#value");
     row.classList.remove("animated");
+
     if (value === undefined) {
       valueSpan.textContent = t.registers.uninitialized;
       valueSpan.classList.add("uninitialized");
@@ -121,7 +122,9 @@ export class Memory {
       if (animate) {
         // TODO(optional): maybe the color should stay highlighted until the next update?
         // that would require storing a list/set of all recently-updated registers
-        window.requestAnimationFrame(() => row.classList.add("animated"));
+        
+        // row.classList.add("animated")
+        setTimeout(() => row.classList.add("animated")); // TODO: fix this, doesn't work consistently without settimeout for some reason
       }
     }
   }
@@ -138,7 +141,7 @@ export class Memory {
 
           const row = select(f, "#register-scroll-list-row");
           const indexSpan = select(f, "#index");
-          const valueSpan = select(f, "#value");
+          const _valueSpan = select(f, "#value");
 
           if (index % 2n === 0n) {
             row.classList.add("even");
