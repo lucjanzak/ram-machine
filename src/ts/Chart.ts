@@ -246,12 +246,12 @@ export class ComplexityChart {
   setAnimationsEnabled(enabled: boolean) {
     const activeTransition = this.chart.options.transitions?.active?.animation;
     if (activeTransition !== undefined) {
-      activeTransition.duration = enabled ? 200 : 0;
+      activeTransition.duration = enabled ? 500 : 0;
       activeTransition.easing = "easeOutExpo";
     }
     const animation = this.chart.options.animation;
     if (animation !== false && animation !== undefined) {
-      animation.duration = enabled ? 200 : 0;
+      animation.duration = enabled ? 500 : 0;
       animation.easing = "easeOutExpo";
     }
   }

@@ -45,7 +45,7 @@ export function initNavDOM() {
     Dialogs.chartWindow.showModal();
   });
   Nodes.aboutButton.addEventListener("click", () => {
-    Dialogs.about.showPopover();
+    Dialogs.about.showModal();
   });
   Object.entries(Nodes.viewButtons).forEach(([key, button]) => {
     button.addEventListener("click", () => {

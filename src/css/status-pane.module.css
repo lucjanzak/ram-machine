@@ -5,15 +5,26 @@
 
   border-left: var(--generic-border);
   background-color: #fff;
-  padding: 1rem;
   box-sizing: border-box;
 
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow: hidden;
+}
+
+body.animations-enabled #status-pane {
+  transition: 0.5s width var(--ease-out-expo), 0.5s min-width var(--ease-out-expo), 0.5s flex-grow var(--ease-out-expo);
 }
 
 #status-pane:not(.active) {
-  display: none;
+  width: 0;
+  min-width: 0;
+  flex-grow: 0;
+}
+
+#status-pane > div {
+  min-width: 250px;
+  padding: 1rem;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 #status-pane h1,
