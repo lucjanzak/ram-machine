@@ -88,6 +88,7 @@ export class Memory {
         this.updateRegisterRowElement(row, this.registers.get(index), true);
       }
     });
+    this.quietlyUpdatedRegisters.clear();
   }
 
   refreshExistingRows() {

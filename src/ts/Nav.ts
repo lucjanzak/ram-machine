@@ -37,6 +37,9 @@ export function initNavDOM() {
   Nodes.resetButton.addEventListener("click", () => {
     window.RAMMachine.machine.reset();
   });
+  Nodes.continueButton.addEventListener("click", () => {
+    window.RAMMachine.machine.runAll(true);
+  });
   Nodes.stepButton.addEventListener("click", () => {
     window.RAMMachine.machine.step();
   });

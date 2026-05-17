@@ -3,6 +3,7 @@ import { bigintMax } from "./BigIntUtils";
 import { BigScrollList } from "./BigScrollList";
 import { t } from "./Localization";
 import { select, Templates, useTemplate } from "./Nodes";
+import { preferences } from "./Settings";
 
 export interface OutputTape {
   write(value: bigint, quiet: boolean): void;
@@ -14,7 +15,7 @@ export class OutputTapeArray implements OutputTape {
   protected values = new ContiguousArray<bigint>();
   protected currentIndex: bigint = 0n;
 
-  write(value: bigint, quiet: boolean) {
+  write(value: bigint, _quiet: boolean) {
     this.values.push(value);
     this.currentIndex++;
   }
@@ -68,7 +69,7 @@ export class OutputTapeArrayDOM extends OutputTapeArray {
 
     const cell = select(listItem, "#output-tape-scroll-list-cell");
     if (cell === null) return;
-    this.updateCellElement(cell, value);
+    this.updateCellElement(cell, value, true);
   }
 
   updateDOMCellLater(index: bigint) {
@@ -93,11 +94,13 @@ export class OutputTapeArrayDOM extends OutputTapeArray {
     if (this.scrollList === null) return;
 
     this.scrollList.iterActive((listItem, index) => {
+      console.log("ITERACTIVE", index, this.quietlyUpdatedCells, this.quietlyUpdatedCells.has(index))
       if (this.quietlyUpdatedCells.has(index)) {
         const cell = select(listItem, "#output-tape-scroll-list-cell");
-        this.updateCellElement(cell, this.values.get(index));
+        this.updateCellElement(cell, this.values.get(index), true);
       }
     });
+    this.quietlyUpdatedCells.clear();
     this.updateDOMListLength();
   }
 
@@ -106,12 +109,12 @@ export class OutputTapeArrayDOM extends OutputTapeArray {
 
     this.scrollList.iterActive((listItem, index) => {
       const cell = select(listItem, "#output-tape-scroll-list-cell");
-      this.updateCellElement(cell, this.values.get(index));
+      this.updateCellElement(cell, this.values.get(index), true);
     });
   }
 
-  private updateCellElement(cell: Element, value: bigint | undefined) {
-    // console.log(`updateCellElement #${cell.parentElement?.dataset.elementIndex}`);
+  private updateCellElement(cell: Element, value: bigint | undefined, animate: boolean) {
+    console.trace(`updateCellElement #${cell.parentElement?.dataset.elementIndex}`);
     const valueInput = select<HTMLInputElement>(cell, "#value");
     if (value === undefined) {
       valueInput.value = "";
@@ -121,6 +124,24 @@ export class OutputTapeArrayDOM extends OutputTapeArray {
       valueInput.value = `${value}`;
       valueInput.placeholder = `${value}`;
       cell.classList.remove("empty");
+      if (animate) {
+        // TODO(optional): maybe the color should stay blue until the next update?
+        // that would require storing a list/set of all recently-updated registers, and also probably a css class, instead of an animation
+        // TODO(visual bug): fix the background color becoming gray instead of the default cell color (depending on odd and even)
+        cell.animate(
+          [
+            {
+              backgroundColor: "#ff08",
+              color: "blue",
+              transform: preferences.getAnimationsEnabled() ? "scale(120%)" : "scale(100%)",
+            },
+            { backgroundColor: "#ff08", color: "blue", transform: "scale(100%)" },
+            { backgroundColor: "#ff08", color: "blue", transform: "scale(100%)" },
+            { backgroundColor: "transparent", color: "initial", transform: "scale(100%)" },
+          ],
+          { duration: 2000, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
+        );
+      }
     }
   }
 
@@ -146,7 +167,7 @@ export class OutputTapeArrayDOM extends OutputTapeArray {
           indexSpan.textContent = `${index + 1n}`;
 
           const value = this.values.get(index);
-          this.updateCellElement(cell, value);
+          this.updateCellElement(cell, value, true);
 
           return f;
         },

@@ -41,6 +41,9 @@ export class Program {
   getLabelLocation(label: string) {
     return this.labels.get(label);
   }
+  length() {
+    return this.instructions.length;
+  }
 
   static createDOMTilesFromTiles(tiles: Tile[]): TileDOM[] {
     const tilesDOM: TileDOM[] = [];
@@ -57,8 +60,17 @@ export class Program {
       } else if (tile.type === "instruction") {
         lineNumber++;
         const t = useTemplate(Templates.instructionTile);
-        select<HTMLElement>(t, "tr").dataset.lineNumber = `${lineNumber}`;
-        select(t, "#line-number").textContent = `${lineNumber}`;
+        const tr = select<HTMLElement>(t, "tr");
+        tr.dataset.lineNumber = `${lineNumber}`;
+
+        const lineNumberEl = select(t, "#line-number");
+        lineNumberEl.addEventListener("click", () => {
+          lineNumberEl.classList.toggle("breakpoint");
+          const breakpointSet = lineNumberEl.classList.contains("breakpoint");
+          window.RAMMachine.machine.setBreakpointStatus(Number(tr.dataset.lineNumber || "") - 1, breakpointSet);
+        });
+        lineNumberEl.textContent = `${lineNumber}`;
+
         select(t, "#labels").textContent = makeLabelsText(tile.labels);
         select(t, "#instruction").textContent = instructionToString(tile.instruction);
         if (tile.comment !== null) {

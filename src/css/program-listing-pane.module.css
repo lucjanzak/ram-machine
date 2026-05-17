@@ -86,6 +86,19 @@ body.animations-enabled #program-listing-pane {
 
 .tile-part-line-number {
   text-align: right;
+  user-select: none;
+  cursor: pointer;
+}
+
+.tile-part-line-number::before {
+  content: "🔴";
+  margin-right: 0.5rem;
+  color: #f00;
+  visibility: hidden;
+}
+
+.tile-part-line-number.breakpoint::before {
+  visibility: visible;
 }
 
 .tile-part-labels {

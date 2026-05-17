@@ -24,7 +24,7 @@ export class Machine {
   public memory: Memory;
   private programCounter: ProgramCounter = 0;
   public stats: Statistics;
-  private debugBreakpoints: ProgramCounter[] = []; //[5, 10, 15, 30]; // TODO: implement breakpoints
+  private debugBreakpoints: Set<ProgramCounter> = new Set();
 
   constructor(
     private program: Program = Program.EMPTY,
@@ -110,6 +110,7 @@ export class Machine {
 
     // Load program
     this.loadProgramAndReset(program);
+    this.debugBreakpoints.clear();
     console.log("Program loaded. Compiler messages:", compilerMessages, "Preprocessor data:", pre);
     return { success, compilerMessages, preprocessorState: pre };
   }
@@ -208,6 +209,18 @@ export class Machine {
           block: "nearest",
         });
       }
+    }
+  }
+
+  setBreakpointStatus(lineIndex: number, breakpointSet: boolean) {
+    if (lineIndex !== Math.floor(lineIndex) || lineIndex < 0 || lineIndex >= this.program.length()) {
+      return;
+    }
+
+    if (breakpointSet) {
+      this.debugBreakpoints.add(lineIndex);
+    } else {
+      this.debugBreakpoints.delete(lineIndex);
     }
   }
 
@@ -313,6 +326,7 @@ export class Machine {
   private stopMachine(currentTime: DOMHighResTimeStamp, stopReason: StopReason) {
     this.running = false;
     this.started = false;
+    this.paused = false;
     this.stats.timer.stop(currentTime);
     this.stopReason = stopReason;
     this.resetDebugRowHighlight();
@@ -336,50 +350,71 @@ export class Machine {
 
     let timeoutWarned = false;
     let timeoutAlerted = false;
+    const checkIfStuck = (currentTimePrecise: DOMHighResTimeStamp, timePassed: DOMHighResTimeStamp) => {
+      if (options.timeoutPrintWarning && timePassed > options.timeoutPrintWarning && !timeoutWarned) {
+        timeoutWarned = true;
+        console.warn(`Program running longer than ${options.timeoutPrintWarning}ms...`);
+      }
+
+      if (options.timeoutUserKill && timePassed > options.timeoutUserKill && !timeoutAlerted) {
+        timeoutAlerted = true;
+
+        this.stats.timer.pause(currentTimePrecise);
+        const answer = confirm(t.general.executionTimeoutAlert);
+        const currentTimePreciseNew = performance.now();
+        this.stats.timer.resume(currentTimePreciseNew);
+
+        if (answer) {
+          // Machine killed by user
+          this.stopMachine(currentTimePreciseNew, "kill");
+          return;
+        }
+      }
+
+      if (options.timeoutAutoKill && timePassed > options.timeoutAutoKill) {
+        // Machine killed by timer
+        console.error(`Could not run the program in under ${options.timeoutAutoKill}ms, terminating`);
+        this.stopMachine(currentTimePrecise, "timeout");
+      }
+    }
+
 
     if (!this.started) {
+      // First step should clear the stats as well
       this.stats.clear();
     }
+    const wasPausedOnLineIndex = this.paused ? this.programCounter : null;
+    let executedInstructionInThisInvocation = false;
     this.stats.timer.resume();
+    this.started = true;
     this.running = true;
+    this.paused = false;
 
     try {
       while (this.running) {
         const currentTimePrecise = performance.now();
         const timePassed = this.stats.fetchRealTime(currentTimePrecise);
 
-        if (options.timeoutPrintWarning && timePassed > options.timeoutPrintWarning && !timeoutWarned) {
-          timeoutWarned = true;
-          console.warn(`Program running longer than ${options.timeoutPrintWarning}ms...`);
-        }
+        checkIfStuck(currentTimePrecise, timePassed);
 
-        if (options.timeoutUserKill && timePassed > options.timeoutUserKill && !timeoutAlerted) {
-          timeoutAlerted = true;
-
-          this.stats.timer.pause(currentTimePrecise);
-          const answer = confirm(t.general.executionTimeoutAlert);
-          const currentTimePreciseNew = performance.now();
-          this.stats.timer.resume(currentTimePreciseNew);
-
-          if (answer) {
-            // Machine killed by user
-            this.stopMachine(currentTimePreciseNew, "kill");
+        if (debug && this.debugBreakpoints.has(this.programCounter)) {
+          // We are currently on a line that has a breakpoint, and we have debug mode active.
+          // If it was already paused here, we want to continue running the program. But (wasPausedOnLineIndex !== this.programCounter) does not work, because of loops.
+          // We need to check if anything was executed yet in this runAll invocation.
+          // If some lines have been executed in this runAll invocation, then we should actually pause on this breakpoint.
+          // If no lines have been executed in this invocation yet, then we need to execute this line.
+          if (executedInstructionInThisInvocation) {
+            // alert("breakpoint hit! @ line with index " + this.programCounter);
+            this.stats.timer.pause();
+            this.paused = true;
+            this.setDebugLineHighlight(this.programCounter);
+            this.updateDOMElements();
             return;
           }
         }
 
-        if (options.timeoutAutoKill && timePassed > options.timeoutAutoKill) {
-          // Machine killed by timer
-          console.error(`Could not run the program in under ${options.timeoutAutoKill}ms, terminating`);
-          this.stopMachine(currentTimePrecise, "timeout");
-        }
-
-        // TODO: implement breakpoints
-        if (debug && this.debugBreakpoints.includes(this.programCounter)) {
-          alert("breakpoint hit! @ line " + this.programCounter);
-        }
-
         const shouldStop = this.executeCurrentInstruction(true);
+        executedInstructionInThisInvocation = true;
         if (shouldStop) {
           // Normal stop - found a HALT instruction
           this.stopMachine(performance.now(), "halt");
@@ -387,6 +422,7 @@ export class Machine {
       }
     } catch (e) {
       console.error("machine exec error:", e);
+      // TODO: show these runtime errors in status pane
       // Exception encountered - error stop
       this.stopMachine(performance.now(), "error");
     }
@@ -422,7 +458,6 @@ export class Machine {
 
     this.stats.timer.pause();
     this.paused = true;
-
     this.setDebugLineHighlight(this.programCounter);
   }
 

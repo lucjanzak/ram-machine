@@ -22,6 +22,7 @@ export namespace Nodes {
   export const editInputTapeButton = element("#edit-input-tape-button");
   export const runAllButton = element("#run-all-button");
   export const resetButton = element("#reset-button");
+  export const continueButton = element("#continue-button");
   export const stepButton = element("#step-button");
   export const chartsButton = element("#charts-button");
   export const aboutButton = element("#about-button");
