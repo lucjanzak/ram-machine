@@ -40,11 +40,12 @@ export class BigScrollList implements ElementManager {
 
   setItemSize(newSize: number) {
     if (newSize !== this.itemSize) {
-      console.warn("setItemSize not tested yet, it might not work properly"); // TODO
+      // TODO(unimplemented)
+      console.warn("setItemSize not tested yet, it might not work properly");
       console.log(`itemSize updated: ${this.itemSize} -> ${newSize}`);
       this.itemSize = newSize;
       this.updateScrollStop();
-      // TODO: all elements will have to be removed probably
+      // TODO(unimplemented): all elements will have to be removed probably
       this.updateVisibleElements();
     }
   }

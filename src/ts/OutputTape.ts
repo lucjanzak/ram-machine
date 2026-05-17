@@ -30,7 +30,7 @@ export class OutputTapeArray implements OutputTape {
 
 export class OutputTapeArrayDOM extends OutputTapeArray {
   private scrollList: BigScrollList | null = null;
-  private quietlyUpdatedCells: Set<bigint> = new Set(); // TODO (optimize): this can be reduced to two integers (range start and range end) instead of a set
+  private quietlyUpdatedCells: Set<bigint> = new Set(); // TODO(optimize): this can be reduced to two integers (range start and range end) instead of a set
 
   // Minimum amount of cells to display on tape.
   static readonly MIN_ELEMENTS_ON_VISIBLE_TAPE = 3n as const;

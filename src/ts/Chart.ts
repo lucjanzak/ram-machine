@@ -1,7 +1,7 @@
 import { Chart, ScaleOptions } from "chart.js/auto";
 import { Dialogs, Nodes } from "./Nodes";
 import { Machine } from "./Machine";
-import { assertNever, todo, unwrap } from "./Util";
+import { assertNever, unwrap } from "./Util";
 import annotationPlugin from "chartjs-plugin-annotation";
 import { t } from "./Localization";
 import { createSimulationInputTape, InputTape, valuesFromString } from "./InputTape";

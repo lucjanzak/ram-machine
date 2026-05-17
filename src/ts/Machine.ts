@@ -343,7 +343,6 @@ export class Machine {
     }
   ) {
     if (this.isFinished()) {
-      // TODO: reset when pressing "runAll" after finishing
       this.reset();
       return;
     }

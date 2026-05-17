@@ -306,9 +306,14 @@ function initDOM() {
       window.RAMMachine.machine.loadAssemblyAndReset(programText);
       Dialogs.loadFile.close();
     });
-    // TODO(optional): get rid of this any, or check in runtime if the title key exists
-    const title: string = (t.examples as any)[programKey].title || programKey;
-    btn.textContent = `${title}`;
+
+    const exampleTranslations: {[key: string]: {title: string}} = t.examples;
+    if (programKey in exampleTranslations) {
+      const title = exampleTranslations[programKey].title;
+      btn.textContent = `${title}`;
+    } else {
+      btn.textContent = `${programKey}`;
+    }
     Nodes.loadProgramButtons.appendChild(btn);
   }
 }
