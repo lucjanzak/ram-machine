@@ -1,8 +1,4 @@
-import {
-  DEFAULT_PROGRAM_ASSEMBLY,
-  EXAMPLE_PROGRAMS,
-  EXAMPLE_PROGRAMS_ASSEMBLY,
-} from "./Examples";
+import { DEFAULT_PROGRAM_ASSEMBLY, EXAMPLE_PROGRAMS, EXAMPLE_PROGRAMS_ASSEMBLY } from "./Examples";
 import { Machine } from "./Machine";
 import { initDOM } from "./Nodes";
 import { Program } from "./Program";
@@ -12,14 +8,11 @@ import { testingArea } from "./testing";
 import * as monaco from "monaco-editor";
 import "../css/index.module.css";
 import { ComplexityChart, initChart } from "./Chart";
+import { loadInitialHash } from "./URLCode";
+import { preferences } from "./Settings";
 
 const machine = new Machine();
 const editor = createEditor();
-function compileInput() {
-  const assembly = editor.getValue();
-  const program = Program.fromAssembly(assembly);
-  machine.loadProgramAndReset(program);
-}
 
 // Make these values globally available
 declare global {
@@ -32,7 +25,6 @@ declare global {
       EXAMPLE_PROGRAMS_ASSEMBLY: {
         [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBLY]: string;
       };
-      compileInput: () => void;
     };
     currentLanguage: keyof typeof translations;
     lang: {
@@ -48,7 +40,6 @@ window.RAMMachine = {
   chart: initChart(),
   EXAMPLE_PROGRAMS: EXAMPLE_PROGRAMS,
   EXAMPLE_PROGRAMS_ASSEMBLY: EXAMPLE_PROGRAMS_ASSEMBLY,
-  compileInput,
 };
 window.lang = {
   translations,
@@ -57,6 +48,8 @@ window.lang = {
 
 // Initialization
 initDOM();
-machine.loadAssemblyAndReset(DEFAULT_PROGRAM_ASSEMBLY);
+preferences.refreshPaneVisibility();
+loadInitialHash();
 
+// Testing
 testingArea();

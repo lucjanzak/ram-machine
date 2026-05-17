@@ -62,10 +62,23 @@ export class BigScrollList implements ElementManager {
   }
 
   updateScrollStop() {
+    const isChrome = navigator.userAgent.indexOf("Chrome") !== -1;
     if (this.direction === "horizontal") {
-      this.scrollStopElement.style.left = `${this.getTotalListSize().min(BigScrollList.MAX_POSSIBLE_SCROLL).toString()}px`; // TODO: remove limit for chrome
+      if (isChrome) {
+        this.scrollStopElement.style.left = `${this.getTotalListSize().toString()}px`;
+      } else {
+        this.scrollStopElement.style.left = `${this.getTotalListSize()
+          .min(BigScrollList.MAX_POSSIBLE_SCROLL)
+          .toString()}px`;
+      }
     } else if (this.direction === "vertical") {
-      this.scrollStopElement.style.top = `${this.getTotalListSize().min(BigScrollList.MAX_POSSIBLE_SCROLL).toString()}px`; // TODO: remove limit for chrome
+      if (isChrome) {
+        this.scrollStopElement.style.top = `${this.getTotalListSize().toString()}px`;
+      } else {
+        this.scrollStopElement.style.top = `${this.getTotalListSize()
+          .min(BigScrollList.MAX_POSSIBLE_SCROLL)
+          .toString()}px`;
+      }
     } else {
       assertNever(this.direction);
     }
@@ -136,7 +149,11 @@ export class BigScrollList implements ElementManager {
     // Add new in-view elements
     const viewBoundStart = this.getViewBoundStart();
     const viewBoundEnd = this.getViewBoundEnd();
-    for (let index = bigintMax(viewBoundStart.integer, 0n); index <= viewBoundEnd.integer && index < this.itemCount; index++) {
+    for (
+      let index = bigintMax(viewBoundStart.integer, 0n);
+      index <= viewBoundEnd.integer && index < this.itemCount;
+      index++
+    ) {
       if (this.activeElements.has(index)) {
         // This one already exists
         continue;

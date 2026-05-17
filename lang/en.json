@@ -12,7 +12,7 @@
   },
   "nav": {
     "new": "New",
-    "open": "Open",
+    "load": "Load",
     "save": "Save",
     "settings": "Settings",
     "clearInputTape": "Clear Tape",
@@ -24,7 +24,11 @@
     "debugContinue": "Continue",
     "debugStep": "Step",
     "charts": "Charts",
-    "about": "About"
+    "about": "About",
+    "viewRegisterPane": "View Registers",
+    "viewProgramListingPane": "View Program Listing",
+    "viewStatusPane": "View Status",
+    "viewCodeEditorPane": "View Code Editor"
   },
   "inputTape": {
     "header": "Input tape (length: ",
@@ -40,6 +44,9 @@
     "cellLabelEnd": "",
     "cellEmpty": "(empty)"
   },
+  "panes": {
+    "background": "Click on the buttons above to choose displayed panes"
+  },
   "registers": {
     "header": "Registers:",
     "uninitialized": "uninitialized"
@@ -51,6 +58,101 @@
       "instruction": "Instruction",
       "comment": "Comment"
     }
+  },
+  "status": {
+    "title": "Machine Status",
+    "compilation": {
+      "failure": "Compilation finished with errors",
+      "success": "Compilation finished successfully"
+    },
+    "stats": {
+      "title": "Statistics: ",
+      "instruction": "Instruction",
+      "count": "Count",
+      "realTime": "Real Time",
+      "averageSpeed": "Average Speed",
+      "memoryComplexity": "Memory Complexity",
+      "memoryComplexityLog": "Memory Complexity (log)",
+      "timeComplexity": "Time Complexity",
+      "timeComplexityLog": "Time Complexity (log)"
+    }
+  },
+  "editor": {
+    "buttons": {
+      "compile": "Compile",
+      "compileAndRun": "Compile And Run"
+    },
+    "problems": {
+      "template": "%0, %1",
+      "errorCount": {
+        "zero": "%0 errors",
+        "one": "%0 error",
+        "multiple1": "%0 errors",
+        "multiple2": "%0 errors"
+      },
+      "warningCount": {
+        "zero": "%0 warnings",
+        "one": "%0 error",
+        "multiple1": "%0 warnings",
+        "multiple2": "%0 warnings"
+      }
+    },
+    "actions": {
+      "compile": "Compile",
+      "compileAndRun": "Compile And Run"
+    },
+    "keywords": {
+      "LOAD": "Load a value into r₀",
+      "STORE": "Store a value from r₀",
+      "ADD": "Increment r₀ by a value",
+      "SUB": "Decrement r₀ by a value",
+      "MULT": "Multiply r₀ by a value",
+      "DIV": "Divide r₀ by a value",
+      "READ": "Read from the tape",
+      "WRITE": "Write to the tape",
+      "JUMP": "Unconditional jump",
+      "JGTZ": "Jump only if r₀ > 0",
+      "JZERO": "Jump only if r₀ == 0",
+      "HALT": "Stop program execution"
+    },
+    "snippets": {
+      "name": {
+        "iflte": "if statement with JGTZ",
+        "ifne": "if statement with JZERO",
+        "ifge": "if statement with JGTZ",
+        "ifeq": "if statement with JZERO",
+        "ifelselte": "if-else statement with JGTZ",
+        "ifelsene": "if-else statement with JZERO",
+        "whilelte": "while loop with JGTZ",
+        "whilene": "while loop with JZERO",
+        "whilegt": "while loop with JGTZ",
+        "whileeq": "while loop with JZERO",
+        "dowhilegt": "do-while loop with JGTZ",
+        "dowhileeq": "do-while loop with JZERO",
+        "dowhilelte": "do-while loop with JGTZ",
+        "dowhilene": "do-while loop with JZERO",
+        "loop": "Endless loop"
+      },
+      "codePlaceholder": "code ...",
+      "codeIfTrue": "... code if true",
+      "codeIfFalse": "... code if false",
+      "endlessLoopComment": "endless loop",
+      "label": {
+        "if": "if",
+        "else": "else",
+        "endif": "endif",
+        "loop": "loop",
+        "loopcheck": "loopcheck",
+        "endloop": "endloop"
+      }
+    }
+  },
+  "loadFile": {
+    "loadExample": "Select a program below:",
+    "loadFromFile": "...or load a program from file:",
+    "dropZoneHint": "Drag and drop a file here, or click to choose a file.",
+    "loadedData": "Loaded data:",
+    "loadSuccess": "File loaded successfully"
   },
   "settings": {
     "title": "Settings",
@@ -93,16 +195,63 @@
         "memoryComplexityLog": "Memory Complexity (log)",
         "timeComplexity": "Time Complexity",
         "timeComplexityLog": "Time Complexity (log)",
-        "realTime": "Real Time (ms)"
+        "realTime": "Real Time (ms)",
+        "comparisonFunction": "Comparison Function"
       },
       "realTimeAxis": "Real Time",
       "realTimeAxisUnits": " ms"
     },
+    "simulationTypeLabel": "Simulation type:",
+    "simulationType": {
+      "valueVariable": "Tape values are variable",
+      "lengthVariable": "Tape length is variable",
+      "sizedArray": "Sized array (tape length is variable, with n included at the beginning)",
+      "customData": "Custom data"
+    },
+    "inputDataValueLabel": "Input data:",
+    "inputDataSequenceLabel": "Input data:",
+    "inputDataCustomLabel": "Sequences:",
+    "inputDataValue": {
+      "oneValueSingle": "One cell with value",
+      "oneValueEndless": "All cells filled with one value"
+    },
+    "inputDataSequence": {
+      "natural": "Natural numbers (including zero)",
+      "positive": "Positive integers",
+      "negative": "Negative integers",
+      "constant": "Constant function",
+      "prime": "Prime numbers",
+      "composite": "Composite numbers",
+      "arithmetic": "Arithmetic sequence",
+      "geometric": "Geometric sequence",
+      "random": "Random sequence",
+      "custom": "Custom sequence"
+    },
+    "inputDataCustomPlaceholder": "1,1,1; 2,4,8; 3,9,27; 4,16,64; ...",
+    "sequenceConst": "Const value:",
+    "sequenceStart": "Sequence start:",
+    "sequenceStep": "Sequence step:",
+    "randomMinInclusive": "Min. (inclusive):",
+    "randomMaxExclusive": "Max. (exclusive):",
+    "sequenceCustomPlaceholder": "1,1,2,3,5,8, ...",
     "generateMorePoints": "Generate more points:",
     "generate": "Generate",
+    "chooseComparisonFunction": "Choose a function to compare to:",
+    "comparisonFunction": {
+      "none": "(none)",
+      "constant": "O(1)",
+      "linear": "O(n)",
+      "quadratic": "O(n²)",
+      "cubic": "O(n³)",
+      "quartic": "O(n⁴)",
+      "logarithmic": "O(log(n))",
+      "linearLogarithmic": "O(n log(n))",
+      "quadraticLogarithmic": "O(n² log(n))"
+    },
     "executionTimeoutInput": "Execution timeout:",
     "executionTimeoutInputMs": "ms",
     "showRealTimeAxis": "Show real-time axis",
+    "inputDataPreview": "Input data preview:",
     "reset": "Revert to defaults",
     "clear": "Clear",
     "close": "Close"
@@ -114,8 +263,32 @@
     "externalLibraries": "External libraries used:",
     "monacoEditorCredit": "by Microsoft, licensed under",
     "vscodeCodiconsCredit": "font by Microsoft, licensed under",
-    "chartJsCredit": "library by many contributors, licensed under",
+    "chartJsCredit": "by Chart.js contributors, licensed under",
+    "lzStringCredit": "by Pieroxy, licensed under",
     "close": "Close"
+  },
+  "compiler": {
+    "parserErrorTitle": "Parser error: ",
+    "preprocessorErrorTitle": "Preprocessor error: ",
+    "atLine": "(at line %0)",
+    "atLineCol": "(at line %0:%1)",
+    "preprocessor": {
+      "setInvalidValue": "invalid value for .SET directive with key",
+      "setInvalidKey": "invalid setting key for .SET directive",
+      "unknownDirective": "unknown preprocessor directive",
+      "expectedDirective": "expected preprocessor directive",
+      "genericIgnoreWarning": "ignoring"
+    },
+    "parser": {
+      "bigintParseError": "could not parse bigint",
+      "bigintExpected": "integer expected",
+      "immediateWritableOperand": "immediate operand is not allowed for this instruction",
+      "negativeRegister": "register number cannot be negative",
+      "negativeImmediate": "immediate value cannot be negative",
+      "unrecognizedMnemonic": "unrecognized mnemonic",
+      "emptyLabel": "label cannot be empty",
+      "redefinedLabel": "label was already defined at line"
+    }
   },
   "examples": {
     "ADDITION": {

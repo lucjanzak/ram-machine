@@ -1,4 +1,5 @@
 import { Dialogs, Nodes, select } from "./Nodes";
+import { getPane, getPaneButton, PaneName } from "./Panes";
 
 export type InputTapeUnderflowBehavior = "error" | "zero" | "random";
 export type UninitializedRegisterReadBehavior = "error" | "zero" | "random" | "superpositionCollapse";
@@ -9,26 +10,36 @@ export class MachineSettings {
   uninitializedRegisterRead: UninitializedRegisterReadBehavior = "zero";
   programCounterOutOfBounds: ProgramCounterOutOfBoundsBehavior = "error";
 
-  static parseInputTapeUnderflowBehavior(input: FormDataEntryValue | null): InputTapeUnderflowBehavior | null {
+  static parseInputTapeUnderflowBehavior(input: FormDataEntryValue | string | null): InputTapeUnderflowBehavior | null {
     if (input === "error" || input === "zero" || input === "random") return input;
     return null;
   }
 
-  static parseUninitializedRegisterReadBehavior(input: FormDataEntryValue | null): UninitializedRegisterReadBehavior | null {
+  static parseUninitializedRegisterReadBehavior(
+    input: FormDataEntryValue | string | null
+  ): UninitializedRegisterReadBehavior | null {
     if (input === "error" || input === "zero" || input === "random" || input === "superpositionCollapse") return input;
     return null;
   }
 
-  static parseProgramCounterOutOfBoundsBehavior(input: FormDataEntryValue | null): ProgramCounterOutOfBoundsBehavior | null {
+  static parseProgramCounterOutOfBoundsBehavior(
+    input: FormDataEntryValue | string | null
+  ): ProgramCounterOutOfBoundsBehavior | null {
     if (input === "error" || input === "actAsHalt") return input;
     return null;
   }
 
   static fromForm(formData: FormData): MachineSettings {
     return {
-      inputTapeUnderflow: MachineSettings.parseInputTapeUnderflowBehavior(formData.get("input-tape-underflow-behavior")) || "error",
-      uninitializedRegisterRead: MachineSettings.parseUninitializedRegisterReadBehavior(formData.get("uninitialized-register-read-behavior")) || "error",
-      programCounterOutOfBounds: MachineSettings.parseProgramCounterOutOfBoundsBehavior(formData.get("program-counter-out-of-bounds-behavior")) || "error",
+      inputTapeUnderflow:
+        MachineSettings.parseInputTapeUnderflowBehavior(formData.get("input-tape-underflow-behavior")) || "error",
+      uninitializedRegisterRead:
+        MachineSettings.parseUninitializedRegisterReadBehavior(formData.get("uninitialized-register-read-behavior")) ||
+        "error",
+      programCounterOutOfBounds:
+        MachineSettings.parseProgramCounterOutOfBoundsBehavior(
+          formData.get("program-counter-out-of-bounds-behavior")
+        ) || "error",
     };
   }
 
@@ -47,6 +58,12 @@ export class Preferences {
   // Placeholder values, defaults are in revertToDefaults();
   private animationsEnabled = false;
   private codeSnippetsEnabled = false;
+  private paneVisibility: { [K in PaneName]: boolean } = {
+    register: true,
+    programListing: true,
+    status: false,
+    codeEditor: true,
+  };
 
   static loadOrNew() {
     const item = localStorage.getItem("RAMMachine.preferences");
@@ -66,14 +83,33 @@ export class Preferences {
     if (typeof json.codeSnippetsEnabled === "boolean") {
       preferences.setCodeSnippetsEnabled(json.codeSnippetsEnabled);
     }
+    if (typeof json.viewRegisterPane === "boolean") {
+      preferences.setPaneVisibility("register", json.viewRegisterPane);
+    }
+    if (typeof json.viewProgramListingPane === "boolean") {
+      preferences.setPaneVisibility("programListing", json.viewProgramListingPane);
+    }
+    if (typeof json.viewStatusPane === "boolean") {
+      preferences.setPaneVisibility("status", json.viewStatusPane);
+    }
+    if (typeof json.viewCodeEditorPane === "boolean") {
+      preferences.setPaneVisibility("codeEditor", json.viewCodeEditorPane);
+    }
     return preferences;
   }
 
   saveToLocalStorage() {
-    localStorage.setItem("RAMMachine.preferences", JSON.stringify({
-      animationsEnabled: (this.animationsEnabled === !prefersReducedMotion) ? undefined : this.animationsEnabled,
-      codeSnippetsEnabled: this.codeSnippetsEnabled
-    }));
+    localStorage.setItem(
+      "RAMMachine.preferences",
+      JSON.stringify({
+        animationsEnabled: this.animationsEnabled === !prefersReducedMotion ? undefined : this.animationsEnabled,
+        codeSnippetsEnabled: this.codeSnippetsEnabled,
+        viewRegisterPane: this.paneVisibility.register,
+        viewProgramListingPane: this.paneVisibility.programListing,
+        viewStatusPane: this.paneVisibility.status,
+        viewCodeEditorPane: this.paneVisibility.codeEditor,
+      })
+    );
     console.trace("save", localStorage.getItem("RAMMachine.preferences"));
   }
 
@@ -123,31 +159,70 @@ export class Preferences {
   getCodeSnippetsEnabled() {
     return this.codeSnippetsEnabled;
   }
-}
 
+  setPaneVisibility(paneName: PaneName, visible: boolean) {
+    this.paneVisibility[paneName] = visible;
+
+    const pane = getPane(paneName);
+    const button = getPaneButton(paneName);
+    if (pane !== null) pane.classList.toggle("active", visible);
+    if (button !== null) button.classList.toggle("active", visible);
+  }
+
+  getPaneVisibility(paneName: PaneName) {
+    return this.paneVisibility[paneName];
+  }
+
+  refreshPaneVisibility() {
+    Object.entries(this.paneVisibility).forEach(([key, visible]) => {
+      const paneName = key as PaneName;
+      const pane = getPane(paneName);
+      const button = getPaneButton(paneName);
+      if (pane !== null) pane.classList.toggle("active", visible);
+      if (button !== null) button.classList.toggle("active", visible);
+    });
+  }
+}
 
 export function updateSettingsDOM(settings: MachineSettings, preferences: Preferences) {
   select<HTMLInputElement>(Nodes.settingsForm, `#input-tape-underflow-${settings.inputTapeUnderflow}`).checked = true;
-  select<HTMLInputElement>(Nodes.settingsForm, `#uninitialized-register-read-${settings.uninitializedRegisterRead}`).checked = true;
-  select<HTMLInputElement>(Nodes.settingsForm, `#program-counter-out-of-bounds-${settings.programCounterOutOfBounds}`).checked = true;
+  select<HTMLInputElement>(
+    Nodes.settingsForm,
+    `#uninitialized-register-read-${settings.uninitializedRegisterRead}`
+  ).checked = true;
+  select<HTMLInputElement>(
+    Nodes.settingsForm,
+    `#program-counter-out-of-bounds-${settings.programCounterOutOfBounds}`
+  ).checked = true;
   if (preferences.getAnimationsEnabled()) {
     select<HTMLInputElement>(Nodes.settingsForm, `#animations-enable`).checked = true;
   } else {
     select<HTMLInputElement>(Nodes.settingsForm, `#animations-disable`).checked = true;
   }
-  select<HTMLInputElement>(Nodes.settingsForm, `#monaco-editor-snippets-checkbox`).checked = preferences.getCodeSnippetsEnabled();
+  select<HTMLInputElement>(Nodes.settingsForm, `#monaco-editor-snippets-checkbox`).checked =
+    preferences.getCodeSnippetsEnabled();
 }
 
 export function updateDefaultSettingsDOM(defaultSettings: MachineSettings, defaultPreferences: Preferences) {
-  select<HTMLInputElement>(Nodes.settingsForm, `#input-tape-underflow-${defaultSettings.inputTapeUnderflow}`).defaultChecked = true;
-  select<HTMLInputElement>(Nodes.settingsForm, `#uninitialized-register-read-${defaultSettings.uninitializedRegisterRead}`).defaultChecked = true;
-  select<HTMLInputElement>(Nodes.settingsForm, `#program-counter-out-of-bounds-${defaultSettings.programCounterOutOfBounds}`).defaultChecked = true;
+  select<HTMLInputElement>(
+    Nodes.settingsForm,
+    `#input-tape-underflow-${defaultSettings.inputTapeUnderflow}`
+  ).defaultChecked = true;
+  select<HTMLInputElement>(
+    Nodes.settingsForm,
+    `#uninitialized-register-read-${defaultSettings.uninitializedRegisterRead}`
+  ).defaultChecked = true;
+  select<HTMLInputElement>(
+    Nodes.settingsForm,
+    `#program-counter-out-of-bounds-${defaultSettings.programCounterOutOfBounds}`
+  ).defaultChecked = true;
   if (preferences.getAnimationsEnabled()) {
     select<HTMLInputElement>(Nodes.settingsForm, `#animations-enable`).defaultChecked = true;
   } else {
     select<HTMLInputElement>(Nodes.settingsForm, `#animations-disable`).defaultChecked = true;
   }
-  select<HTMLInputElement>(Nodes.settingsForm, `#monaco-editor-snippets-checkbox`).defaultChecked = preferences.getCodeSnippetsEnabled();
+  select<HTMLInputElement>(Nodes.settingsForm, `#monaco-editor-snippets-checkbox`).defaultChecked =
+    preferences.getCodeSnippetsEnabled();
 }
 
 export const preferences = Preferences.loadOrNew();

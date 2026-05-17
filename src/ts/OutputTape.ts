@@ -13,7 +13,7 @@ export interface OutputTape {
 export class OutputTapeArray implements OutputTape {
   protected values = new ContiguousArray<bigint>();
   protected currentIndex: bigint = 0n;
-  
+
   write(value: bigint, quiet: boolean) {
     this.values.push(value);
     this.currentIndex++;
@@ -29,7 +29,7 @@ export class OutputTapeArray implements OutputTape {
 
 export class OutputTapeArrayDOM extends OutputTapeArray {
   private scrollList: BigScrollList | null = null;
-  private quietlyUpdatedCells: Set<bigint> = new Set(); // TODO: this can be reduced to two integers (range start and range end) instead of a set
+  private quietlyUpdatedCells: Set<bigint> = new Set(); // TODO (optimize): this can be reduced to two integers (range start and range end) instead of a set
 
   // Minimum amount of cells to display on tape.
   static readonly MIN_ELEMENTS_ON_VISIBLE_TAPE = 3n as const;
@@ -40,7 +40,7 @@ export class OutputTapeArrayDOM extends OutputTapeArray {
   getValues(): readonly bigint[] {
     return this.values.asArray();
   }
-  
+
   override write(value: bigint, quiet: boolean) {
     this.values.push(value);
     if (quiet) {
@@ -62,7 +62,7 @@ export class OutputTapeArrayDOM extends OutputTapeArray {
 
   updateDOMCellNow(index: bigint, value: bigint) {
     if (this.scrollList === null) return;
-      
+
     const listItem = this.scrollList.selectListItem(index);
     if (listItem === null) return;
 
@@ -78,7 +78,10 @@ export class OutputTapeArrayDOM extends OutputTapeArray {
   updateDOMListLength() {
     if (this.scrollList !== null) {
       this.scrollList.setItemCount(
-        bigintMax(this.values.length() + OutputTapeArrayDOM.EXTRA_ELEMENTS_ON_VISIBLE_TAPE, OutputTapeArrayDOM.MIN_ELEMENTS_ON_VISIBLE_TAPE)
+        bigintMax(
+          this.values.length() + OutputTapeArrayDOM.EXTRA_ELEMENTS_ON_VISIBLE_TAPE,
+          OutputTapeArrayDOM.MIN_ELEMENTS_ON_VISIBLE_TAPE
+        )
       );
     }
     if (this.lengthElement !== null) {
@@ -100,7 +103,7 @@ export class OutputTapeArrayDOM extends OutputTapeArray {
 
   refreshExistingCells() {
     if (this.scrollList === null) return;
-    
+
     this.scrollList.iterActive((listItem, index) => {
       const cell = select(listItem, "#output-tape-scroll-list-cell");
       this.updateCellElement(cell, this.values.get(index));
@@ -150,12 +153,12 @@ export class OutputTapeArrayDOM extends OutputTapeArray {
         hostElement.parentElement!.clientWidth
       );
 
-      // TODO: these are probably not reliable, the container size can change independently of the window as well
-      window.addEventListener("resize", () => {
+      const resizeObserver = new ResizeObserver(() => {
         if (this.scrollList !== null) {
           this.scrollList.setContainerAvailableSize(this.scrollList.hostElement.parentElement!.clientWidth);
         }
       });
+      resizeObserver.observe(hostElement);
     }
   }
 }

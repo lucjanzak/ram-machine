@@ -2,6 +2,7 @@ import { SparseArray } from "./BigArray";
 import { DataPoint } from "./Chart";
 import { instructionComplexity, lengthOfNumber } from "./Complexity";
 import { ALL_INSTRUCTIONS, Instruction } from "./Instruction";
+import { t } from "./Localization";
 import { Nodes, select, Templates, useTemplate } from "./Nodes";
 import { Timer } from "./Timer";
 
@@ -12,6 +13,8 @@ export class Statistics {
   private memoryTracker = new SparseArray<bigint>();
   public timer: Timer = new Timer();
 
+  constructor(private readonly detachedMode: boolean) {}
+
   processSilently(instruction: Instruction, contentsOfRegister: (i: bigint) => bigint, peekInput: () => bigint) {
     this.instructionCounters[instruction.operation] += 1n;
     this.timeComplexitySimple += 1n;
@@ -20,7 +23,7 @@ export class Statistics {
 
   processAndUpdateDOM(instruction: Instruction, contentsOfRegister: (i: bigint) => bigint, peekInput: () => bigint) {
     this.processSilently(instruction, contentsOfRegister, peekInput);
-    // TODO: this can be improved by not replacing the entire statistics table every time
+    // TODO(optimize): this can be improved by not replacing the entire statistics table every time
     this.replaceStatisticsDOM();
   }
 
@@ -64,7 +67,7 @@ export class Statistics {
       timeComplexity: Number(this.fetchTimeComplexitySimple()),
       timeComplexityLog: Number(this.fetchTimeComplexityLog()),
       realTime: this.fetchRealTime(),
-    }
+    };
   }
 
   static createEmptyCounters(): { [key in (typeof ALL_INSTRUCTIONS)[number]]: bigint } {
@@ -88,8 +91,10 @@ export class Statistics {
   }
 
   replaceStatisticsDOM() {
+    if (this.detachedMode) return;
+
     Nodes.stats.textContent = "";
-    
+
     function generateRow(titleText: string, valueText: string) {
       const f = useTemplate(Templates.statsRow);
       const totalCellTitle = select<HTMLTableCellElement>(f, "#instruction");
@@ -100,7 +105,6 @@ export class Statistics {
       totalCellCounter.style.fontWeight = "700";
       Nodes.stats.append(f);
     }
-
 
     let total = 0n;
     for (const instruction of ALL_INSTRUCTIONS) {
@@ -117,12 +121,12 @@ export class Statistics {
     const timeMsBigInt = BigInt(Math.round(timeMs * 1000));
     const speed = timeMsBigInt === 0n ? 0 : (total * 1000000n) / timeMsBigInt;
 
-    generateRow("Total", `${total}`);
-    generateRow("Time", `${timeMs} ms`);
-    generateRow("Avg. Speed", `${speed} inst. / s`);
-    generateRow("Mem Cmplx", `${this.fetchMemoryComplexitySimple()}`);
-    generateRow("Mem Cmplx (Log)", `${this.fetchMemoryComplexityLog()}`);
-    generateRow("Time Cmplx", `${this.fetchTimeComplexitySimple()}`);
-    generateRow("Time Cmplx (Log)", `${this.fetchTimeComplexityLog()}`);
+    // generateRow(t.status.stats.total, `${total}`); // total === fetchTimeComplexitySimple
+    generateRow(t.status.stats.realTime, `${Math.round(timeMs * 1000) / 1000} ms`);
+    generateRow(t.status.stats.averageSpeed, `${speed} inst. / s`);
+    generateRow(t.status.stats.memoryComplexity, `${this.fetchMemoryComplexitySimple()}`);
+    generateRow(t.status.stats.memoryComplexityLog, `${this.fetchMemoryComplexityLog()}`);
+    generateRow(t.status.stats.timeComplexity, `${this.fetchTimeComplexitySimple()}`);
+    generateRow(t.status.stats.timeComplexityLog, `${this.fetchTimeComplexityLog()}`);
   }
 }

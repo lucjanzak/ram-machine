@@ -1,0 +1,51 @@
+#load-file {
+  min-width: 300px;
+  min-height: 100px;
+  max-height: 90%;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+}
+
+#load-file:open {
+  display: flex;
+}
+
+#load-file-drop-zone {
+  flex-grow: 1;
+  width: 100%;
+  max-width: 800px;
+  max-height: 600px;
+  padding: 4rem 6rem;
+  box-sizing: border-box;
+  margin: 1rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 1rem;
+  border: 4px dashed #7f7f7f3f;
+  background-color: #7f7f7f1f;
+  color: #7f7f7f;
+  cursor: pointer;
+}
+
+#load-file-input {
+  display: none;
+}
+
+#load-program-buttons {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#load-file-status-container {
+  padding: 1rem 0;
+}
+
+#load-file-textarea-preview {
+  resize: none;
+  /* width: 100%; */
+  height: 6rem;
+  box-sizing: border-box;
+}

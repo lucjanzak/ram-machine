@@ -1,0 +1,50 @@
+main {
+  flex-grow: 1;
+  min-height: 0;
+  /* overflow-y: hidden; */
+
+  display: flex;
+  flex-flow: column;
+}
+
+#panes {
+  flex-grow: 1;
+  min-height: 0;
+  max-width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+#central-panes {
+  flex-grow: 1;
+  min-height: 0;
+  width: 0;
+
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+#central-panes-background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+
+  background-color: #dfdfdf;
+  color: #0000007f;
+  border-left: var(--generic-border);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@import url(tape.module.css);
+@import url(register-list-pane.module.css);
+@import url(program-listing-pane.module.css);
+@import url(status-pane.module.css);
+@import url(code-editor-pane.module.css);

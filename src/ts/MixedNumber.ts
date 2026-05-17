@@ -1,3 +1,5 @@
+import { assertEq, unreachable } from "./Util";
+
 // Number with an integer part and a fractional part. Composed of a `bigint` and a `number`.
 export class MixedNumber {
   integer: bigint;
@@ -20,7 +22,9 @@ export class MixedNumber {
     const fraction = float - floor;
     if (fraction >= 1) {
       // return new MixedNumber(previousInteger + BigInt(fraction), 0);
-      throw new Error(`floating point error!!! float=${float} floor=${floor} previousInteger=${previousInteger} fraction=${fraction} >= 1`);
+      unreachable(
+        `floating point error!!! float=${float} floor=${floor} previousInteger=${previousInteger} fraction=${fraction} >= 1`
+      );
     } else {
       return new MixedNumber(previousInteger, fraction);
     }
@@ -122,16 +126,26 @@ export class MixedNumber {
   }
 
   // Warning: lossy
-  value(): number {
+  valueLossy(): number {
     return Number(this.integer) + this.fraction;
   }
 
-  // TODO: better implementation, this can be lossless
   toString(): string {
-    return `${this.value()}`;
+    return `${this.integer}${this.fraction
+      .toFixed(20)
+      .replace(/^0/, "")
+      .replace(/\.?0+$/, "")}`;
   }
 
   static zero() {
     return new MixedNumber(0n, 0);
   }
+}
+
+namespace Test {
+  assertEq(new MixedNumber(13n, 0.2).toString(), "13.2000000000000000111");
+  assertEq(new MixedNumber(13n, 0.5).toString(), "13.5");
+  assertEq(new MixedNumber(13n, 0.0).toString(), "13");
+  assertEq(new MixedNumber(13n, 0.0000000001).toString(), "13.0000000001");
+  assertEq(new MixedNumber(-13n, 0.0000000001).toString(), "-13.0000000001");
 }

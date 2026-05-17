@@ -12,7 +12,7 @@
   },
   "nav": {
     "new": "Nowy",
-    "open": "Otwórz",
+    "load": "Otwórz",
     "save": "Zapisz",
     "settings": "Ustawienia",
     "clearInputTape": "Wyczyść taśmę",
@@ -24,7 +24,11 @@
     "debugContinue": "Kontynuuj",
     "debugStep": "Wykonaj krok",
     "charts": "Wykresy",
-    "about": "O programie"
+    "about": "O programie",
+    "viewRegisterPane": "Pokaż rejestry",
+    "viewProgramListingPane": "Pokaż listing",
+    "viewStatusPane": "Pokaż status",
+    "viewCodeEditorPane": "Pokaż edytor"
   },
   "inputTape": {
     "header": "Taśma wejściowa (długość: ",
@@ -40,6 +44,9 @@
     "cellLabelEnd": "",
     "cellEmpty": "(pusta)"
   },
+  "panes": {
+    "background": "Kliknij przyciski u góry aby wybrać wyświetlane okna"
+  },
   "registers": {
     "header": "Rejestry:",
     "uninitialized": "niezainicjalizowany"
@@ -52,6 +59,101 @@
       "comment": "Komentarz"
     }
   },
+  "status": {
+    "title": "Status maszyny",
+    "compilation": {
+      "failure": "Kompilacja zakończyła się błędem",
+      "success": "Kompilacja zakończyła się pomyślnie"
+    },
+    "stats": {
+      "title": "Statystyki: ",
+      "instruction": "Instrukcja",
+      "count": "Licznik",
+      "realTime": "Czas rzeczywisty (ms)",
+      "averageSpeed": "Średnia prędkość",
+      "memoryComplexity": "Złożoność pamięciowa",
+      "memoryComplexityLog": "Złożoność pamięciowa (log)",
+      "timeComplexity": "Złożoność czasowa",
+      "timeComplexityLog": "Złożoność czasowa (log)"
+    }
+  },
+  "editor": {
+    "buttons": {
+      "compile": "Kompiluj",
+      "compileAndRun": "Kompiluj i uruchom"
+    },
+    "problems": {
+      "template": "%0, %1",
+      "errorCount": {
+        "zero": "%0 błędów",
+        "one": "%0 błąd",
+        "multiple1": "%0 błędy",
+        "multiple2": "%0 błędów"
+      },
+      "warningCount": {
+        "zero": "%0 ostrzeżeń",
+        "one": "%0 ostrzeżenie",
+        "multiple1": "%0 ostrzeżenia",
+        "multiple2": "%0 ostrzeżeń"
+      }
+    },
+    "actions": {
+      "compile": "Kompiluj",
+      "compileAndRun": "Kompiluj i uruchom"
+    },
+    "keywords": {
+      "LOAD": "Załaduj wartość do r₀",
+      "STORE": "Zapisz wartość z r₀ do operandu",
+      "ADD": "Zwiększ r₀ o operand",
+      "SUB": "Zmniejsz r₀ o operand",
+      "MULT": "Pomnóż r₀ przez operand",
+      "DIV": "Podziel r₀ przez operand",
+      "READ": "Odczytaj wartość z taśmy",
+      "WRITE": "Zapisz wartość na taśmę",
+      "JUMP": "Bezwarunkowy skok",
+      "JGTZ": "Przeskocz jeżeli r₀ > 0",
+      "JZERO": "Przeskocz jeżeli r₀ == 0",
+      "HALT": "Zakończ wykonywanie programu"
+    },
+    "snippets": {
+      "name": {
+        "iflte": "Klauzula 'jeżeli' z instrukcją JGTZ",
+        "ifne": "Klauzula 'jeżeli' z instrukcją JZERO",
+        "ifge": "Klauzula 'jeżeli' z instrukcją JGTZ",
+        "ifeq": "Klauzula 'jeżeli' z instrukcją JZERO",
+        "ifelselte": "Klauzula 'jeżeli-w przeciwnym razie' z instrukcją JGTZ",
+        "ifelsene": "Klauzula 'jeżeli-w przeciwnym razie' z instrukcją JZERO",
+        "whilelte": "Pętla 'dopóki' z instrukcją JGTZ",
+        "whilene": "Pętla 'dopóki' z instrukcją JZERO",
+        "whilegt": "Pętla 'dopóki' z instrukcją JGTZ",
+        "whileeq": "Pętla 'dopóki' z instrukcją JZERO",
+        "dowhilegt": "Pętla 'wykonuj-dopóki' z instrukcją JGTZ",
+        "dowhileeq": "Pętla 'wykonuj-dopóki' z instrukcją JZERO",
+        "dowhilelte": "Pętla 'wykonuj-dopóki' z instrukcją JGTZ",
+        "dowhilene": "Pętla 'wykonuj-dopóki' z instrukcją JZERO",
+        "loop": "Nieskończona pętla"
+      },
+      "codePlaceholder": "kod ...",
+      "codeIfTrue": "... kod jeżeli prawda",
+      "codeIfFalse": "... kod jeżeli fałsz",
+      "endlessLoopComment": "nieskończona pętla",
+      "label": {
+        "if": "jeżeli",
+        "else": "w_przeciwnym_razie",
+        "endif": "koniec_jeżeli",
+        "loop": "pętla",
+        "loopcheck": "warunek_pętli",
+        "endloop": "koniec_pętli"
+      }
+    }
+  },
+  "loadFile": {
+    "loadExample": "Wybierz program poniżej:",
+    "loadFromFile": "...lub załaduj swój program z pliku:",
+    "dropZoneHint": "Przeciągnij i upuść plik tutaj, albo kliknij aby wybrać plik z komputera.",
+    "loadedData": "Załadowane dane:",
+    "loadSuccess": "Plik załadowano pomyślnie"
+  },
   "settings": {
     "title": "Ustawienia",
     "sections": {
@@ -62,14 +164,14 @@
       "legend": "Co powinno się stać, gdy maszyna odczytuje pustą wartość z taśmy wejściowej?",
       "error": "Wyświetl błąd",
       "zero": "Zwróć zero",
-      "random": "Zwróć losową liczbnę całkowitą od 0 do 9999"
+      "random": "Zwróć losową liczbę całkowitą od 0 do 9999"
     },
     "uninitializedRegisterRead": {
       "legend": "Co się powinno stać, gdy maszyna czyta z niezainicjalizowanego rejestru?",
       "error": "Wyświetl błąd",
       "zero": "Zwróć zero",
-      "random": "Zwróć nową losową liczbnę całkowitą od 0 do 9999",
-      "superpositionCollapse": "Stabilize the register at a random value from 0 to 9999"
+      "random": "Zwróć nową losową liczbę całkowitą od 0 do 9999",
+      "superpositionCollapse": "Ustabilizuj rejestr na losowej wartości od 0 do 9999"
     },
     "programCounterOutOfBounds": {
       "legend": "Co powinno się stać, gdy licznik rozkazu opuści granice programu?",
@@ -93,16 +195,63 @@
         "memoryComplexityLog": "Złożoność pamięciowa (log)",
         "timeComplexity": "Złożoność czasowa",
         "timeComplexityLog": "Złożoność czasowa (log)",
-        "realTime": "Czas rzeczywisty (ms)"
+        "realTime": "Czas rzeczywisty (ms)",
+        "comparisonFunction": "Funkcja do porównania"
       },
       "realTimeAxis": "Czas rzeczywisty",
       "realTimeAxisUnits": " ms"
     },
+    "simulationTypeLabel": "Rodzaj symulacji:",
+    "simulationType": {
+      "valueVariable": "Zmienne wartości taśmy",
+      "lengthVariable": "Zmienna długość taśmy",
+      "sizedArray": "Tablica z rozmiarem (zmienna długość taśmy, z wartością n dołączoną na początku)",
+      "customData": "Własne dane wejściowe"
+    },
+    "inputDataValueLabel": "Dane wejściowe:",
+    "inputDataSequenceLabel": "Dane wejściowe:",
+    "inputDataCustomLabel": "Sekwencje:",
+    "inputDataValue": {
+      "oneValueSingle": "Jedna komórka z wartością",
+      "oneValueEndless": "Wszystkie komórki z jedną wartością"
+    },
+    "inputDataSequence": {
+      "natural": "Liczby naturalne (od zera)",
+      "positive": "Liczby dodatnie",
+      "negative": "Liczby ujemne",
+      "constant": "Funkcja stała",
+      "prime": "Liczby pierwsze",
+      "composite": "Liczby złożone",
+      "arithmetic": "Ciąg arytmetyczny",
+      "geometric": "Ciąg geometryczny",
+      "random": "Ciąg losowy",
+      "custom": "Własny ciąg liczb"
+    },
+    "inputDataCustomPlaceholder": "1,1,1; 2,4,8; 3,9,27; 4,16,64; ...",
+    "sequenceConst": "Wartość stała:",
+    "sequenceStart": "Początek sekwencji:",
+    "sequenceStep": "Krok sekwencji:",
+    "randomMinInclusive": "Min. (włącznie):",
+    "randomMaxExclusive": "Maks. (wyłącznie):",
+    "sequenceCustomPlaceholder": "1,1,2,3,5,8, ...",
     "generateMorePoints": "Wygeneruj więcej punktów:",
     "generate": "Generuj",
+    "chooseComparisonFunction": "Wybierz funkcję do porównania:",
+    "comparisonFunction": {
+      "none": "(brak)",
+      "constant": "O(1)",
+      "linear": "O(n)",
+      "quadratic": "O(n²)",
+      "cubic": "O(n³)",
+      "quartic": "O(n⁴)",
+      "logarithmic": "O(log(n))",
+      "linearLogarithmic": "O(n log(n))",
+      "quadraticLogarithmic": "O(n² log(n))"
+    },
     "executionTimeoutInput": "Limit czasu wykonywania:",
     "executionTimeoutInputMs": "ms",
     "showRealTimeAxis": "Pokaż oś czasu rzeczywistego",
+    "inputDataPreview": "Podgląd danych wejściowych:",
     "reset": "Przywróć ustawienia domyślne",
     "clear": "Wyczyść",
     "close": "Zamknij"
@@ -112,10 +261,34 @@
     "license": "Licencja:",
     "sourceCode": "Kod źródłowy:",
     "externalLibraries": "Zewnętrzne biblioteki:",
-    "monacoEditorCredit": "stworzony przez Microsoft, z licencją:",
-    "vscodeCodiconsCredit": "font stworzony przez Microsoft, z licencją:",
-    "chartJsCredit": "biblioteka stworzona przez wielu współtwórców, z liczencją:",
-    "close": "Close"
+    "monacoEditorCredit": "- biblioteka stworzona przez Microsoft, z licencją:",
+    "vscodeCodiconsCredit": "- font stworzony przez Microsoft, z licencją:",
+    "chartJsCredit": "- biblioteka stworzona przez współtwórców Chart.js, z licencją:",
+    "lzStringCredit": "- biblioteka stworzona przez Pieroxy, z licencją:",
+    "close": "Zamknij"
+  },
+  "compiler": {
+    "parserErrorTitle": "Błąd parsera: ",
+    "preprocessorErrorTitle": "Błąd preprocesora: ",
+    "atLine": "(w linii %0)",
+    "atLineCol": "(w linii %0:%1)",
+    "preprocessor": {
+      "setInvalidValue": "nieprawidłowa wartość dla dyrektywy .SET z kluczem",
+      "setInvalidKey": "nieprawidłowy klucz dla dyrektywy .SET",
+      "unknownDirective": "nieznana dyrektywa preprocesora",
+      "expectedDirective": "oczekiwano dyrektywy preprocesora",
+      "genericIgnoreWarning": "dyrektywa zostanie zignorowana"
+    },
+    "parser": {
+      "bigintParseError": "nieprawidłowa liczba całkowita",
+      "bigintExpected": "oczekiwano liczby całkowitej",
+      "immediateWritableOperand": "operand bezpośredni nie jest dozwolony dla tej instrukcji",
+      "negativeRegister": "numer rejestru nie może być ujemny",
+      "negativeImmediate": "operand bezpośredni nie może być ujemny",
+      "unrecognizedMnemonic": "nieznana nazwa instrukcji",
+      "emptyLabel": "etykieta nie może być pusta",
+      "redefinedLabel": "ta etykieta została już zdefiniowana w linii"
+    }
   },
   "examples": {
     "ADDITION": {

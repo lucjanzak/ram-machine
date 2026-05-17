@@ -4,6 +4,7 @@
   flex-direction: column;
   align-items: stretch;
   text-align: center;
+  border-top: var(--generic-border);
 }
 
 #input-tape-container,

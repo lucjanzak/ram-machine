@@ -1,0 +1,110 @@
+.status-box {
+  /* display: flex; */
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  margin: 0.5rem 0;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #7f7f7f3f;
+  background-color: #7f7f7f1f;
+  color: #7f7f7f;
+}
+
+.status-box.success {
+  border-color: #007f007f;
+  background-color: #00ff003f;
+  color: #007f00;
+}
+
+.status-box.error {
+  border-color: #7f00007f;
+  background-color: #ff00003f;
+  color: #7f0000;
+}
+
+.status-box.warning {
+  border-color: #7f7f007f;
+  background-color: #ffff003f;
+  color: #7f7f00;
+}
+
+.status-box .title {
+  font-weight: bold;
+}
+
+.status-box .message {
+  white-space-collapse: preserve;
+}
+
+.compiler-message {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #7f7f7f3f;
+  background-color: #7f7f7f1f;
+  color: #7f7f7f;
+  border-radius: 0.2rem;
+  padding: 0.25rem 1rem;
+  border-collapse: collapse;
+  margin-top: -1px;
+  user-select: text;
+}
+
+body.animations-enabled .compiler-message {
+  transition: 0.2s background-color;
+}
+
+.compiler-message.success {
+  border-color: #007f007f;
+  background-color: #00ff003f;
+  color: #007f00;
+}
+
+.compiler-message.error {
+  border-color: #7f00007f;
+  background-color: #ff00003f;
+  color: #7f0000;
+}
+
+.compiler-message.warning {
+  border-color: #7f7f007f;
+  background-color: #ffff003f;
+  color: #7f7f00;
+}
+
+.compiler-message.error:hover {
+  background-color: #ff3f3f3f;
+}
+
+.compiler-message.warning:hover {
+  background-color: #ffff3f3f;
+}
+
+.compiler-message .title {
+  font-weight: bold;
+  display: none;
+}
+
+.compiler-message .error-id {
+  font-family: monospace;
+  opacity: 0.5;
+  font-size: 8pt;
+}
+
+.compiler-message .message {
+  font-family: monospace;
+  white-space-collapse: preserve;
+  font-size: 10pt;
+}
+
+.compiler-message .line-location {
+  font-family: monospace;
+  float: right;
+  margin: 0.2rem;
+  margin-left: 0.6rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.compiler-message .line-location:hover {
+  text-decoration: underline;
+}

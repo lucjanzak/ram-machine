@@ -1,6 +1,6 @@
 import { Instruction, instructionToString } from "./Instruction";
 import { Nodes, select, Templates, useTemplate } from "./Nodes";
-import { Parser } from "./Parser";
+import { CompilerMessage, Compiler, PreprocessorState } from "./Compiler";
 import { preferences } from "./Settings";
 
 export type ParsedLine = {
@@ -57,6 +57,7 @@ export class Program {
       } else if (tile.type === "instruction") {
         lineNumber++;
         const t = useTemplate(Templates.instructionTile);
+        select<HTMLElement>(t, "tr").dataset.lineNumber = `${lineNumber}`;
         select(t, "#line-number").textContent = `${lineNumber}`;
         select(t, "#labels").textContent = makeLabelsText(tile.labels);
         select(t, "#instruction").textContent = instructionToString(tile.instruction);
@@ -97,11 +98,15 @@ export class Program {
     }
   }
 
-  static fromAssembly(assemblyText: string, hideErrors = false): Program {
-    const parser = new Parser(hideErrors);
-    const tiles = parser.parseAssemblyProgram(assemblyText);
-    // console.log("Program tiles:", tiles);
-    return new Program(tiles);
+  static fromAssembly(assemblyText: string): {
+    success: boolean;
+    program: Program;
+    compilerMessages: CompilerMessage[];
+    preprocessorState: PreprocessorState;
+  } {
+    const compiler = new Compiler();
+    const { success, tiles, messages, preprocessorState } = compiler.compile(assemblyText);
+    return { success, program: new Program(tiles), compilerMessages: messages, preprocessorState };
   }
 
   constructor(tiles: Tile[] = []) {

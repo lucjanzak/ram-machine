@@ -1,6 +1,7 @@
 import { t } from "./Localization";
-import { Nodes } from "./Nodes";
+import { Dialogs, Nodes } from "./Nodes";
 import { Program } from "./Program";
+import { assertEq } from "./Util";
 
 // r₀ r₁ r₂ r₃ r₄ r₅ r₆ r₇ r₈ r₉
 
@@ -44,7 +45,7 @@ SUB 1         ; ${abs.comments[3]}
 ${abs.labels.print}:
 WRITE 0       ; ${abs.comments[4]}
 HALT
-  `,
+`,
   N_TO_THE_N: `; ${ntn.title}
 ; ${hdiv}
 ; ${ntn.description}
@@ -109,6 +110,7 @@ HALT
   SUM: `; ${sum.title}
 ; ${hdiv}
 ; ${sum.description}
+;.SET INPUT_TAPE_UNDERFLOW zero
 
 LOAD =0 ; ${sum.comments[0]}
 STORE 1
@@ -194,6 +196,7 @@ HALT
 ; ${hdiv}
 ;
 ; ${str.description}
+;.SET INPUT_TAPE_UNDERFLOW zero
 ${str.labels.start}:
 READ 0
 WRITE 0
@@ -275,10 +278,13 @@ function compileExamplePrograms(): { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBL
   entries.forEach(([key, sourceCode], i) => {
     console.log(`Compiling example programs... (${i + 1}/${total}) ${key}`);
     if (key === "PARSER_ERROR_TEST") {
-      // TODO: instead of silencing warning, the warnings should be recorded and counted, and the count should be asserted
-      programs[key] = Program.fromAssembly(sourceCode, true);
+      const { program, compilerMessages } = Program.fromAssembly(sourceCode);
+      assertEq(compilerMessages.length, 7);
+      // console.log(compilerMessages);
+      programs[key] = program;
     } else {
-      programs[key] = Program.fromAssembly(sourceCode);
+      const { program } = Program.fromAssembly(sourceCode);
+      programs[key] = program;
     }
   });
 
@@ -292,15 +298,17 @@ function initDOM() {
   const hidden = ["PARSER_TEST", "PARSER_ERROR_TEST"];
   for (const [programKey, programText] of Object.entries(EXAMPLE_PROGRAMS_ASSEMBLY)) {
     if (hidden.includes(programKey)) continue;
+
     const btn = document.createElement("button");
     btn.classList.add("nav-button");
     btn.classList.add("nav-button-auto");
     btn.addEventListener("click", () => {
       window.RAMMachine.machine.loadAssemblyAndReset(programText);
+      Dialogs.loadFile.close();
     });
-    // TODO: get rid of this any. or check in runtime if the title key exists.
+    // TODO(optional): get rid of this any, or check in runtime if the title key exists
     const title: string = (t.examples as any)[programKey].title || programKey;
-    btn.textContent = `${t.nav.open} '${title}'`;
+    btn.textContent = `${title}`;
     Nodes.loadProgramButtons.appendChild(btn);
   }
 }

@@ -5,9 +5,9 @@ import { select, Templates, useTemplate } from "./Nodes";
 import { preferences, UninitializedRegisterReadBehavior } from "./Settings";
 import { assertNever } from "./Util";
 
-export function randomBigint(to: bigint = 10000n) {
-  const rand = BigInt(Math.floor(Math.random() * Number(to)));
-  console.trace("randomBigint: ", rand);
+export function randomBigint(to: number = 10000) {
+  const rand = BigInt(Math.floor(Math.random() * to));
+  // console.trace("randomBigint: ", rand);
   return rand;
 }
 
@@ -24,6 +24,7 @@ export class Memory {
     const register = this.registers.get(index);
     if (register === undefined) {
       if (config === "error") {
+        // TODO: display runtime error in status pane
         throw new Error(`tried to read uninitialized register (r${index})`);
       } else if (config === "zero") {
         return 0n;
@@ -49,9 +50,9 @@ export class Memory {
   setRegister(index: bigint, value: bigint, quiet: boolean) {
     this.registers.set(index, value);
     if (quiet) {
-      this.updateDOMCellLater(index);
+      this.updateDOMRowLater(index);
     } else {
-      this.updateDOMCellNow(index, value);
+      this.updateDOMRowNow(index, value);
     }
   }
 
@@ -62,7 +63,7 @@ export class Memory {
     this.refreshExistingRows();
   }
 
-  updateDOMCellNow(index: bigint, value: bigint | undefined) {
+  updateDOMRowNow(index: bigint, value: bigint | undefined) {
     if (this.scrollList === null) return;
 
     const listItem = this.scrollList.selectListItem(index);
@@ -70,11 +71,11 @@ export class Memory {
 
     const row = select(listItem, "#register-scroll-list-row");
     if (row === null) return;
-    
+
     this.updateRegisterRowElement(row, value, true);
   }
 
-  updateDOMCellLater(index: bigint) {
+  updateDOMRowLater(index: bigint) {
     this.quietlyUpdatedRegisters.add(index);
   }
 
@@ -116,12 +117,16 @@ export class Memory {
       valueSpan.textContent = `${value}`;
       valueSpan.classList.remove("uninitialized");
       if (animate) {
-        // TODO: maybe the color should stay blue until the next update?
+        // TODO(optional): maybe the color should stay blue until the next update?
         // that would require storing a list/set of all recently-updated registers, and also probably a css class, instead of an animation
-        // TODO: fix the background color becoming white instead of the default row color (depending on odd and even)
+        // TODO(visual bug): fix the background color becoming white instead of the default row color (depending on odd and even)
         row.animate(
           [
-            { backgroundColor: "#ff08", color: "blue", transform: preferences.getAnimationsEnabled() ? "scale(120%)" : "scale(100%)" },
+            {
+              backgroundColor: "#ff08",
+              color: "blue",
+              transform: preferences.getAnimationsEnabled() ? "scale(120%)" : "scale(100%)",
+            },
             { backgroundColor: "#ff08", color: "blue", transform: "scale(100%)" },
             { backgroundColor: "#ff08", color: "blue", transform: "scale(100%)" },
             { backgroundColor: "transparent", color: "initial", transform: "scale(100%)" },
@@ -160,12 +165,14 @@ export class Memory {
         hostElement.parentElement!.clientHeight
       );
 
-      // TODO: these are probably not reliable, the container size can change independently of the window as well
-      window.addEventListener("resize", () => {
-        if (this.scrollList !== null) {
-          this.scrollList.setContainerAvailableSize(this.scrollList.hostElement.parentElement!.clientHeight);
-        }
-      });
+      if (hostElement.parentElement !== null) {
+        const resizeObserver = new ResizeObserver(() => {
+          if (this.scrollList !== null) {
+            this.scrollList.setContainerAvailableSize(this.scrollList.hostElement.parentElement!.clientHeight);
+          }
+        });
+        resizeObserver.observe(hostElement.parentElement);
+      }
     }
   }
 }

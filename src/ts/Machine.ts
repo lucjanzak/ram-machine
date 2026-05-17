@@ -4,33 +4,41 @@ import { t } from "./Localization";
 import { Memory } from "./Memory";
 import { Nodes } from "./Nodes";
 import { OutputTape, OutputTapeArray, OutputTapeArrayDOM } from "./OutputTape";
+import { CompilerMessage, PreprocessorState } from "./Compiler";
 import { Program, ProgramCounter } from "./Program";
-import { MachineSettings } from "./Settings";
+import { MachineSettings, preferences, updateSettingsDOM } from "./Settings";
 import { Statistics } from "./Statistics";
 import { assertNever } from "./Util";
-
+import { BASE64_RATIO, encodeURLHashData } from "./URLCode";
+import { clearDecorations, updateCompileProblems } from "./MonacoEditor";
 
 export type StopReason = "halt" | "error" | "kill" | "timeout";
 
 export class Machine {
   private running = false; // Indicates that the machine is currently in the runAll loop
   private paused = false; // Indicates that the machine is paused inbetween steps
+  private started = false; // Indicates that the machine is started in debug mode
   private stopReason: StopReason | null = null;
   public inputTape: InputTape;
   public outputTape: OutputTape;
   public memory: Memory;
   private programCounter: ProgramCounter = 0;
-  public stats = new Statistics();
-  private debugBreakpoints: ProgramCounter[] = []; //[5, 10, 15, 30]; // TODO
+  public stats: Statistics;
+  private debugBreakpoints: ProgramCounter[] = []; //[5, 10, 15, 30]; // TODO: implement breakpoints
 
   constructor(
     private program: Program = Program.EMPTY,
     private detachedMode = false,
     public settings: MachineSettings = new MachineSettings()
   ) {
+    this.stats = new Statistics(this.detachedMode);
     this.memory = new Memory(this.detachedMode ? null : Nodes.registerScrollList);
-    this.inputTape = this.detachedMode ? new InputTapeArray() : new InputTapeArrayDOM(Nodes.inputTape, Nodes.inputTapeLength);
-    this.outputTape = this.detachedMode ? new OutputTapeArray() : new OutputTapeArrayDOM(Nodes.outputTape, Nodes.outputTapeLength);
+    this.inputTape = this.detachedMode
+      ? new InputTapeArray()
+      : new InputTapeArrayDOM(Nodes.inputTape, Nodes.inputTapeLength);
+    this.outputTape = this.detachedMode
+      ? new OutputTapeArray()
+      : new OutputTapeArrayDOM(Nodes.outputTape, Nodes.outputTapeLength);
   }
 
   getProgram() {
@@ -52,30 +60,75 @@ export class Machine {
   reset() {
     this.running = false;
     this.paused = false;
+    this.started = false;
     this.stopReason = null;
     this.inputTape.reset();
     this.outputTape.clearAndReset();
     this.memory.clear();
     this.programCounter = 0;
+    this.resetDebugRowHighlight();
     this.stats.clear();
     this.stats.replaceStatisticsDOM();
   }
 
-  loadAssemblyAndReset(assembly: string) {
-    window.RAMMachine.editor.setValue(assembly);
-    const program = Program.fromAssembly(assembly);
+  loadAssemblyAndReset(
+    assemblySourceCode: string,
+    updateEditorContents: boolean = true
+  ): {
+    success: boolean;
+    compilerMessages: CompilerMessage[];
+    preprocessorState: PreprocessorState;
+  } {
+    if (!this.detachedMode) {
+      if (updateEditorContents) {
+        window.RAMMachine.editor.setValue(assemblySourceCode);
+      }
+      clearDecorations();
+
+      let newEncodedData = encodeURLHashData(assemblySourceCode);
+      const forceUncompressed = false;
+      if (newEncodedData.ratio > BASE64_RATIO || forceUncompressed) {
+        newEncodedData = encodeURLHashData(assemblySourceCode, 0);
+      }
+      if (window.location.hash !== newEncodedData.hash) {
+        window.history.pushState(null, "", document.location.pathname + newEncodedData.hash);
+      }
+    }
+    const { success, program, compilerMessages, preprocessorState: pre } = Program.fromAssembly(assemblySourceCode);
+    if (!this.detachedMode) {
+      updateCompileProblems(success, compilerMessages);
+    }
+
+    // Load settings included within the file in preprocessor directives
+    if (pre.inputTapeString !== null) this.loadTapeFromText(pre.inputTapeString);
+    if (pre.inputTapeUnderflow !== null) this.settings.inputTapeUnderflow = pre.inputTapeUnderflow;
+    if (pre.uninitializedRegisterRead !== null) this.settings.uninitializedRegisterRead = pre.uninitializedRegisterRead;
+    if (pre.programCounterOutOfBounds !== null) this.settings.programCounterOutOfBounds = pre.programCounterOutOfBounds;
+    if (!this.detachedMode) {
+      updateSettingsDOM(this.settings, preferences);
+    }
+
+    // Load program
     this.loadProgramAndReset(program);
+    console.log("Program loaded. Compiler messages:", compilerMessages, "Preprocessor data:", pre);
+    return { success, compilerMessages, preprocessorState: pre };
   }
 
   loadProgramAndReset(program: Program) {
     this.program = program;
-    window.RAMMachine.chart.clearDataAndUpdate();
+    if (!this.detachedMode) {
+      window.RAMMachine.chart.clearDataAndUpdate();
+    }
     this.reset();
-    this.program.refreshListingWithAnimation();
+    if (!this.detachedMode) {
+      this.program.refreshListingWithAnimation();
+    }
   }
 
   loadTapeFromText(text: string) {
-    this.inputTape = this.detachedMode ? InputTapeArray.fromString(text) : InputTapeArrayDOM.fromStringDOM(text, Nodes.inputTape, Nodes.inputTapeLength);
+    this.inputTape = this.detachedMode
+      ? InputTapeArray.fromString(text)
+      : InputTapeArrayDOM.fromStringDOM(text, Nodes.inputTape, Nodes.inputTapeLength);
   }
 
   getRegister(index: bigint, quiet: boolean): bigint {
@@ -113,6 +166,7 @@ export class Machine {
       throw new Error("invalid argument: 'operand' is not a ReadableOperand");
     }
   }
+
   writeToOperand(operand: WriteableOperand, word: bigint, quiet: boolean) {
     if (operand.type === "register") {
       return this.setRegister(operand.value, word, quiet);
@@ -133,6 +187,30 @@ export class Machine {
     this.programCounter = newProgramCounter;
   }
 
+  resetDebugRowHighlight() {
+    if (!this.detachedMode) {
+      const oldActiveLine = Nodes.programListingTable.querySelector<HTMLElement>("tr.debug-line-highlight");
+      if (oldActiveLine !== null) oldActiveLine.classList.remove("debug-line-highlight");
+    }
+  }
+
+  setDebugLineHighlight(programCounter: number) {
+    if (!this.detachedMode) {
+      const oldActiveLine = Nodes.programListingTable.querySelector<HTMLElement>("tr.debug-line-highlight");
+      if (oldActiveLine !== null) oldActiveLine.classList.remove("debug-line-highlight");
+      const activeLine = Nodes.programListingTable.querySelector<HTMLElement>(
+        `tr[data-line-number="${programCounter + 1}"]`
+      );
+      if (activeLine !== null) {
+        activeLine.classList.add("debug-line-highlight");
+        activeLine.scrollIntoView({
+          behavior: preferences.getAnimationsEnabled() ? "smooth" : "instant",
+          block: "nearest",
+        });
+      }
+    }
+  }
+
   // 'quiet' -- suppresses any DOM updates that may be caused by that instruction
   // getRegister instructions can also cause DOM updates
   // Returns `true` if the machine should stop running
@@ -141,8 +219,8 @@ export class Machine {
     if (quiet) {
       this.stats.processSilently(
         instruction,
-        (i) => this.getRegister(i, quiet), // TODO: this may return a random value, which may be different from the random value used later in the program
-        () => this.inputTape.peek() || 0n // TODO: same for this
+        (i) => this.getRegister(i, quiet), // TODO(bug): this may return a random value, which may be different from the random value used later in the program
+        () => this.inputTape.peek() || 0n // TODO(bug): same for this
       );
     } else {
       this.stats.processAndUpdateDOM(
@@ -214,7 +292,7 @@ export class Machine {
     const instruction = this.program.getInstruction(this.programCounter);
     if (instruction === undefined) {
       if (this.settings.programCounterOutOfBounds === "error") {
-        throw new Error("program counter outside of program bounds"); // TODO
+        throw new Error("program counter outside of program bounds"); // TODO: display runtime error in status pane
       } else if (this.settings.programCounterOutOfBounds === "actAsHalt") {
         return this.executeInstruction({ operation: "HALT" }, quiet);
       } else {
@@ -234,23 +312,35 @@ export class Machine {
 
   private stopMachine(currentTime: DOMHighResTimeStamp, stopReason: StopReason) {
     this.running = false;
+    this.started = false;
     this.stats.timer.stop(currentTime);
     this.stopReason = stopReason;
+    this.resetDebugRowHighlight();
     this.updateDOMElements();
   }
 
   // Run All - run all instructions as fast as possible
   runAll(
     debug: boolean,
-    options: { timeoutPrintWarning?: number; timeoutUserKill?: number; timeoutAutoKill: number } = { timeoutPrintWarning: 1000, timeoutUserKill: 3000, timeoutAutoKill: 20000 }
+    options: { timeoutPrintWarning?: number; timeoutUserKill?: number; timeoutAutoKill: number } = {
+      timeoutPrintWarning: 1000,
+      timeoutUserKill: 3000,
+      timeoutAutoKill: 20000,
+    }
   ) {
-    if (this.isFinished()) return;
+    if (this.isFinished()) {
+      // TODO: reset when pressing "runAll" after finishing
+      this.reset();
+      return;
+    }
 
     let timeoutWarned = false;
     let timeoutAlerted = false;
 
-    this.stats.clear();
-    this.stats.timer.start();
+    if (!this.started) {
+      this.stats.clear();
+    }
+    this.stats.timer.resume();
     this.running = true;
 
     try {
@@ -262,7 +352,7 @@ export class Machine {
           timeoutWarned = true;
           console.warn(`Program running longer than ${options.timeoutPrintWarning}ms...`);
         }
-        
+
         if (options.timeoutUserKill && timePassed > options.timeoutUserKill && !timeoutAlerted) {
           timeoutAlerted = true;
 
@@ -284,7 +374,7 @@ export class Machine {
           this.stopMachine(currentTimePrecise, "timeout");
         }
 
-        // TODO
+        // TODO: implement breakpoints
         if (debug && this.debugBreakpoints.includes(this.programCounter)) {
           alert("breakpoint hit! @ line " + this.programCounter);
         }
@@ -306,6 +396,13 @@ export class Machine {
   step() {
     if (this.isFinished()) return;
 
+    // First step should not actually execute anything, just highlight the first line
+    if (!this.started) {
+      this.setDebugLineHighlight(this.programCounter);
+      this.started = true;
+      return;
+    }
+
     this.stats.timer.resume();
     this.paused = false;
 
@@ -314,21 +411,34 @@ export class Machine {
       if (shouldStop) {
         // Normal stop - found a HALT instruction
         this.stopMachine(performance.now(), "halt");
+        return;
       }
     } catch (e) {
       console.error("machine exec error:", e);
       // Exception encountered - error stop
       this.stopMachine(performance.now(), "error");
+      return;
     }
 
     this.stats.timer.pause();
     this.paused = true;
+
+    this.setDebugLineHighlight(this.programCounter);
   }
 
-  static runSimulation(program: Program, inputTape: InputTape, options: { timeout: number } = { timeout: 100 }, settings: MachineSettings = MachineSettings.simulationDefaults()): Machine {
+  static runSimulation(
+    program: Program,
+    inputTape: InputTape,
+    options: { timeout: number } = { timeout: 100 },
+    settings: MachineSettings = MachineSettings.simulationDefaults()
+  ): Machine {
     const machine = new Machine(program, true, settings);
     machine.inputTape = inputTape;
-    machine.runAll(false, { timeoutPrintWarning: undefined, timeoutUserKill: undefined, timeoutAutoKill: options.timeout });
+    machine.runAll(false, {
+      timeoutPrintWarning: undefined,
+      timeoutUserKill: undefined,
+      timeoutAutoKill: options.timeout,
+    });
     return machine;
   }
 }

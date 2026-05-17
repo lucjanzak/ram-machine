@@ -1,3 +1,18 @@
+#program-listing-pane {
+  width: 50%;
+  flex-grow: 1;
+  min-width: 100px;
+  border-left: var(--generic-border);
+  background-color: #fff;
+
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+#program-listing-pane:not(.active) {
+  display: none;
+}
+
 #program-listing-table {
   border-collapse: collapse;
   transform-origin: center top;
@@ -17,11 +32,12 @@
 #program-listing-table col:nth-child(3) {
   min-width: 100px;
   width: 450px;
+  max-width: 900px;
 }
 
 #program-listing-table col:nth-child(4) {
   min-width: 200px;
-  width: 800px;
+  width: 1000px;
 }
 
 #program-listing-table td,
@@ -43,6 +59,18 @@
 
 #program-listing-table tr:nth-child(even):not(:has(.tile-part-comment.big)) {
   background-color: #eeeeee;
+}
+
+#program-listing-table tr {
+  border-left: 6px solid transparent;
+  scroll-margin-top: 8rem;
+  scroll-margin-bottom: 8rem;
+}
+
+#program-listing-table tr.debug-line-highlight,
+#program-listing-table tr:nth-child(even):not(:has(.tile-part-comment.big)).debug-line-highlight {
+  background-color: #ffcccc;
+  border-left-color: #ff0000;
 }
 
 #program-listing-table td#instruction {
