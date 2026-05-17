@@ -48,19 +48,52 @@ body.animations-enabled .register-scroll-list-row {
 }
 
 .register-scroll-list-row.odd {
-  background-color: var(--accent-color3);
+  --row-bg-color: var(--accent-color3);
+  background-color: var(--row-bg-color);
 }
 
 .register-scroll-list-row.even {
-  background-color: #ffffff;
+  --row-bg-color: #ffffff;
+  background-color: var(--row-bg-color);
+}
+
+@keyframes row-update-anim {
+  0% {
+    background-color: #ffff00bf;
+    color: #22f;
+    transform: scale(120%);
+  }
+  33% {
+    background-color: #ffff00bf;
+    color: #22f;
+    transform: scale(100%)
+  }
+  67% {
+    background-color: #ffff00bf;
+    color: #22f;
+    transform: scale(100%)
+  }
+  100% {
+    background-color: var(--row-bg-color);
+    color: initial;
+    transform: scale(100%);
+  }
+}
+
+.register-scroll-list-row.animated {
+  animation: row-update-anim 0s var(--ease-out-expo) normal;
+}
+
+body.animations-enabled .register-scroll-list-row.animated {
+  animation-duration: 2s;
 }
 
 .register-scroll-list-row.odd:hover {
-  background-color: var(--accent-color3-hover);
+  --row-bg-color: var(--accent-color3-hover)
 }
 
 .register-scroll-list-row.even:hover {
-  background-color: #dfdfdf;
+  --row-bg-color: #dfdfdf;
 }
 
 .register-scroll-list-row .register-index {

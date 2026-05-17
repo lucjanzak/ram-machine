@@ -102,6 +102,7 @@ export class Memory {
 
   private updateRegisterRowElement(row: Element, value: bigint | undefined, animate: boolean) {
     const valueSpan = select(row, "#value");
+    row.classList.remove("animated");
     if (value === undefined) {
       valueSpan.textContent = t.registers.uninitialized;
       valueSpan.classList.add("uninitialized");
@@ -118,22 +119,9 @@ export class Memory {
       valueSpan.textContent = `${value}`;
       valueSpan.classList.remove("uninitialized");
       if (animate) {
-        // TODO(optional): maybe the color should stay blue until the next update?
-        // that would require storing a list/set of all recently-updated registers, and also probably a css class, instead of an animation
-        // TODO(visual bug): fix the background color becoming white instead of the default row color (depending on odd and even)
-        row.animate(
-          [
-            {
-              backgroundColor: "#ff08",
-              color: "blue",
-              transform: preferences.getAnimationsEnabled() ? "scale(120%)" : "scale(100%)",
-            },
-            { backgroundColor: "#ff08", color: "blue", transform: "scale(100%)" },
-            { backgroundColor: "#ff08", color: "blue", transform: "scale(100%)" },
-            { backgroundColor: "transparent", color: "initial", transform: "scale(100%)" },
-          ],
-          { duration: 2000, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
-        );
+        // TODO(optional): maybe the color should stay highlighted until the next update?
+        // that would require storing a list/set of all recently-updated registers
+        window.requestAnimationFrame(() => row.classList.add("animated"));
       }
     }
   }

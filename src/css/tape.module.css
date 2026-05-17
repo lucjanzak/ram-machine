@@ -23,6 +23,7 @@
   overflow-y: hidden;
 }
 
+
 .input-tape-scroll-list-cell,
 .output-tape-scroll-list-cell {
   width: 120px;
@@ -44,12 +45,47 @@ body.animations-enabled .output-tape-scroll-list-cell {
 
 .input-tape-scroll-list-cell.odd,
 .output-tape-scroll-list-cell.odd {
-  background-color: var(--accent-color3);
+  --cell-bg-color: var(--accent-color3);
+  background-color: var(--cell-bg-color);
 }
 
 .input-tape-scroll-list-cell.even,
 .output-tape-scroll-list-cell.even {
-  background-color: #ffffff;
+  --cell-bg-color: #ffffff;
+  background-color: var(--cell-bg-color);
+}
+
+@keyframes cell-update-anim {
+  0% {
+    background-color: #ffff00bf;
+    color: #22f;
+    transform: scale(120%);
+  }
+  33% {
+    background-color: #ffff00bf;
+    color: #22f;
+    transform: scale(100%)
+  }
+  67% {
+    background-color: #ffff00bf;
+    color: #22f;
+    transform: scale(100%)
+  }
+  100% {
+    background-color: var(--cell-bg-color);
+    color: initial;
+    transform: scale(100%);
+  }
+}
+
+.input-tape-scroll-list-cell.animated,
+.output-tape-scroll-list-cell.animated {
+  animation: cell-update-anim 0s var(--ease-out-expo) forwards;
+}
+
+body.animations-enabled .input-tape-scroll-list-cell.animated,
+body.animations-enabled .output-tape-scroll-list-cell.animated {
+  animation-duration: 2s;
 }
 
 .input-tape-scroll-list-cell.active,
