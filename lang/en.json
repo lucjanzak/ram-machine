@@ -95,11 +95,14 @@
         "one": "%0 error",
         "multiple1": "%0 warnings",
         "multiple2": "%0 warnings"
-      }
+      },
+      "noProblemsFound": "No problems found in source code"
     },
     "actions": {
       "compile": "Compile",
       "compileAndRun": "Compile and run",
+      "new": "New file",
+      "load": "Load file...",
       "save": "Save file",
       "saveAs": "Save file as..."
     },

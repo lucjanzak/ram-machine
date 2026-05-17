@@ -26,7 +26,7 @@ export function plural(n: number, plural: PluralVariants) {
   if (i === 0) {
     return formatString(plural.zero, `${n}`);
   } else if (i === 1) {
-    return formatString(plural.zero, `${n}`);
+    return formatString(plural.one, `${n}`);
   } else if (ten === 1) {
     return formatString(plural.multiple2, `${n}`);
   } else if (mod10 >= 2 && mod10 <= 4) {

@@ -14,6 +14,7 @@ function fileFinishedLoading(fileContents: string) {
 
   if (compilerOutput.success) {
     Nodes.loadFileStatusContainer.append(makeStatusBox(t.loadFile.loadSuccess, "success"));
+    Nodes.loadFileConfirm.focus();
   } else {
     compilerOutput.messages.forEach((msg) => {
       Nodes.loadFileStatusContainer.append(makeCompilerMessageBox(msg));
@@ -26,6 +27,7 @@ function fileChanged(file: File | null) {
   Nodes.loadFileConfirm.disabled = true;
   Nodes.loadFileStatusContainer.innerHTML = "";
   if (file === null) {
+    Nodes.loadFileInput.value = "";
     Nodes.loadFileTextareaPreview.value = "";
     return;
   }
@@ -40,9 +42,14 @@ function fileChanged(file: File | null) {
   console.log(file);
 }
 
+export function newFile() {
+  window.RAMMachine.machine.loadAssemblyAndReset("");
+}
+
 export function showLoadDialog() {
   fileChanged(null);
   Dialogs.loadFile.showModal();
+  window.requestAnimationFrame(() => Nodes.loadFileInput.focus());
 }
 
 export function initLoadFileDOM() {

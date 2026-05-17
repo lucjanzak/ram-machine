@@ -95,6 +95,7 @@ export class Preferences {
     if (typeof json.viewCodeEditorPane === "boolean") {
       preferences.setPaneVisibility("codeEditor", json.viewCodeEditorPane);
     }
+    // console.trace("load", jsonText, preferences);
     return preferences;
   }
 
@@ -113,7 +114,7 @@ export class Preferences {
     console.trace("save", localStorage.getItem("RAMMachine.preferences"));
   }
 
-  constructor() {
+  constructor(private detached = false) {
     this.revertToDefaults();
   }
 
@@ -129,7 +130,10 @@ export class Preferences {
   }
 
   setAnimationsEnabled(enabled: boolean) {
+    // console.trace("setAnimationsEnabled", enabled)
     this.animationsEnabled = enabled;
+    if (this.detached) return;
+
     if (this.animationsEnabled) {
       document.body.classList.add("animations-enabled");
       document.body.classList.add("monaco-enable-motion");
@@ -162,6 +166,7 @@ export class Preferences {
 
   setPaneVisibility(paneName: PaneName, visible: boolean) {
     this.paneVisibility[paneName] = visible;
+    if (this.detached) return;
 
     const pane = getPane(paneName);
     const button = getPaneButton(paneName);
@@ -174,6 +179,8 @@ export class Preferences {
   }
 
   refreshPaneVisibility() {
+    if (this.detached) return;
+    
     Object.entries(this.paneVisibility).forEach(([key, visible]) => {
       const paneName = key as PaneName;
       const pane = getPane(paneName);
@@ -216,19 +223,19 @@ export function updateDefaultSettingsDOM(defaultSettings: MachineSettings, defau
     Nodes.settingsForm,
     `#program-counter-out-of-bounds-${defaultSettings.programCounterOutOfBounds}`
   ).defaultChecked = true;
-  if (preferences.getAnimationsEnabled()) {
+  if (defaultPreferences.getAnimationsEnabled()) {
     select<HTMLInputElement>(Nodes.settingsForm, `#animations-enable`).defaultChecked = true;
   } else {
     select<HTMLInputElement>(Nodes.settingsForm, `#animations-disable`).defaultChecked = true;
   }
   select<HTMLInputElement>(Nodes.settingsForm, `#monaco-editor-snippets-checkbox`).defaultChecked =
-    preferences.getCodeSnippetsEnabled();
+    defaultPreferences.getCodeSnippetsEnabled();
 }
 
 export const preferences = Preferences.loadOrNew();
 export function initSettingsDOM() {
   const defaultSettings = new MachineSettings();
-  const defaultPreferences = new Preferences();
+  const defaultPreferences = new Preferences(true);
   updateDefaultSettingsDOM(defaultSettings, defaultPreferences);
 
   updateSettingsDOM(window.RAMMachine.machine.settings, preferences);

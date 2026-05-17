@@ -12,7 +12,8 @@ import {
   MessageSeverity,
 } from "./Compiler";
 import { unwrap } from "./Util";
-import { saveFileAndDownload, showSaveDialog as showSaveDialog } from "./SaveFile";
+import { saveFileAndDownload, showSaveDialog } from "./SaveFile";
+import { newFile, showLoadDialog } from "./LoadFile";
 
 function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage {
   return {
@@ -332,13 +333,33 @@ function initializeEditorKeybinds(editor: monaco.editor.IStandaloneCodeEditor) {
     keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.Enter],
   });
   monaco.editor.addEditorAction({
+    id: "ramMachine.action.new",
+    label: t.editor.actions.new,
+    run: () => {
+      newFile();
+    },
+    contextMenuGroupId: "file",
+    contextMenuOrder: 0,
+    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyM /*, monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyN*/],
+  });
+  monaco.editor.addEditorAction({
+    id: "ramMachine.action.load",
+    label: t.editor.actions.load,
+    run: () => {
+      showLoadDialog();
+    },
+    contextMenuGroupId: "file",
+    contextMenuOrder: 1,
+    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyO],
+  });
+  monaco.editor.addEditorAction({
     id: "ramMachine.action.save",
     label: t.editor.actions.save,
     run: () => {
       saveFileAndDownload();
     },
-    contextMenuGroupId: "save",
-    contextMenuOrder: 0,
+    contextMenuGroupId: "file",
+    contextMenuOrder: 2,
     keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
   });
   monaco.editor.addEditorAction({
@@ -347,8 +368,8 @@ function initializeEditorKeybinds(editor: monaco.editor.IStandaloneCodeEditor) {
     run: () => {
       showSaveDialog();
     },
-    contextMenuGroupId: "save",
-    contextMenuOrder: 1,
+    contextMenuGroupId: "file",
+    contextMenuOrder: 3,
     keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyS],
   });
 }
@@ -473,6 +494,7 @@ const messageSeverityMap: { [K in MessageSeverity]: monaco.MarkerSeverity } = {
   warning: monaco.MarkerSeverity.Warning,
 };
 
+let hasProblems = false;
 export function updateCompileProblems(success: boolean, compilerMessages: CompilerMessage[]) {
   // Update count of errors in editor pane
   let errorCount = 0;
@@ -490,6 +512,8 @@ export function updateCompileProblems(success: boolean, compilerMessages: Compil
     plural(warningCount, t.editor.problems.warningCount)
   );
 
+  hasProblems = (errorCount + warningCount) > 0;
+
   // List compile errors in status pane
   Nodes.compileErrorsContainer.innerHTML = "";
   compilerMessages.forEach((msg) => {
@@ -502,7 +526,7 @@ export function updateCompileProblems(success: boolean, compilerMessages: Compil
     const box = makeStatusBox(t.status.compilation.success, "success");
     Nodes.compileErrorsContainer.appendChild(box);
   } else {
-    const box = makeStatusBox(t.status.compilation.failure, "warning");
+    const box = makeStatusBox(t.status.compilation.failure, "error");
     Nodes.compileErrorsContainer.appendChild(box);
   }
 
@@ -548,6 +572,10 @@ export function initEditorPaneDOM() {
     compileAndRunEditorSourceCode();
   });
   Nodes.showProblemsButton.addEventListener("click", () => {
-    showNextProblem();
+    if (hasProblems) {
+      showNextProblem();
+    } else {
+      alert(t.editor.problems.noProblemsFound);
+    }
   });
 }

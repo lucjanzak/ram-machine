@@ -1,4 +1,3 @@
-import { editor } from "monaco-editor";
 import { Dialogs, Nodes } from "./Nodes";
 import { t } from "./Localization";
 

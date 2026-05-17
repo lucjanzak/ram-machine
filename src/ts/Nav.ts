@@ -1,4 +1,4 @@
-import { showLoadDialog } from "./LoadFile";
+import { newFile, showLoadDialog } from "./LoadFile";
 import { t } from "./Localization";
 import { Dialogs, Nodes } from "./Nodes";
 import { PaneName } from "./Panes";
@@ -7,7 +7,7 @@ import { preferences } from "./Settings";
 
 export function initNavDOM() {
   Nodes.newProgramButton.addEventListener("click", () => {
-    window.RAMMachine.machine.loadAssemblyAndReset("");
+    newFile();
   });
   Nodes.loadProgramButton.addEventListener("click", () => {
     showLoadDialog();

@@ -1,4 +1,4 @@
-import { DEFAULT_PROGRAM_ASSEMBLY, EXAMPLE_PROGRAMS, EXAMPLE_PROGRAMS_ASSEMBLY } from "./Examples";
+import { EXAMPLE_PROGRAMS, EXAMPLE_PROGRAMS_ASSEMBLY } from "./Examples";
 import { Machine } from "./Machine";
 import { initDOM } from "./Nodes";
 import { Program } from "./Program";
@@ -10,6 +10,7 @@ import "../css/index.module.css";
 import { ComplexityChart, initChart } from "./Chart";
 import { loadInitialHash } from "./URLCode";
 import { preferences } from "./Settings";
+import { initGlobalKeybinds } from "./Keybinds";
 
 const machine = new Machine();
 const editor = createEditor();
@@ -48,6 +49,7 @@ window.lang = {
 
 // Initialization
 initDOM();
+initGlobalKeybinds();
 preferences.refreshPaneVisibility();
 loadInitialHash();
 

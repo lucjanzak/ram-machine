@@ -95,11 +95,14 @@
         "one": "%0 ostrzeżenie",
         "multiple1": "%0 ostrzeżenia",
         "multiple2": "%0 ostrzeżeń"
-      }
+      },
+      "noProblemsFound": "Nie znaleziono problemów w kodzie źródłowym"
     },
     "actions": {
       "compile": "Kompiluj",
       "compileAndRun": "Kompiluj i uruchom",
+      "new": "Nowy plik",
+      "load": "Wczytaj plik...",
       "save": "Zapisz plik",
       "saveAs": "Zapisz plik jako..."
     },

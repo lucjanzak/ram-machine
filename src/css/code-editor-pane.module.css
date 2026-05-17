@@ -30,7 +30,6 @@ body.animations-enabled #code-editor-pane {
   flex-direction: column;
   align-items: stretch;
   width: 100%;
-  height: 100%;
   flex-grow: 1;
   min-height: 0;
 }
@@ -45,6 +44,10 @@ body.animations-enabled #code-editor-pane {
   align-items: stretch;
 }
 
+#code-editor-buttons button {
+  height: max-content;
+}
+
 #show-problems-button {
   display: flex;
   flex-direction: row;
@@ -53,6 +56,8 @@ body.animations-enabled #code-editor-pane {
   cursor: pointer;
   padding: 0.5rem 1rem;
   border-radius: 8px;
+  text-wrap: nowrap;
+  height: max-content;
 }
 
 #show-problems-button:hover {
