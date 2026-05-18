@@ -59,25 +59,48 @@ export class Machine {
 
   getMachineStateString() {
     const s = t.status.status.machineStates;
+    const state = this.getMachineState();
+    if (state === "paused") {
+      return s.paused;
+    } else if (state === "running") {
+      return s.running;
+    } else if (state === "reset") {
+      return s.reset;
+    } else if (state === "halt") {
+      return s.finished;
+    } else if (state === "error") {
+      return s.error;
+    } else if (state === "kill") {
+      return s.kill;
+    } else if (state === "timeout") {
+      return s.timeout;
+    } else if (state === null) {
+      return s.unknown;
+    } else {
+      assertNever(state);
+    }
+  }
+
+  getMachineState(): "paused" | "running" | "reset" | "halt" | "error" | "kill" | "timeout" | null {
     if (this.stopReason === null) {
       if (this.paused) {
-        return s.paused;
+        return "paused";
       }
       if (this.running) {
-        return s.running;
+        return "running";
       }
       if (!this.started) {
-        return s.reset;
+        return "reset";
       }
-      return s.unknown;
+      return null;
     } else if (this.stopReason === "halt") {
-      return s.finished;
+      return "halt";
     } else if (this.stopReason === "error") {
-      return s.error;
+      return "error";
     } else if (this.stopReason === "kill") {
-      return s.kill;
+      return "kill";
     } else if (this.stopReason === "timeout") {
-      return s.timeout;
+      return "timeout";
     } else {
       assertNever(this.stopReason);
     }
@@ -86,6 +109,8 @@ export class Machine {
   updateMachineStateDOM() {
     if (this.detachedMode) return;
     Nodes.statusMachineState.textContent = this.getMachineStateString();
+    const state = this.getMachineState();
+    document.body.dataset.machineState = state === null ? undefined : state;
   }
 
   updateProgramCounterDOM() {

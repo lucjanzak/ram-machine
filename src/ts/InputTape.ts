@@ -1,7 +1,7 @@
 import { ContiguousArray } from "./BigArray";
 import { bigintMax, bigintParse } from "./BigIntUtils";
 import { BigScrollList } from "./BigScrollList";
-import { InputDataSettings as InputDataConfig, parseSequenceType, Sequence } from "./Chart";
+import { InputDataSettings as InputDataConfig, Sequence } from "./Chart";
 import { t } from "./Localization";
 import { randomBigint } from "./Memory";
 import { select, Templates, useTemplate } from "./Nodes";

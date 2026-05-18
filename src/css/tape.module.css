@@ -7,6 +7,34 @@
   border-top: var(--generic-border);
 }
 
+:is(.input-tape-pane, .output-tape-pane),
+body[data-machine-state="reset"] :is(.input-tape-pane, .output-tape-pane),
+body[data-machine-state="unknown"] :is(.input-tape-pane, .output-tape-pane) {
+  background-color: #ffffff;
+}
+
+body[data-machine-state="paused"] :is(.input-tape-pane, .output-tape-pane) {
+  background-color: #ffff7f;
+}
+
+body[data-machine-state="running"] :is(.input-tape-pane, .output-tape-pane) {
+  background-color: #7f7fff;
+}
+
+body[data-machine-state="halt"] :is(.input-tape-pane, .output-tape-pane) {
+  background-color: #7fff7f;
+}
+
+body[data-machine-state="error"] :is(.input-tape-pane, .output-tape-pane) {
+  background-color: #ff7f7f;
+}
+
+body[data-machine-state="kill"] :is(.input-tape-pane, .output-tape-pane),
+body[data-machine-state="timeout"] :is(.input-tape-pane, .output-tape-pane) {
+  background-color: #7f0000;
+  color: #fff;
+}
+
 #input-tape-container,
 #output-tape-container {
   display: flex;
@@ -22,7 +50,6 @@
 #output-tape {
   overflow-y: hidden;
 }
-
 
 .input-tape-scroll-list-cell,
 .output-tape-scroll-list-cell {
@@ -64,12 +91,12 @@ body.animations-enabled .output-tape-scroll-list-cell {
   33% {
     background-color: #ffff00bf;
     color: #22f;
-    transform: scale(100%)
+    transform: scale(100%);
   }
   67% {
     background-color: #ffff00bf;
     color: #22f;
-    transform: scale(100%)
+    transform: scale(100%);
   }
   100% {
     background-color: var(--cell-bg-color);
