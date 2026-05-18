@@ -313,21 +313,26 @@
     "atLine": "(w linii %0)",
     "atLineCol": "(w linii %0:%1)",
     "preprocessor": {
-      "setInvalidValue": "nieprawidłowa wartość dla dyrektywy .SET z kluczem",
+      "setInvalidValue": "nieprawidłowa wartość dla dyrektywy .SET z kluczem '%0': %1",
+      "setInvalidValueWithHint": "nieprawidłowa wartość dla dyrektywy .SET z kluczem '%0': %1 (poprawne wartości to: %2)",
+      "setMissingValue": "brak wartości dla dyrektywy .SET z kluczem '%0'",
       "setInvalidKey": "nieprawidłowy klucz dla dyrektywy .SET",
-      "unknownDirective": "nieznana dyrektywa preprocesora",
-      "expectedDirective": "oczekiwano dyrektywy preprocesora",
+      "unknownDirective": "nieznana dyrektywa preprocesora: %0",
+      "expectedDirective": "pusta dyrektywa preprocesora",
+      "expectedArguments": "oczekiwano argumentów dla dyrektywy",
       "genericIgnoreWarning": "dyrektywa zostanie zignorowana"
     },
     "parser": {
-      "bigintParseError": "nieprawidłowa liczba całkowita",
+      "bigintParseError": "nieprawidłowa liczba całkowita: %0",
       "bigintExpected": "oczekiwano liczby całkowitej",
+      "labelExpected": "oczekiwano etykiety",
+      "unexpectedOperand": "nieoczekiwany operand: %0",
       "immediateWritableOperand": "operand bezpośredni nie jest dozwolony dla tej instrukcji",
       "negativeRegister": "numer rejestru nie może być ujemny",
       "negativeImmediate": "operand bezpośredni nie może być ujemny",
-      "unrecognizedMnemonic": "nieznana nazwa instrukcji",
+      "unrecognizedMnemonic": "nieznana nazwa instrukcji: %0",
       "emptyLabel": "etykieta nie może być pusta",
-      "redefinedLabel": "ta etykieta została już zdefiniowana w linii"
+      "redefinedLabel": "ta etykieta została już zdefiniowana w linii %1: '%0'"
     }
   },
   "examples": {

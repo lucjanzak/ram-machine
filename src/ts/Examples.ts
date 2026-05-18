@@ -279,7 +279,7 @@ function compileExamplePrograms(): { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBL
     console.log(`Compiling example programs... (${i + 1}/${total}) ${key}`);
     if (key === "PARSER_ERROR_TEST") {
       const { program, compilerMessages } = Program.fromAssembly(sourceCode);
-      assertEq(compilerMessages.length, 7);
+      assertEq(compilerMessages.length, 8);
       // console.log(compilerMessages);
       programs[key] = program;
     } else {
@@ -307,7 +307,7 @@ function initDOM() {
       Dialogs.loadFile.close();
     });
 
-    const exampleTranslations: {[key: string]: {title: string}} = t.examples;
+    const exampleTranslations: { [key: string]: { title: string } } = t.examples;
     if (programKey in exampleTranslations) {
       const title = exampleTranslations[programKey].title;
       btn.textContent = `${title}`;

@@ -88,6 +88,15 @@ export class Machine {
     Nodes.statusMachineState.textContent = this.getMachineStateString();
   }
 
+  updateProgramCounterDOM() {
+    if (this.detachedMode) return;
+    if (this.started) {
+      Nodes.statusProgramCounter.textContent = `${this.programCounter + 1}`;
+    } else {
+      Nodes.statusProgramCounter.textContent = "0";
+    }
+  }
+
   reset() {
     this.running = false;
     this.paused = false;
@@ -101,6 +110,7 @@ export class Machine {
     this.stats.clear();
     this.stats.replaceStatisticsTableAndUpdateDOM();
     this.updateMachineStateDOM();
+    this.updateProgramCounterDOM();
   }
 
   loadAssemblyAndReset(
@@ -352,6 +362,7 @@ export class Machine {
     this.memory.refreshAllQuietlyUpdatedRegisters();
     this.outputTape.refreshAllQuietlyUpdatedCells();
     this.updateMachineStateDOM();
+    this.updateProgramCounterDOM();
   }
 
   private stopMachine(currentTime: DOMHighResTimeStamp, stopReason: StopReason) {
@@ -467,6 +478,7 @@ export class Machine {
       this.paused = true;
       this.setDebugLineHighlight(this.programCounter);
       this.updateMachineStateDOM();
+      this.updateProgramCounterDOM();
       return;
     }
 
@@ -492,6 +504,7 @@ export class Machine {
     this.paused = true;
     this.setDebugLineHighlight(this.programCounter);
     this.updateMachineStateDOM();
+    this.updateProgramCounterDOM();
   }
 
   static runSimulation(

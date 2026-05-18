@@ -313,21 +313,26 @@
     "atLine": "(at line %0)",
     "atLineCol": "(at line %0:%1)",
     "preprocessor": {
-      "setInvalidValue": "invalid value for .SET directive with key",
+      "setInvalidValue": "invalid value for .SET directive with key '%0': %1",
+      "setInvalidValueWithHint": "invalid value for .SET directive with key '%0': %1 (valid values are: %2)",
+      "setMissingValue": "missing value for .SET directive with key '%0'",
       "setInvalidKey": "invalid setting key for .SET directive",
-      "unknownDirective": "unknown preprocessor directive",
-      "expectedDirective": "expected preprocessor directive",
+      "unknownDirective": "unknown preprocessor directive: %0",
+      "expectedDirective": "empty preprocessor directive",
+      "expectedArguments": "expected arguments for directive",
       "genericIgnoreWarning": "ignoring"
     },
     "parser": {
-      "bigintParseError": "could not parse bigint",
+      "bigintParseError": "could not parse bigint: %0",
       "bigintExpected": "integer expected",
+      "labelExpected": "label expected",
+      "unexpectedOperand": "unexpected operand: %0",
       "immediateWritableOperand": "immediate operand is not allowed for this instruction",
       "negativeRegister": "register number cannot be negative",
       "negativeImmediate": "immediate value cannot be negative",
-      "unrecognizedMnemonic": "unrecognized mnemonic",
+      "unrecognizedMnemonic": "unrecognized mnemonic: %0",
       "emptyLabel": "label cannot be empty",
-      "redefinedLabel": "label was already defined at line"
+      "redefinedLabel": "label was already defined at line %1: '%0'"
     }
   },
   "examples": {

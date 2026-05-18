@@ -68,7 +68,7 @@ body.animations-enabled #status-pane {
   text-wrap: nowrap;
 }
 
-td#status-machine-state {
+td.double-line-height {
   height: 2lh;
 }
 

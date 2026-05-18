@@ -121,11 +121,17 @@ export class Compiler {
         operand: this.parseWriteableOperand(operand),
       };
     } else if (isPartOfArray(mnemonic, JUMP_INSTRUCTIONS)) {
+      if (operand === "") {
+        throw new ParserException(ParserError.labelExpected());
+      }
       return {
         operation: mnemonic,
         label: operand,
       };
     } else if (isPartOfArray(mnemonic, NO_OPERAND_INSTRUCTIONS)) {
+      if (operand !== "") {
+        throw new ParserException(ParserError.unexpectedOperand(operand));
+      }
       return {
         operation: mnemonic,
       };
@@ -186,22 +192,60 @@ export class Compiler {
     } else if (commandName === "INPUT_TAPE") {
       state.inputTapeString = remaining;
     } else if (commandName === "SET") {
+      if (remaining === undefined || remaining.trim() === "") {
+        preprocessorWarn(PreprocessorError.expectedArguments());
+        return;
+      }
+
       let [settingKey, settingValue, _] = remaining.split(/\s+(.*)/s);
       settingKey = settingKey.toUpperCase();
       if (settingKey === "INPUT_TAPE_UNDERFLOW") {
+        if (settingValue === undefined || settingValue.trim() === "") {
+          preprocessorWarn(PreprocessorError.setMissingValue(settingKey));
+          return;
+        }
         const parsed = MachineSettings.parseInputTapeUnderflowBehavior(settingValue);
-        if (parsed === null) preprocessorWarn(PreprocessorError.setInvalidValue("INPUT_TAPE_UNDERFLOW", settingValue));
-        else state.inputTapeUnderflow = parsed;
+        if (parsed === null) {
+          preprocessorWarn(
+            PreprocessorError.setInvalidValue("INPUT_TAPE_UNDERFLOW", settingValue, ["error", "zero", "random"])
+          );
+          return;
+        }
+
+        state.inputTapeUnderflow = parsed;
       } else if (settingKey === "UNINITIALIZED_REGISTER_READ") {
+        if (settingValue === undefined || settingValue.trim() === "") {
+          preprocessorWarn(PreprocessorError.setMissingValue(settingKey));
+          return;
+        }
         const parsed = MachineSettings.parseUninitializedRegisterReadBehavior(settingValue);
-        if (parsed === null)
-          preprocessorWarn(PreprocessorError.setInvalidValue("UNINITIALIZED_REGISTER_READ", settingValue));
-        else state.uninitializedRegisterRead = parsed;
+        if (parsed === null) {
+          preprocessorWarn(
+            PreprocessorError.setInvalidValue("UNINITIALIZED_REGISTER_READ", settingValue, [
+              "error",
+              "zero",
+              "random",
+              "superpositionCollapse",
+            ])
+          );
+          return;
+        }
+
+        state.uninitializedRegisterRead = parsed;
       } else if (settingKey === "PROGRAM_COUNTER_OUT_OF_BOUNDS") {
+        if (settingValue === undefined || settingValue.trim() === "") {
+          preprocessorWarn(PreprocessorError.setMissingValue(settingKey));
+          return;
+        }
         const parsed = MachineSettings.parseProgramCounterOutOfBoundsBehavior(settingValue);
-        if (parsed === null)
-          preprocessorWarn(PreprocessorError.setInvalidValue("PROGRAM_COUNTER_OUT_OF_BOUNDS", settingValue));
-        else state.programCounterOutOfBounds = parsed;
+        if (parsed === null) {
+          preprocessorWarn(
+            PreprocessorError.setInvalidValue("PROGRAM_COUNTER_OUT_OF_BOUNDS", settingValue, ["error", "actAsHalt"])
+          );
+          return;
+        }
+
+        state.programCounterOutOfBounds = parsed;
       } else {
         preprocessorWarn(PreprocessorError.setInvalidKey(settingKey));
       }
