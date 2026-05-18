@@ -57,7 +57,7 @@ const config /*: webpack.Configuration*/ = {
           url: false,
         },
       },
-      // TODO: properly fix .ttfs not loading
+      // TODO(optional): properly fix .ttfs not loading
       // {
       //   test: /\.ttf$/,
       //   use: ["file-loader"],

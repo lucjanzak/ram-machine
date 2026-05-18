@@ -64,14 +64,13 @@ dialog:not(:open) {
   pointer-events: none;
 }
 
-
 dialog:open::backdrop {
   animation: dialog-backdrop-opening-anim 0s var(--ease-out-expo) forwards;
 }
 
 dialog:not(:open)::backdrop {
   animation: dialog-backdrop-closing-anim 0s var(--ease-out-expo) forwards;
-  /* TODO: this doesn't work (yet?) but whatever */
+  /* TODO(optional): this doesn't work (yet?) but whatever */
 }
 
 body.animations-enabled dialog:not(:open),

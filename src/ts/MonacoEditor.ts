@@ -445,7 +445,6 @@ export function compileAndRunEditorSourceCode() {
   const output = window.RAMMachine.machine.loadAssemblyAndReset(sourceText, false);
   if (output.success) {
     window.RAMMachine.machine.runAll(false, { timeoutAutoKill: 500 });
-    // TODO: display runtime errors in status pane for all undetached runAll calls
   }
 }
 

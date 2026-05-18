@@ -25,7 +25,6 @@ export class Memory {
     const register = this.registers.get(index);
     if (register === undefined) {
       if (config === "error") {
-        // TODO: display runtime error in status pane
         throw new RuntimeException(RuntimeError.uninitializedRegisterRead(index));
       } else if (config === "zero") {
         return 0n;
@@ -125,7 +124,7 @@ export class Memory {
         // that would require storing a list/set of all recently-updated registers
 
         // row.classList.add("animated")
-        setTimeout(() => row.classList.add("animated")); // TODO: fix this, doesn't work consistently without settimeout for some reason
+        setTimeout(() => row.classList.add("animated")); // TODO(hack): fix this, doesn't work consistently without settimeout for some reason
       }
     }
   }

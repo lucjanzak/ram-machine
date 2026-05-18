@@ -350,7 +350,7 @@ export class Compiler {
 
   static defaultSettings(): CompilerSettings {
     return {
-      // TODO: I don't know if it should be allowed to use negative literals, or if it should report an error. For now, this is allowed.
+      // TODO(optional): I don't know if it should be allowed to use negative literals, or if it should report an error. For now, this is allowed.
       // If this is ever changed, it also needs to be changed in the Monaco language definition.
       allowNegativeImmediate: true,
     };

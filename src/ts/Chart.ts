@@ -547,7 +547,7 @@ export function initChartDOM() {
     window.RAMMachine.chart.changeTimeoutMs(parseInt(Nodes.executionTimeoutInput.defaultValue));
     window.RAMMachine.chart.changeRealTimeAxisVisibility(Nodes.toggleRealTimeAxis.defaultChecked);
 
-    // TODO: fix this hack
+    // TODO(hack): fix this hack
     // This has to be slightly delayed, because the .value of fields is still intact and not yet reset to defaults
     setTimeout(() => {
       window.RAMMachine.chart.changeComparisonFunction(
