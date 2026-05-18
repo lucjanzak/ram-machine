@@ -448,6 +448,12 @@
         "Wypisz wskazany element na taśmę"
       ]
     },
+    "FIBONACCI_ITERATIVE": {
+      "title": "Fibonacci (iteracja)"
+    },
+    "FIBONACCI_RECURSIVE": {
+      "title": "Fibonacci (rekurencja)"
+    },
     "STRESS_TEST": {
       "title": "Stress test",
       "description": "Krótka pętla która kopiuje wartości z taśmy wejściowej na taśmę wyjściową.",

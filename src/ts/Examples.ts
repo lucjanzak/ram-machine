@@ -192,6 +192,327 @@ JUMP ${rev.labels.write_array_loop_check}
 end:
 HALT
 `,
+  FIBONACCI_ITERATIVE: `; Fibonacci sequence (iterative implementation)
+; ${hdiv}
+; r₁ - previous value
+; r₂ - pre-previous value
+; r₃ - current value
+; r₄ - loop counter
+
+
+LOAD =1 ; Initialize registers:
+STORE 1 ; r₁ := 1
+STORE 2 ; r₂ := 1
+
+READ 4  ; r₄ := n (value from tape)
+LOAD 4
+SUB =2 
+STORE 4 ; r₄ := r₄ - 2
+JGTZ loop
+
+; n ≤ 2 -- write out 1 and stop execution
+return_one:
+WRITE =1
+HALT
+
+; Main loop
+loop:
+; r₃ := r₂ + r₁
+LOAD 2
+ADD 1
+STORE 3  
+
+; r₁ := r₂
+LOAD 2
+STORE 1  
+
+; r₂ := r₃
+LOAD 3
+STORE 2
+
+; r₄ := r₄ - 1;
+LOAD 4
+SUB =1
+STORE 4
+
+; if r₄ > 0, repeat the loop
+JGTZ loop
+
+; Write out the iterative result
+loop_end:
+WRITE 3
+HALT
+`,
+  FIBONACCI_RECURSIVE: `; Fibonacci sequence (recursive implementation)
+; ${hdiv}
+;
+; Call stack layout:
+;
+; To call a function, write to r10-r99, and the function
+; must immediately push the items onto the stack in the following order:
+; [return address]  (from r10)
+; [local9]
+; [local8]
+; [local7]
+; [local6]
+; [local5]
+; [arg4...]         (from r15)
+; [arg3]            (from r14)
+; [arg2]            (from r13)
+; [arg1]            (from r12)
+; [arg0]            (from r11)
+;
+; In the function, the arguments may be fetched by using:
+; \`\`\`
+; LOAD *110
+; SUB =n
+; LOAD *0
+; \`\`\`
+; where n is the arg number. The arguments may be modified by using:
+; \`\`\`
+; LOAD *110
+; SUB =n
+; STORE 1
+; LOAD =value
+; STORE *1
+; \`\`\`
+;
+; When returning, the function must pull all args/decrement the stack pointer,
+; such that only the return address is left on the stack, and then call rts.
+
+__init:
+; Initialize everything
+; ${hdiv}
+; r0         : main procedure argument
+; r1-r9      : scratch memory
+; r10-r99    : procedure arguments / r10 = common return value
+; r100-r199  : globals segment
+; r200-r...  : dynamic allocation
+;
+; Initialize allocator
+; ${hdiv}
+; r100  : dynalloc_next_free_position
+LOAD =200
+STORE 100   ; dynalloc_next_free_position = 200
+
+; Initialize stack
+; ${hdiv}
+; r110                        : pointer to stack structure
+; [r110]                      : stack pointer
+; [r110+1]                    : capacity
+; [r110+2]..[[r110]]          : stack contents
+; [r110+2]..[r110+2+[r110+1]] : stack reserved space
+; ${hdiv}
+; Allocate 250 cells for the stack
+LOAD =250
+STORE 2     ; r2 = STACK_SIZE
+LOAD 100
+STORE 110   ; stack = dynalloc_next_free_position;
+ADD 2
+ADD =2
+STORE 100   ; dynalloc_next_free_position += STACK_SIZE + 2;
+
+; Initialize stack pointer and capacity
+LOAD 110
+STORE 1     ; r1 = stack->top; // [stack + 0]
+ADD =2
+STORE *1    ; stack->top = (stack + 2);
+
+LOAD 110
+ADD =1
+STORE 1     ; r1 = stack->capacity; // [stack + 1]
+LOAD 2
+STORE *1    ; stack->capacity = STACK_SIZE;
+JUMP entry_point
+
+
+
+; ===== PROCEDURE jump_to_fn =====
+; Arguments:
+; r0 : target_block_id
+;
+; Scratch:
+; r1 : __local__target_block_id
+jump_to_fn:
+STORE 1
+JGTZ __jump_to_fn__blocks
+
+; Built-in functions
+ADD =1
+JZERO dynalloc_allocate_cells ; BLOCK -1
+
+JUMP __jump_to_fn__no_function_found
+
+; User functions
+__jump_to_fn__blocks:
+SUB =1000
+JZERO block_1000
+SUB =1
+JZERO block_1001
+SUB =1
+JZERO block_1002
+SUB =1
+JZERO block_1003
+SUB =1
+JZERO block_1004
+SUB =1
+JZERO block_1005
+SUB =1
+JZERO block_1006
+SUB =1
+JZERO block_1007
+SUB =1
+JZERO block_1008
+SUB =1
+JZERO block_1009
+SUB =1
+JZERO block_1010
+JUMP __jump_to_fn__no_function_found
+
+__jump_to_fn__no_function_found:
+; Function/block with ID contained in r1 was not found
+WRITE =99999
+WRITE 1
+JUMP kill
+
+
+
+; ===== PROCEDURE rts =====
+; Arguments:
+; (none)
+;
+; Scratch:
+; r1 : __local__stack_pos
+rts:
+LOAD *110
+SUB =1
+STORE *110   ; stack->top = stack->top - 1; // Decrement stack pointer
+
+LOAD *110
+STORE 1      ; __local__stack_pos = stack->top;
+LOAD *1      ; r0 = *__local__stack_pos;
+JUMP jump_to_fn
+
+
+
+; ===== FUNCTION fibonacci(n) =====
+; fib(n) = fib(n - 1) + fib(n - 2)
+;
+; Arguments:
+; r10 [ret]
+; r11 [arg1] : n // Value of n
+;
+; Locals:
+; [local2] : sum
+;
+; Scratch:
+; r1 : __local__stack_top
+; r2 : __local__var
+;
+; Returns:
+; r10 : result // Value of fibonacci(n)
+fn_fibonacci:
+; --- PRELUDE BEGIN ---
+LOAD *110
+STORE 1     ; __local__stack_top = stack->top;
+
+LOAD 10
+STORE *1    ; *__local__stack_top = r10; // Push [ret]
+LOAD 1
+ADD =1
+STORE 1     ; __local__stack_top++;
+
+ADD =1      ; Local variable count: 1 
+STORE 1     ; __local__stack_top += 1;
+
+LOAD 11
+STORE *1    ; *__local__stack_top = r11; // Push [arg0] : n
+LOAD 1
+ADD =1
+STORE 1     ; __local__stack_top++;
+
+STORE *110  ; stack->top = __local__stack_top;
+; --- PRELUDE END ---
+
+LOAD *110
+SUB =1
+LOAD *0     ; Read [arg0] n
+SUB =1
+STORE 11    ; r11 = n - 1;
+
+; if (n <= 2) return 1;
+SUB =1
+JGTZ fibonacci_recursive
+JUMP fibonacci_return_1
+fibonacci_recursive:
+
+; else
+LOAD =1001
+STORE 10    ; ret = 1001
+JUMP fn_fibonacci
+block_1001:
+LOAD 10
+STORE 2     ; r2 = fib(n - 1);
+
+LOAD *110
+SUB =2
+STORE 1
+LOAD 2
+STORE *1    ; sum = fib(n - 1);
+
+
+LOAD *110
+SUB =1
+LOAD *0     ; Read [arg0] n
+SUB =2
+STORE 11    ; r11 = n - 2;
+
+LOAD =1002
+STORE 10    ; ret = 1002
+JUMP fn_fibonacci
+block_1002:
+LOAD 10
+STORE 2     ; r2 = fib(n - 2);
+
+LOAD *110
+SUB =2
+STORE 1
+LOAD *1
+ADD 2
+STORE 10    ; return sum + fib(n - 2);
+JUMP __fn_fibonacci__encore
+
+fibonacci_return_1:
+LOAD =1
+STORE 10   ; return 1;
+
+; --- ENCORE BEGIN ---
+__fn_fibonacci__encore:
+LOAD *110
+SUB =2      ; Local variable count + argument count = 4
+STORE *110  ; __local__stack_top = stack->top;
+JUMP rts
+; --- ENCORE END ---
+
+
+
+
+
+entry_point:
+READ 0 
+STORE 11          ; r11 = n; // value from input tape
+LOAD =1003
+STORE 10          ; r10 = block_1003; // return address
+JUMP fn_fibonacci
+block_1003:
+WRITE 10          ; r10 = fib(n); // return value
+HALT
+
+
+
+kill:
+DIV =0
+`,
   STRESS_TEST: `; ${str.title}
 ; ${hdiv}
 ;

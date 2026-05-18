@@ -448,6 +448,12 @@
         "Write the pointed element to tape"
       ]
     },
+    "FIBONACCI_ITERATIVE": {
+      "title": "Fibonacci (iterative)"
+    },
+    "FIBONACCI_RECURSIVE": {
+      "title": "Fibonacci (recursive)"
+    },
     "STRESS_TEST": {
       "title": "Stress test",
       "description": "A tight loop that copies values from the input tape to the output tape.",
