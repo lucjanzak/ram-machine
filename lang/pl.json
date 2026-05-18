@@ -340,7 +340,7 @@
   "runtime": {
     "runtimeErrorTitle": "Błąd wykonywania: ",
     "undefinedLabel": "niezdefiniowana etykieta: '%0'",
-    "inputTapeUnderflow": "nastąpiła próba odczytania wartości z taśmy wejściowej, ale na taśmie nie ma już więcej wartości",
+    "inputTapeUnderflow": "nastąpiła próba odczytania wartości z taśmy wejściowej, ale na taśmie nie ma już wartości",
     "uninitializedRegisterRead": "nastąpiła próba odczytania wartości z niezainicjalizowanego rejestru (r%0)",
     "programCounterOutOfBounds": "licznik rozkazu znajduje się poza granicami programu"
   },

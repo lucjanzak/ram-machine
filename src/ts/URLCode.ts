@@ -139,13 +139,13 @@ export function loadInitialHash() {
   try {
     const decoded = decodeURLHashData(window.location.hash);
     if (decoded === null) {
-      window.RAMMachine.machine.loadAssemblyAndReset(DEFAULT_PROGRAM_ASSEMBLY);
+      window.RAMMachine.machine.loadAssemblyAndReset(DEFAULT_PROGRAM_ASSEMBLY, undefined, true);
       window.RAMMachine.machine.loadTapeFromText("2,3");
     } else {
       window.RAMMachine.machine.loadAssemblyAndReset(decoded.sourceCode);
     }
   } catch {
-    window.RAMMachine.machine.loadAssemblyAndReset(DEFAULT_PROGRAM_ASSEMBLY);
+    window.RAMMachine.machine.loadAssemblyAndReset(DEFAULT_PROGRAM_ASSEMBLY, undefined, true);
     window.RAMMachine.machine.loadTapeFromText("2,3");
   }
 }

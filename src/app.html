@@ -22,7 +22,7 @@
           <div>
             <%= t.header.language %>
             <ul>
-            <% _.forEach(languageInfo, function(lang) { %><li><% print('<a href="app_' + lang.key + '.html">' + lang.displayName + '</a>') %></li><% }); %>
+            <% _.forEach(languageInfo, function(lang) { %><li><% print('<a class="language-switcher-link" data-lang="' + lang.key + '" data-base-url="app_' + lang.key + '.html" href="app_' + lang.key + '.html">' + lang.displayName + '</a>') %></li><% }); %>
             </ul>
           </div>
         <div style="display: none;"><%= t.header.author %> <a href="https://lucjanzak.github.io" target=" _blank">Lucjan Żak</a></div>

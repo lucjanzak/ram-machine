@@ -197,4 +197,12 @@ export function initDOM() {
     Dialogs.about.close();
   });
   initSettingsDOM();
+  updateLanguageLinks(window.location.hash);
+}
+
+export function updateLanguageLinks(hash: string) {
+  document.querySelectorAll(".language-switcher-link").forEach((el) => {
+    const a = el as HTMLAnchorElement;
+    a.href = a.dataset.baseUrl + hash;
+  });
 }

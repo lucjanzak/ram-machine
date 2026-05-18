@@ -2,7 +2,7 @@ import { InputTape, InputTapeArray, InputTapeArrayDOM } from "./InputTape";
 import { Instruction, ReadableOperand, WriteableOperand } from "./Instruction";
 import { t } from "./Localization";
 import { Memory } from "./Memory";
-import { Nodes } from "./Nodes";
+import { Nodes, updateLanguageLinks } from "./Nodes";
 import { OutputTape, OutputTapeArray, OutputTapeArrayDOM } from "./OutputTape";
 import {
   CompilerMessage,
@@ -122,7 +122,7 @@ export class Machine {
 
   updateProgramCounterDOM() {
     if (this.detachedMode) return;
-    if (this.started) {
+    if (this.started || this.isFinished()) {
       Nodes.statusProgramCounter.textContent = `${this.programCounter + 1}`;
     } else {
       Nodes.statusProgramCounter.textContent = "0";
@@ -159,7 +159,8 @@ export class Machine {
 
   loadAssemblyAndReset(
     assemblySourceCode: string,
-    updateEditorContents: boolean = true
+    updateEditorContents: boolean = true,
+    isDefaultProgram: boolean = false
   ): {
     success: boolean;
     compilerMessages: CompilerMessage[];
@@ -177,7 +178,10 @@ export class Machine {
         newEncodedData = encodeURLHashData(assemblySourceCode, 0);
       }
       if (window.location.hash !== newEncodedData.hash) {
-        window.history.pushState(null, "", document.location.pathname + newEncodedData.hash);
+        if (!isDefaultProgram) {
+          window.history.pushState(null, "", document.location.pathname + newEncodedData.hash);
+          updateLanguageLinks(newEncodedData.hash);
+        }
       }
     }
     const { success, program, compilerMessages, preprocessorState: pre } = Program.fromAssembly(assemblySourceCode);
