@@ -10,19 +10,19 @@
   color: #7f7f7f;
 }
 
-.status-box.success {
+:is(.status-box, .compiler-message, .runtime-message).success {
   border-color: #007f007f;
   background-color: #00ff003f;
   color: #007f00;
 }
 
-.status-box.error {
+:is(.status-box, .compiler-message, .runtime-message).error {
   border-color: #7f00007f;
   background-color: #ff00003f;
   color: #7f0000;
 }
 
-.status-box.warning {
+:is(.status-box, .compiler-message, .runtime-message).warning {
   border-color: #7f7f007f;
   background-color: #ffff003f;
   color: #7f7f00;
@@ -36,7 +36,7 @@
   white-space-collapse: preserve;
 }
 
-.compiler-message {
+:is(.compiler-message, .runtime-message) {
   border-style: solid;
   border-width: 1px;
   border-color: #7f7f7f3f;
@@ -49,48 +49,30 @@
   user-select: text;
 }
 
-body.animations-enabled .compiler-message {
+body.animations-enabled :is(.compiler-message, .runtime-message) {
   transition: 0.5s background-color var(--ease-out-expo);
 }
 
-.compiler-message.success {
-  border-color: #007f007f;
-  background-color: #00ff003f;
-  color: #007f00;
-}
-
-.compiler-message.error {
-  border-color: #7f00007f;
-  background-color: #ff00003f;
-  color: #7f0000;
-}
-
-.compiler-message.warning {
-  border-color: #7f7f007f;
-  background-color: #ffff003f;
-  color: #7f7f00;
-}
-
-.compiler-message.error:hover {
+:is(.compiler-message, .runtime-message).error:hover {
   background-color: #ff3f3f3f;
 }
 
-.compiler-message.warning:hover {
+:is(.compiler-message, .runtime-message).warning:hover {
   background-color: #ffff3f3f;
 }
 
-.compiler-message .title {
+:is(.compiler-message, .runtime-message) .title {
   font-weight: bold;
   display: none;
 }
 
-.compiler-message .error-id {
+:is(.compiler-message, .runtime-message) .error-id {
   font-family: monospace;
   opacity: 0.5;
   font-size: 8pt;
 }
 
-.compiler-message .message {
+:is(.compiler-message, .runtime-message) .message {
   font-family: monospace;
   white-space-collapse: preserve;
   font-size: 10pt;
@@ -107,4 +89,8 @@ body.animations-enabled .compiler-message {
 
 .compiler-message .line-location:hover {
   text-decoration: underline;
+}
+
+.runtime-message {
+  margin: 0.5rem 0;
 }

@@ -4,13 +4,20 @@ import { t } from "./Localization";
 import { Memory } from "./Memory";
 import { Nodes } from "./Nodes";
 import { OutputTape, OutputTapeArray, OutputTapeArrayDOM } from "./OutputTape";
-import { CompilerMessage, PreprocessorState } from "./Compiler";
+import {
+  CompilerMessage,
+  makeCompilerMessageBox,
+  makeRuntimeMessageBox,
+  makeStatusBox,
+  PreprocessorState,
+} from "./Compiler";
 import { Program, ProgramCounter } from "./Program";
 import { MachineSettings, preferences, updateSettingsDOM } from "./Settings";
 import { Statistics } from "./Statistics";
 import { assertNever } from "./Util";
 import { BASE64_RATIO, encodeURLHashData } from "./URLCode";
 import { clearDecorations, updateCompileProblems } from "./MonacoEditor";
+import { RuntimeError, RuntimeException } from "./RuntimeError";
 
 export type StopReason = "halt" | "error" | "kill" | "timeout";
 
@@ -122,6 +129,17 @@ export class Machine {
     }
   }
 
+  updateRuntimeErrorDOM(error: RuntimeError | null) {
+    if (this.detachedMode) return;
+
+    Nodes.runtimeErrorLabel.classList.add("hidden");
+    Nodes.runtimeErrorContainer.textContent = "";
+    if (error === null) return;
+
+    Nodes.runtimeErrorLabel.classList.remove("hidden");
+    Nodes.runtimeErrorContainer.appendChild(makeRuntimeMessageBox(error.message, error.id, "error"));
+  }
+
   reset() {
     this.running = false;
     this.paused = false;
@@ -136,6 +154,7 @@ export class Machine {
     this.stats.replaceStatisticsTableAndUpdateDOM();
     this.updateMachineStateDOM();
     this.updateProgramCounterDOM();
+    this.updateRuntimeErrorDOM(null);
   }
 
   loadAssemblyAndReset(
@@ -248,7 +267,7 @@ export class Machine {
   jumpTo(label: string) {
     const newProgramCounter = this.program.getLabelLocation(label);
     if (newProgramCounter === undefined) {
-      throw new Error(`undefined label: '${label}'`);
+      throw new RuntimeException(RuntimeError.undefinedLabel(label));
     }
     this.programCounter = newProgramCounter;
   }
@@ -370,7 +389,7 @@ export class Machine {
     const instruction = this.program.getInstruction(this.programCounter);
     if (instruction === undefined) {
       if (this.settings.programCounterOutOfBounds === "error") {
-        throw new Error("program counter outside of program bounds"); // TODO: display runtime error in status pane
+        throw new RuntimeException(RuntimeError.programCounterOutOfBounds());
       } else if (this.settings.programCounterOutOfBounds === "actAsHalt") {
         return this.executeInstruction({ operation: "HALT" }, quiet);
       } else {
@@ -486,10 +505,13 @@ export class Machine {
         }
       }
     } catch (e) {
-      console.error("machine exec error:", e);
-      // TODO: show these runtime errors in status pane
-      // Exception encountered - error stop
-      this.stopMachine(performance.now(), "error");
+      if (e instanceof RuntimeException) {
+        // Exception encountered - error stop
+        this.stopMachine(performance.now(), "error");
+        this.updateRuntimeErrorDOM(e.msg);
+      } else {
+        console.error("Unknown exception encountered:", e);
+      }
     }
   }
 
@@ -518,10 +540,13 @@ export class Machine {
         return;
       }
     } catch (e) {
-      console.error("machine exec error:", e);
-      // TODO: show error in status pane
-      // Exception encountered - error stop
-      this.stopMachine(performance.now(), "error");
+      if (e instanceof RuntimeException) {
+        // Exception encountered - error stop
+        this.stopMachine(performance.now(), "error");
+        this.updateRuntimeErrorDOM(e.msg);
+      } else {
+        console.error("Unknown exception encountered:", e);
+      }
       return;
     }
 

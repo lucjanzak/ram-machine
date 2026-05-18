@@ -9,7 +9,7 @@ import {
   WriteableOperand,
 } from "./Instruction";
 import { ParsedLine, Tile } from "./Program";
-import { CompilerError, ParserError, PreprocessorError } from "./CompileError";
+import { CompilerError, CompilerException, ParserError, ParserException, PreprocessorError } from "./CompileError";
 import {
   InputTapeUnderflowBehavior,
   MachineSettings,
@@ -36,21 +36,6 @@ export type PreprocessorState = {
   uninitializedRegisterRead: UninitializedRegisterReadBehavior | null;
   programCounterOutOfBounds: ProgramCounterOutOfBoundsBehavior | null;
 };
-
-class CompilerException {
-  constructor(public readonly msg: CompilerError) {}
-}
-
-class ParserException extends CompilerException {
-  constructor(msg: ParserError) {
-    super(Object.assign(msg, { category: "parser" as const }));
-  }
-}
-class PreprocessorException extends CompilerException {
-  constructor(msg: PreprocessorError) {
-    super(Object.assign(msg, { category: "preprocessor" as const }));
-  }
-}
 
 export type CompilerSettings = {
   allowNegativeImmediate: boolean;
@@ -385,11 +370,13 @@ export function makeStatusBox(message: string, type: "error" | "warning" | "succ
   return f;
 }
 
-export function getTitleForMessageBox(category: CompilerError["category"]) {
+export function getTitleForMessageBox(category: CompilerError["category"] | "runtime") {
   if (category === "preprocessor") {
     return `${t.compiler.preprocessorErrorTitle}`;
   } else if (category === "parser") {
     return `${t.compiler.parserErrorTitle}`;
+  } else if (category === "runtime") {
+    return `${t.runtime.runtimeErrorTitle}`;
   } else {
     assertNever(category);
   }
@@ -431,5 +418,27 @@ export function makeCompilerMessageBox(msg: CompilerMessage): DocumentFragment {
       }
     });
   }
+  return f;
+}
+
+export function makeRuntimeMessageBox(
+  message: string,
+  id: string,
+  type: "error" | "warning" | "success"
+): DocumentFragment {
+  const f = useTemplate(Templates.runtimeMessage);
+
+  const box = select(f, ".runtime-message");
+  box.classList.add(type);
+
+  const titleSpan = select(f, ".title");
+  titleSpan.textContent = getTitleForMessageBox("runtime");
+
+  const errorIdSpan = select(f, ".error-id");
+  errorIdSpan.textContent = `<${id}>`;
+
+  const messageSpan = select(f, ".message");
+  messageSpan.textContent = `${message}`;
+
   return f;
 }

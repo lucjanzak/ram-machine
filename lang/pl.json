@@ -85,10 +85,10 @@
       "timeComplexityLog": "Zł. czasowa (log)"
     },
     "runtime": {
-      "title": "Błędy podczas wykonywania:"
+      "title": "Wystąpił błąd podczas wykonywania programu:"
     },
     "compilation": {
-      "title": "Kompilacja:",
+      "title": "Status kompilacji:",
       "failure": "Kompilacja zakończyła się błędem",
       "success": "Kompilacja zakończyła się pomyślnie"
     },
@@ -336,6 +336,13 @@
       "redefinedLabel": "ta etykieta została już zdefiniowana w linii %1: '%0'",
       "labelAtTheEnd": "label was defined at the end of file, it will be ignored: '%0'"
     }
+  },
+  "runtime": {
+    "runtimeErrorTitle": "Błąd wykonywania: ",
+    "undefinedLabel": "niezdefiniowana etykieta: '%0'",
+    "inputTapeUnderflow": "nastąpiła próba odczytania wartości z taśmy wejściowej, ale na taśmie nie ma już więcej wartości",
+    "uninitializedRegisterRead": "nastąpiła próba odczytania wartości z niezainicjalizowanego rejestru (r%0)",
+    "programCounterOutOfBounds": "licznik rozkazu znajduje się poza granicami programu"
   },
   "examples": {
     "ADDITION": {

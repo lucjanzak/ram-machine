@@ -85,10 +85,10 @@
       "timeComplexityLog": "Time Complexity (log)"
     },
     "runtime": {
-      "title": "(TODO) Runtime errors:"
+      "title": "An error occurred during program execution:"
     },
     "compilation": {
-      "title": "Compilation:",
+      "title": "Compilation status:",
       "failure": "Compilation finished with errors",
       "success": "Compilation finished successfully"
     },
@@ -336,6 +336,13 @@
       "redefinedLabel": "label was already defined at line %1: '%0'",
       "labelAtTheEnd": "label was defined at the end of file, it will be ignored: '%0'"
     }
+  },
+  "runtime": {
+    "runtimeErrorTitle": "Runtime error: ",
+    "undefinedLabel": "undefined label: '%0'",
+    "inputTapeUnderflow": "tried to read from input tape, but there is no more cells to read",
+    "uninitializedRegisterRead": "tried to read uninitialized register (r%0)",
+    "programCounterOutOfBounds": "program counter outside of program bounds"
   },
   "examples": {
     "ADDITION": {

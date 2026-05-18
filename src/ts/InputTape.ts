@@ -5,6 +5,7 @@ import { InputDataSettings as InputDataConfig, Sequence } from "./Chart";
 import { t } from "./Localization";
 import { randomBigint } from "./Memory";
 import { select, Templates, useTemplate } from "./Nodes";
+import { RuntimeError, RuntimeException } from "./RuntimeError";
 import { InputTapeUnderflowBehavior } from "./Settings";
 import { assertNever, unreachable } from "./Util";
 
@@ -17,7 +18,7 @@ export abstract class InputTape {
     // Report an error before incrementing the currentIndex
     if (peek === undefined) {
       if (config === "error") {
-        throw new Error(`tried to read from input tape, but there is no more cells to read`);
+        throw new RuntimeException(RuntimeError.inputTapeUnderflow());
       }
     }
 
@@ -25,7 +26,7 @@ export abstract class InputTape {
     if (value === undefined) {
       if (config === "error") {
         // TODO: display runtime error in status pane
-        unreachable(`tried to read from input tape, but there is no more cells to read`);
+        unreachable(`tried to read from input tape, but there is no more cells to read`); // unreachable, because this error is caught right before, on peek
       } else if (config === "zero") {
         return 0n;
       } else if (config === "random") {

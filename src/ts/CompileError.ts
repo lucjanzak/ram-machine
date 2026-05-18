@@ -120,3 +120,18 @@ export namespace PreprocessorError {
     return { id: "expectedArguments", message: `${pp.expectedArguments}; ${pp.genericIgnoreWarning}` };
   }
 }
+
+export class CompilerException {
+  constructor(public readonly msg: CompilerError) {}
+}
+
+export class ParserException extends CompilerException {
+  constructor(msg: ParserError) {
+    super(Object.assign(msg, { category: "parser" as const }));
+  }
+}
+export class PreprocessorException extends CompilerException {
+  constructor(msg: PreprocessorError) {
+    super(Object.assign(msg, { category: "preprocessor" as const }));
+  }
+}

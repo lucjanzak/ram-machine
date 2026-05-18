@@ -2,6 +2,7 @@ import { SparseArray } from "./BigArray";
 import { BigScrollList } from "./BigScrollList";
 import { t } from "./Localization";
 import { select, Templates, useTemplate } from "./Nodes";
+import { RuntimeError, RuntimeException } from "./RuntimeError";
 import { preferences, UninitializedRegisterReadBehavior } from "./Settings";
 import { assertNever } from "./Util";
 
@@ -25,7 +26,7 @@ export class Memory {
     if (register === undefined) {
       if (config === "error") {
         // TODO: display runtime error in status pane
-        throw new Error(`tried to read uninitialized register (r${index})`);
+        throw new RuntimeException(RuntimeError.uninitializedRegisterRead(index));
       } else if (config === "zero") {
         return 0n;
       } else if (config === "random") {
@@ -122,7 +123,7 @@ export class Memory {
       if (animate) {
         // TODO(optional): maybe the color should stay highlighted until the next update?
         // that would require storing a list/set of all recently-updated registers
-        
+
         // row.classList.add("animated")
         setTimeout(() => row.classList.add("animated")); // TODO: fix this, doesn't work consistently without settimeout for some reason
       }

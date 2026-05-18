@@ -101,6 +101,11 @@
             <section id="status-pane">
               <div>
                 <h3><%= t.status.title %></h3>
+
+                <span><%= t.status.compilation.title %></span>
+                <div id="compile-errors-container"></div>
+                <hr>
+
                 <span><%= t.status.status.title %></span>
                 <table id="status-table">
                   <colgroup>
@@ -142,12 +147,12 @@
                     </tr>
                   </tbody>
                 </table>
-                <span><%= t.status.runtime.title %></span>
+                <hr>
+
+                <span id="runtime-error-label" class="hidden"><%= t.status.runtime.title %></span>
                 <div id="runtime-error-container"></div>
                 <hr>
-                <span><%= t.status.compilation.title %></span>
-                <div id="compile-errors-container"></div>
-                <hr>
+
                 <span><%= t.status.stats.title %></span>
                 <table id="stats-table">
                   <thead>
@@ -254,6 +259,15 @@
         <span class="message"></span>&nbsp;
         <span class="error-id"></span>&nbsp;
         <span class="line-location"></span>
+        <div class="clear-both"></div>
+      </div>
+    </template>
+
+    <template id="runtime-message">
+      <div class="runtime-message">
+        <span class="title"></span>
+        <span class="message"></span>&nbsp;
+        <span class="error-id"></span>
         <div class="clear-both"></div>
       </div>
     </template>

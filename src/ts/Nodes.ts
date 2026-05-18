@@ -54,6 +54,7 @@ export namespace Nodes {
   // export const codeEditorBasic = element<HTMLTextAreaElement>("#code-editor-basic");
   export const codeEditorContainer = element<HTMLElement>("#code-editor-container");
   export const programListing = element("#program-listing");
+  export const runtimeErrorLabel = element<HTMLElement>("#runtime-error-label");
   export const runtimeErrorContainer = element("#runtime-error-container");
   export const compileErrorsContainer = element("#compile-errors-container");
   export const statusMachineState = element("#status-machine-state");
@@ -158,6 +159,7 @@ export namespace Templates {
   export const bigScrollListTestRow = template("#big-scroll-list-test-row");
   export const statusBox = template("#status-box");
   export const compilerMessage = template("#compiler-message");
+  export const runtimeMessage = template("#runtime-message");
 }
 
 export namespace Dialogs {
