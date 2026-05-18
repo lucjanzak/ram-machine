@@ -1,7 +1,7 @@
 #status-pane {
-  width: 30%;
+  width: 20%;
   flex-grow: 1;
-  min-width: 250px;
+  min-width: 320px;
 
   border-left: var(--generic-border);
   background-color: #fff;
@@ -21,8 +21,10 @@ body.animations-enabled #status-pane {
 }
 
 #status-pane > div {
-  min-width: 250px;
-  padding: 1rem;
+  min-width: fit-content;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1rem 0.5rem;
   overflow-x: auto;
   overflow-y: auto;
 }
@@ -32,4 +34,46 @@ body.animations-enabled #status-pane {
 #status-pane h3 {
   margin-block: 0;
   margin-bottom: 1rem;
+}
+
+#status-pane table td,
+#status-pane table th {
+  padding: 0 0.5rem;
+  /* box-sizing: border-box; */
+}
+
+#status-pane table tr + tr {
+  border-top: var(--generic-border);
+}
+
+#status-pane tbody tr:nth-child(odd) {
+  background-color: var(--accent-color3);
+  /* background-color: #f00; */
+}
+
+#status-table {
+  min-width: 100%;
+}
+
+#status-table col:nth-child(1) {
+  width: 10%;
+}
+
+#status-table col:nth-child(2) {
+  width: 90%;
+}
+
+#status-table th {
+  text-align: right;
+  text-wrap: nowrap;
+}
+
+td#status-machine-state {
+  height: 2lh;
+}
+
+#stats-table {
+  margin: auto;
+  width: 100%;
+  max-width: 300px;
 }

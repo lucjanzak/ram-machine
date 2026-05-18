@@ -57,6 +57,37 @@ export class Machine {
     return this.stopReason;
   }
 
+  getMachineStateString() {
+    const s = t.status.status.machineStates;
+    if (this.stopReason === null) {
+      if (this.paused) {
+        return s.paused;
+      }
+      if (this.running) {
+        return s.running;
+      }
+      if (!this.started) {
+        return s.reset;
+      }
+      return s.unknown;
+    } else if (this.stopReason === "halt") {
+      return s.finished;
+    } else if (this.stopReason === "error") {
+      return s.error;
+    } else if (this.stopReason === "kill") {
+      return s.kill;
+    } else if (this.stopReason === "timeout") {
+      return s.timeout;
+    } else {
+      assertNever(this.stopReason);
+    }
+  }
+
+  updateMachineStateDOM() {
+    if (this.detachedMode) return;
+    Nodes.statusMachineState.textContent = this.getMachineStateString();
+  }
+
   reset() {
     this.running = false;
     this.paused = false;
@@ -68,7 +99,8 @@ export class Machine {
     this.programCounter = 0;
     this.resetDebugRowHighlight();
     this.stats.clear();
-    this.stats.replaceStatisticsDOM();
+    this.stats.replaceStatisticsTableAndUpdateDOM();
+    this.updateMachineStateDOM();
   }
 
   loadAssemblyAndReset(
@@ -163,8 +195,7 @@ export class Machine {
       const address = this.getRegister(operand.value, quiet);
       return this.getRegister(address, quiet);
     } else {
-      console.error("invalid argument: 'operand' is not a ReadableOperand", operand);
-      throw new Error("invalid argument: 'operand' is not a ReadableOperand");
+      assertNever(operand.type, "invalid argument: 'operand' is not a ReadableOperand");
     }
   }
 
@@ -175,8 +206,7 @@ export class Machine {
       const address = this.getRegister(operand.value, quiet);
       return this.setRegister(address, word, quiet);
     } else {
-      console.error("invalid argument: 'operand' is not a WriteableOperand", operand);
-      throw new Error("invalid argument: 'operand' is not a WriteableOperand");
+      assertNever(operand.type, "invalid argument: 'operand' is not a WriteableOperand");
     }
   }
 
@@ -317,10 +347,11 @@ export class Machine {
   }
 
   updateDOMElements() {
-    this.stats.replaceStatisticsDOM();
+    this.stats.replaceStatisticsTableAndUpdateDOM();
     this.inputTape.refreshActiveCell();
     this.memory.refreshAllQuietlyUpdatedRegisters();
     this.outputTape.refreshAllQuietlyUpdatedCells();
+    this.updateMachineStateDOM();
   }
 
   private stopMachine(currentTime: DOMHighResTimeStamp, stopReason: StopReason) {
@@ -375,8 +406,7 @@ export class Machine {
         console.error(`Could not run the program in under ${options.timeoutAutoKill}ms, terminating`);
         this.stopMachine(currentTimePrecise, "timeout");
       }
-    }
-
+    };
 
     if (!this.started) {
       // First step should clear the stats as well
@@ -433,8 +463,10 @@ export class Machine {
 
     // First step should not actually execute anything, just highlight the first line
     if (!this.started) {
-      this.setDebugLineHighlight(this.programCounter);
       this.started = true;
+      this.paused = true;
+      this.setDebugLineHighlight(this.programCounter);
+      this.updateMachineStateDOM();
       return;
     }
 
@@ -450,6 +482,7 @@ export class Machine {
       }
     } catch (e) {
       console.error("machine exec error:", e);
+      // TODO: show error in status pane
       // Exception encountered - error stop
       this.stopMachine(performance.now(), "error");
       return;
@@ -458,6 +491,7 @@ export class Machine {
     this.stats.timer.pause();
     this.paused = true;
     this.setDebugLineHighlight(this.programCounter);
+    this.updateMachineStateDOM();
   }
 
   static runSimulation(

@@ -61,20 +61,42 @@
   },
   "status": {
     "title": "Machine Status",
+    "status": {
+      "title": "Status:",
+      "machineState": "Current State",
+      "machineStates": {
+        "reset": "Not started",
+        "running": "Running",
+        "paused": "Paused",
+        "finished": "Finished successfully",
+        "error": "Runtime error",
+        "kill": "Killed by user",
+        "timeout": "Killed by timeout",
+        "unknown": "Unknown"
+      },
+      "programCounter": "Program Counter",
+      "realTime": "Real Time",
+      "realTimeFormat": "%0 ms",
+      "averageSpeed": "Average Speed",
+      "averageSpeedFormat": "%0 inst. / s",
+      "memoryComplexity": "Memory Complexity",
+      "memoryComplexityLog": "Memory Cmplx. (log)",
+      "timeComplexity": "Time Complexity",
+      "timeComplexityLog": "Time Complexity (log)"
+    },
+    "runtime": {
+      "title": "(TODO) Runtime errors:"
+    },
     "compilation": {
+      "title": "Compilation:",
       "failure": "Compilation finished with errors",
       "success": "Compilation finished successfully"
     },
     "stats": {
-      "title": "Statistics: ",
+      "title": "Executed instruction counts:",
       "instruction": "Instruction",
       "count": "Count",
-      "realTime": "Real Time",
-      "averageSpeed": "Average Speed",
-      "memoryComplexity": "Memory Complexity",
-      "memoryComplexityLog": "Memory Complexity (log)",
-      "timeComplexity": "Time Complexity",
-      "timeComplexityLog": "Time Complexity (log)"
+      "total": "Total"
     }
   },
   "editor": {

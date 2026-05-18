@@ -3,13 +3,11 @@ import { compileAndRunEditorSourceCode, compileEditorSourceCode } from "./Monaco
 import { saveFileAndDownload, showSaveDialog } from "./SaveFile";
 
 export function initGlobalKeybinds() {
-  window.addEventListener("keydown", e => {
+  window.addEventListener("keydown", (e) => {
     if (e.code === "KeyN" && e.ctrlKey) {
-      console.log("asd");
       newFile();
       e.preventDefault();
     } else if (e.code === "KeyM" && e.ctrlKey) {
-      console.log("asd");
       newFile();
       e.preventDefault();
     } else if (e.code === "KeyO" && e.ctrlKey) {

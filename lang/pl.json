@@ -61,20 +61,42 @@
   },
   "status": {
     "title": "Status maszyny",
+    "status": {
+      "title": "Status:",
+      "machineState": "Stan maszyny",
+      "machineStates": {
+        "reset": "Nie uruchomiono",
+        "running": "Uruchomiono",
+        "paused": "Wstrzymano",
+        "finished": "Zakończono pomyślnie",
+        "error": "Błąd",
+        "kill": "Zabity przez użytkownika",
+        "timeout": "Zabity przez limit czasu",
+        "unknown": "Nieznany"
+      },
+      "programCounter": "Licznik rozkazu",
+      "realTime": "Czas rzeczywisty",
+      "realTimeFormat": "%0 ms",
+      "averageSpeed": "Średnia prędkość",
+      "averageSpeedFormat": "%0 inst. / s",
+      "memoryComplexity": "Zł pamięciowa",
+      "memoryComplexityLog": "Zł. pamięciowa (log)",
+      "timeComplexity": "Zł. czasowa",
+      "timeComplexityLog": "Zł. czasowa (log)"
+    },
+    "runtime": {
+      "title": "Błędy podczas wykonywania:"
+    },
     "compilation": {
+      "title": "Kompilacja:",
       "failure": "Kompilacja zakończyła się błędem",
       "success": "Kompilacja zakończyła się pomyślnie"
     },
     "stats": {
-      "title": "Statystyki: ",
+      "title": "Liczba wykonanych instrukcji:",
       "instruction": "Instrukcja",
       "count": "Licznik",
-      "realTime": "Czas rzeczywisty (ms)",
-      "averageSpeed": "Średnia prędkość",
-      "memoryComplexity": "Złożoność pamięciowa",
-      "memoryComplexityLog": "Złożoność pamięciowa (log)",
-      "timeComplexity": "Złożoność czasowa",
-      "timeComplexityLog": "Złożoność czasowa (log)"
+      "total": "Suma"
     }
   },
   "editor": {

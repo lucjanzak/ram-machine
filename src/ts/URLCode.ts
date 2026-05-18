@@ -131,7 +131,7 @@ window.addEventListener("hashchange", (e) => {
       window.RAMMachine.machine.loadAssemblyAndReset(decoded.sourceCode);
     }
   } catch (e) {
-    console.error("could not open file from hash:", e);
+    console.error("Could not open file from hash:", e);
   }
 });
 

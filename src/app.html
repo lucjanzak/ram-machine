@@ -101,17 +101,60 @@
             <section id="status-pane">
               <div>
                 <h3><%= t.status.title %></h3>
+                <span><%= t.status.status.title %></span>
+                <table id="status-table">
+                  <colgroup>
+                    <col />
+                    <col />
+                  </colgroup>
+                  <tbody>
+                    <tr>
+                      <th><%= t.status.status.machineState %></th>
+                      <td id="status-machine-state"></td>
+                    </tr>
+                    <tr>
+                      <th><%= t.status.status.programCounter %></th>
+                      <td id="status-program-counter"></td>
+                    </tr>
+                    <tr>
+                      <th><%= t.status.status.realTime %></th>
+                      <td id="status-real-time"></td>
+                    </tr>
+                    <tr>
+                      <th><%= t.status.status.averageSpeed %></th>
+                      <td id="status-average-speed"></td>
+                    </tr>
+                    <tr>
+                      <th><%= t.status.status.memoryComplexity %></th>
+                      <td id="status-memory-complexity"></td>
+                    </tr>
+                    <tr>
+                      <th><%= t.status.status.memoryComplexityLog %></th>
+                      <td id="status-memory-complexity-log"></td>
+                    </tr>
+                    <tr>
+                      <th><%= t.status.status.timeComplexity %></th>
+                      <td id="status-time-complexity"></td>
+                    </tr>
+                    <tr>
+                      <th><%= t.status.status.timeComplexityLog %></th>
+                      <td id="status-time-complexity-log"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <span><%= t.status.runtime.title %></span>
+                <div id="runtime-error-container"></div>
+                <hr>
+                <span><%= t.status.compilation.title %></span>
                 <div id="compile-errors-container"></div>
-                <div id="runtime-errors-container"></div>
+                <hr>
                 <span><%= t.status.stats.title %></span>
-                <!-- TODO: Add current machine state here - running/paused/stopped/halted/error -->
-                <!-- TODO: show compile errors and runtime errors -->
-                <table>
+                <table id="stats-table">
                   <thead>
-                    <td><%= t.status.stats.instruction %></td>
-                    <td><%= t.status.stats.count %></td>
+                    <th><%= t.status.stats.instruction %></th>
+                    <th><%= t.status.stats.count %></th>
                   </thead>
-                  <tbody id="stats"></tbody>
+                  <tbody id="stats-body"></tbody>
                 </table>
               </div>
             </section>
@@ -167,7 +210,7 @@
 
     <template id="stats-row">
       <tr>
-        <td id="instruction"></td>
+        <td id="instruction" class="text-align-right"></td>
         <td id="count"></td>
       </tr>
     </template>

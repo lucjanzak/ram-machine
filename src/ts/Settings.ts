@@ -95,7 +95,7 @@ export class Preferences {
     if (typeof json.viewCodeEditorPane === "boolean") {
       preferences.setPaneVisibility("codeEditor", json.viewCodeEditorPane);
     }
-    // console.trace("load", jsonText, preferences);
+    console.log("Loaded preferences from local storage", jsonText, preferences);
     return preferences;
   }
 
@@ -111,7 +111,7 @@ export class Preferences {
         viewCodeEditorPane: this.paneVisibility.codeEditor,
       })
     );
-    console.trace("save", localStorage.getItem("RAMMachine.preferences"));
+    console.log("Saved preferences to local storage", localStorage.getItem("RAMMachine.preferences"));
   }
 
   constructor(private detached = false) {
@@ -180,7 +180,7 @@ export class Preferences {
 
   refreshPaneVisibility() {
     if (this.detached) return;
-    
+
     Object.entries(this.paneVisibility).forEach(([key, visible]) => {
       const paneName = key as PaneName;
       const pane = getPane(paneName);

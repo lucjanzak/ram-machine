@@ -94,7 +94,6 @@ export class OutputTapeArrayDOM extends OutputTapeArray {
     if (this.scrollList === null) return;
 
     this.scrollList.iterActive((listItem, index) => {
-      console.log("ITERACTIVE", index, this.quietlyUpdatedCells, this.quietlyUpdatedCells.has(index))
       if (this.quietlyUpdatedCells.has(index)) {
         const cell = select(listItem, "#output-tape-scroll-list-cell");
         this.updateCellElement(cell, this.values.get(index), true);
@@ -114,7 +113,7 @@ export class OutputTapeArrayDOM extends OutputTapeArray {
   }
 
   private updateCellElement(cell: Element, value: bigint | undefined, animate: boolean) {
-    console.trace(`updateCellElement #${cell.parentElement?.dataset.elementIndex}`);
+    // console.trace(`updateCellElement #${cell.parentElement?.dataset.elementIndex}`);
     const valueInput = select<HTMLInputElement>(cell, "#value");
     cell.classList.remove("animated");
     if (value === undefined) {
