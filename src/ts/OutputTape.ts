@@ -140,7 +140,7 @@ export class OutputTapeArrayDOM extends OutputTapeArray {
         "horizontal",
         3n, // initial element count
         120, // item size
-        (index) => {
+        (index, visibleAlready) => {
           const f = useTemplate(Templates.outputTapeCell);
 
           const cell = select(f, "#output-tape-scroll-list-cell");
@@ -154,19 +154,21 @@ export class OutputTapeArrayDOM extends OutputTapeArray {
           indexSpan.textContent = `${index + 1n}`;
 
           const value = this.values.get(index);
-          this.updateCellElement(cell, value, true);
+          this.updateCellElement(cell, value, visibleAlready);
 
           return f;
         },
         hostElement.parentElement!.clientWidth
       );
 
-      const resizeObserver = new ResizeObserver(() => {
-        if (this.scrollList !== null) {
-          this.scrollList.setContainerAvailableSize(this.scrollList.hostElement.parentElement!.clientWidth);
-        }
-      });
-      resizeObserver.observe(hostElement);
+      if (hostElement.parentElement !== null) {
+        const resizeObserver = new ResizeObserver(() => {
+          if (this.scrollList !== null) {
+            this.scrollList.setContainerAvailableSize(this.scrollList.hostElement.parentElement!.clientWidth);
+          }
+        });
+        resizeObserver.observe(hostElement.parentElement);
+      }
     }
   }
 }

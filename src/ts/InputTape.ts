@@ -270,7 +270,7 @@ export class InputTapeArrayDOM extends InputTapeArray {
                 if (index >= this.values.length()) {
                   this.values.setWithFill(index, value, 0n);
                   this.refreshExistingCells();
-                  this.scrollList?.updateVisibleElements();
+                  this.scrollList?.updateVisibleElements(true);
                   this.updateListLength();
                 } else {
                   this.values.update(index, value);
@@ -290,12 +290,14 @@ export class InputTapeArrayDOM extends InputTapeArray {
         hostElement.parentElement!.clientWidth
       );
 
-      const resizeObserver = new ResizeObserver(() => {
-        if (this.scrollList !== null) {
-          this.scrollList.setContainerAvailableSize(this.scrollList.hostElement.parentElement!.clientWidth);
-        }
-      });
-      resizeObserver.observe(hostElement);
+      if (hostElement.parentElement !== null) {
+        const resizeObserver = new ResizeObserver(() => {
+          if (this.scrollList !== null) {
+            this.scrollList.setContainerAvailableSize(this.scrollList.hostElement.parentElement!.clientWidth);
+          }
+        });
+        resizeObserver.observe(hostElement.parentElement);
+      }
     }
 
     this.updateListLength();

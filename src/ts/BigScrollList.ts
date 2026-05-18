@@ -22,10 +22,10 @@ export class BigScrollList implements ElementManager {
 
   setContainerAvailableSize(newSize: number) {
     if (newSize !== this.containerAvailableSize) {
-      // console.log(`containerSizeUpdated ${this.containerAvailableSize}px -> ${newSize}px`);
+      console.log(`containerSizeUpdated ${this.containerAvailableSize}px -> ${newSize}px`);
       this.containerAvailableSize = newSize;
       this.updateHostElement();
-      this.updateVisibleElements();
+      this.updateVisibleElements(true);
     }
   }
 
@@ -34,7 +34,7 @@ export class BigScrollList implements ElementManager {
       // console.log(`itemCount updated: ${this.itemCount} -> ${newCount}`);
       this.itemCount = newCount;
       this.updateScrollStop();
-      this.updateVisibleElements();
+      this.updateVisibleElements(true);
     }
   }
 
@@ -46,7 +46,7 @@ export class BigScrollList implements ElementManager {
       this.itemSize = newSize;
       this.updateScrollStop();
       // TODO(unimplemented): all elements will have to be removed probably
-      this.updateVisibleElements();
+      this.updateVisibleElements(true);
     }
   }
 
@@ -115,7 +115,7 @@ export class BigScrollList implements ElementManager {
     }
   }
 
-  updateVisibleElements() {
+  updateVisibleElements(visibleAlready: boolean) {
     // console.log("updateVisibleElements");
     // Analyze existing elements
     this.activeElements.clear();
@@ -171,7 +171,7 @@ export class BigScrollList implements ElementManager {
       }
       newListElement.dataset.elementIndex = `${index}`;
       newListElement.classList.add("scroll-list-element");
-      newListElement.append(this.getDocumentFragmentFromIndex(index));
+      newListElement.append(this.getDocumentFragmentFromIndex(index, visibleAlready));
 
       // Find next child, the elements should be sorted (because otherwise Tabbing through elements is annoying)
       let nextChildInOrder: Node | null = null;
@@ -230,7 +230,7 @@ export class BigScrollList implements ElementManager {
     private itemSize: number,
 
     // Get the DocumentFragment for a specific item in the list
-    public getDocumentFragmentFromIndex: (index: bigint) => DocumentFragment,
+    public getDocumentFragmentFromIndex: (index: bigint, visibleAlready: boolean) => DocumentFragment,
 
     // Available size of the container
     private containerAvailableSize: number,
@@ -266,11 +266,11 @@ export class BigScrollList implements ElementManager {
       } else {
         assertNever(this.direction);
       }
-      this.updateVisibleElements();
+      this.updateVisibleElements(false);
     };
 
     this.hostElement.addEventListener("scroll", this.scrollHandler);
-    this.updateVisibleElements();
+    this.updateVisibleElements(false);
 
     if (direction === "horizontal") {
       this.hostElement.style.overflowX = scrollBar;

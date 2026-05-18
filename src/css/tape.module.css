@@ -5,6 +5,7 @@
   align-items: stretch;
   text-align: center;
   border-top: var(--generic-border);
+  transition: 0.5s background-color var(--ease-out-expo);
 }
 
 :is(.input-tape-pane, .output-tape-pane),
@@ -14,19 +15,19 @@ body[data-machine-state="unknown"] :is(.input-tape-pane, .output-tape-pane) {
 }
 
 body[data-machine-state="paused"] :is(.input-tape-pane, .output-tape-pane) {
-  background-color: #ffff7f;
+  background-color: #ffffbf;
 }
 
 body[data-machine-state="running"] :is(.input-tape-pane, .output-tape-pane) {
-  background-color: #7f7fff;
+  background-color: #bfbfff;
 }
 
 body[data-machine-state="halt"] :is(.input-tape-pane, .output-tape-pane) {
-  background-color: #7fff7f;
+  background-color: #bfffbf;
 }
 
 body[data-machine-state="error"] :is(.input-tape-pane, .output-tape-pane) {
-  background-color: #ff7f7f;
+  background-color: #ffbfbf;
 }
 
 body[data-machine-state="kill"] :is(.input-tape-pane, .output-tape-pane),
