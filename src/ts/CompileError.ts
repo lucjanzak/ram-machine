@@ -14,6 +14,7 @@ export type ParserError = { message: string } & (
   | { id: "unexpectedOperand"; operand: string }
   | { id: "bigintParseError"; operand: string }
   | { id: "unrecognizedMnemonic"; mnemonic: string }
+  | { id: "invalidLabel"; label: string }
   | { id: "redefinedLabel"; originalLine: number; label: string }
 );
 export type PreprocessorError = { message: string } & (
@@ -35,6 +36,9 @@ export namespace ParserError {
   }
   export function emptyLabel(): ParserError {
     return { id: "emptyLabel", message: p.emptyLabel };
+  }
+  export function invalidLabel(label: string): ParserError {
+    return { id: "invalidLabel", message: formatString(p.invalidLabel, label), label };
   }
   export function negativeRegister(): ParserError {
     return { id: "negativeRegister", message: p.negativeRegister };

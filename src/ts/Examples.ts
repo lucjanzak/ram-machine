@@ -263,6 +263,9 @@ JUMP a ; <-- this highlighting was bugged, but is fixed now
 
     empty label:: ; this should report an error
 
+    1this should not work either because it starts with a number:
+    HALT
+
     ; this should report an error:
     label_at_the_end:
 `,
@@ -279,7 +282,7 @@ function compileExamplePrograms(): { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBL
     console.log(`Compiling example programs... (${i + 1}/${total}) ${key}`);
     if (key === "PARSER_ERROR_TEST") {
       const { program, compilerMessages } = Program.fromAssembly(sourceCode);
-      assertEq(compilerMessages.length, 8);
+      assertEq(compilerMessages.length, 9); // TODO: should be 10; 'label at the end' issue is not detected yet
       // console.log(compilerMessages);
       programs[key] = program;
     } else {

@@ -155,6 +155,9 @@ export class Compiler {
       if (label.length === 0) {
         throw new ParserException(ParserError.emptyLabel());
       }
+      if (!/^\s*[\p{L}_][\p{L}_0-9\s]*$/u.test(label)) {
+        throw new ParserException(ParserError.invalidLabel(label));
+      }
     });
     const [mnemonicSegment, ...operandSegments] = lineWithoutLabel.trim().split(/\s+/);
     const mnemonic = mnemonicSegment.trim().toUpperCase();

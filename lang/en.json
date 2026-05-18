@@ -332,6 +332,7 @@
       "negativeImmediate": "immediate value cannot be negative",
       "unrecognizedMnemonic": "unrecognized mnemonic: %0",
       "emptyLabel": "label cannot be empty",
+      "invalidLabel": "invalid label name: '%0'",
       "redefinedLabel": "label was already defined at line %1: '%0'"
     }
   },

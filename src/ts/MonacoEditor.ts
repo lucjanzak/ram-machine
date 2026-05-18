@@ -61,30 +61,41 @@ function ramMachineAssemblyMonarchLanguage(): monaco.languages.IMonarchLanguage 
 
         // whitespace
         { include: "@whitespace" },
-
-        // number
-        [/\d+/, "number"],
       ],
 
       whitespace: [
         [/[ \t]*$/, "", "@popall"],
         [/[ \t]+/, ""],
-        [/;.*$/, "comment", "@popall"],
+        [/[ \t]*;.*$/, "comment", "@popall"],
       ],
 
       after_writeop_keyword: [
         { include: "@whitespace" },
-        [/\d+/, "number", "root"],
-        [/\*\d+/, "number", "root"],
-        [/.*/, "invalid", "root"],
+        [/\d+$/, "number", "root"],
+        [/\d+/, "number", "after_operand"],
+        [/\*\d+$/, "number", "root"],
+        [/\*\d+/, "number", "after_operand"],
+        [/.*(?=;)/, "invalid", "after_writeop_keyword"],
+        [/.*$/, "invalid", "root"],
       ],
-      after_readop_keyword: [[/=-?\d+/, "number", "root"], { include: "@after_writeop_keyword" }],
+      after_readop_keyword: [
+        { include: "@whitespace" },
+        [/=-?\d+$/, "number", "root"],
+        [/=-?\d+/, "number", "after_operand"],
+        { include: "@after_writeop_keyword" },
+      ],
       after_jump_keyword: [
         { include: "@whitespace" },
         [/\s*[\p{L}_][\p{L}_0-9\s]*/u, "tag", "root"],
-        [/.*/, "invalid", "root"],
+        [/.*(?=;)/, "invalid", "after_jump_keyword"],
+        [/.*$/, "invalid", "root"],
       ],
-      after_noop_keyword: [{ include: "@whitespace" }, [/.*/, "invalid", "root"]],
+      after_noop_keyword: [
+        { include: "@whitespace" },
+        [/.*(?=;)/, "invalid", "after_noop_keyword"],
+        [/.*$/, "invalid", "root"],
+      ],
+      after_operand: [{ include: "@whitespace" }, [/.*(?=;)/, "invalid", "after_operand"], [/.*$/, "invalid", "root"]],
     },
   };
 }
@@ -512,7 +523,7 @@ export function updateCompileProblems(success: boolean, compilerMessages: Compil
     plural(warningCount, t.editor.problems.warningCount)
   );
 
-  hasProblems = (errorCount + warningCount) > 0;
+  hasProblems = errorCount + warningCount > 0;
 
   // List compile errors in status pane
   Nodes.compileErrorsContainer.innerHTML = "";
