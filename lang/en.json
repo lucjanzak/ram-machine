@@ -333,7 +333,8 @@
       "unrecognizedMnemonic": "unrecognized mnemonic: %0",
       "emptyLabel": "label cannot be empty",
       "invalidLabel": "invalid label name: '%0'",
-      "redefinedLabel": "label was already defined at line %1: '%0'"
+      "redefinedLabel": "label was already defined at line %1: '%0'",
+      "labelAtTheEnd": "label was defined at the end of file, it will be ignored: '%0'"
     }
   },
   "examples": {

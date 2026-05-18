@@ -549,7 +549,7 @@ export function updateCompileProblems(success: boolean, compilerMessages: Compil
   compilerMessages.forEach((msg) => {
     const line = msg.line || 1;
     markers.push({
-      message: `${getTitleForMessageBox(msg.body.category)}${msg.body.message}`,
+      message: `${getTitleForMessageBox(msg.body.category)}${msg.body.message}\n<${msg.body.id}>`,
       severity: messageSeverityMap[msg.type],
       startLineNumber: line,
       startColumn: 1,

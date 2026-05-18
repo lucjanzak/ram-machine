@@ -278,7 +278,7 @@ export class Compiler {
     };
 
     let leftoverCommentLines: string[] = [];
-    let leftoverLabels: string[] = [];
+    let leftoverLabels: { label: string; lineIndex: number }[] = [];
     const preprocessorState: PreprocessorState = {
       inputTapeString: null,
       inputTapeUnderflow: null,
@@ -295,7 +295,12 @@ export class Compiler {
       const parsed = this.parseAssemblyLine(line);
 
       parsed.labels.forEach((label) => defineNewLabel(label, lineIndex + 1));
-      leftoverLabels = leftoverLabels.concat(parsed.labels);
+      leftoverLabels = leftoverLabels.concat(
+        parsed.labels.map((x) => ({
+          label: x,
+          lineIndex,
+        }))
+      );
 
       if (parsed.instruction !== null) {
         // push new comment tile if there were leftover comment lines
@@ -312,7 +317,7 @@ export class Compiler {
           type: "instruction",
           comment: parsed.comment,
           instruction: parsed.instruction,
-          labels: leftoverLabels,
+          labels: leftoverLabels.map((x) => x.label),
         });
         leftoverLabels = [];
       } else {
@@ -346,6 +351,14 @@ export class Compiler {
         comment: leftoverCommentLines.join("\n"),
       });
     }
+
+    leftoverLabels.forEach((x) => {
+      messages.push({
+        type: "warning",
+        body: Object.assign({ category: "parser" as const }, ParserError.labelAtTheEnd(x.label)),
+        line: x.lineIndex + 1,
+      });
+    });
 
     return { success, tiles, messages, preprocessorState };
   }

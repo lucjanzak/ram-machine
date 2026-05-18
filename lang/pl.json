@@ -333,7 +333,8 @@
       "unrecognizedMnemonic": "nieznana nazwa instrukcji: %0",
       "emptyLabel": "etykieta nie może być pusta",
       "invalidLabel": "nieprawidłowa nazwa etykiety: '%0'",
-      "redefinedLabel": "ta etykieta została już zdefiniowana w linii %1: '%0'"
+      "redefinedLabel": "ta etykieta została już zdefiniowana w linii %1: '%0'",
+      "labelAtTheEnd": "label was defined at the end of file, it will be ignored: '%0'"
     }
   },
   "examples": {

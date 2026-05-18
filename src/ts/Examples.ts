@@ -249,27 +249,45 @@ JUMP a ; <-- this highlighting was bugged, but is fixed now
 ;
 ; This example program contains many invalid combinations of labels, instructions, and comments.
 ;
-;
 
-    a b c
+a b c ; Issue #1 unrecognizedMnemonic
 
-    ; these should not work:
-    HALT 1 ; halt with argument
-    LOAD abc ; load with label
-    STORE abc ; store to label
-    LOAD ; load with no operand
-    STORE; store with no operand
-    STORE =3 ; store to immediate operand
+HALT 1     ; halt with argument          ; Issue #2 <unexpectedOperand>
+LOAD abc   ; load with label             ; Issue #3 <bigintParseError>
+STORE abc  ; store to label              ; Issue #4 <bigintParseError>
+LOAD       ; load with no operand        ; Issue #5 <bigintExpected>
+STORE      ; store with no operand       ; Issue #6 <bigintExpected>
+STORE =3   ; store to immediate operand  ; Issue #7 <immediateWritableOperand>
+JUMP       ; jump with no label          ; Issue #8 <labelExpected>
+STORE -1   ; store to negative register  ; Issue #9 <negativeRegister>
 
-    empty label:: ; this should report an error
+empty label::  ; Issue #10 <emptyLabel>
 
-    1this should not work either because it starts with a number:
-    HALT
+a:
+a:  ; Issue #11 <redefinedLabel>
 
-    ; this should report an error:
-    label_at_the_end:
+invalid-label-name:  ; Issue #12 <invalidLabel>
+HALT
+
+; these should report a warning:
+; Issue #13 <expectedDirective>
+;.
+; Issue #14 <unknownDirective>
+;.S
+; Issue #15 <expectedArguments>
+;.SET
+; Issue #16 <setInvalidKey>
+;.SET ABC
+; Issue #17 <setMissingValue>
+;.SET INPUT_TAPE_UNDERFLOW
+; Issue #18 <setInvalidValue>
+;.SET INPUT_TAPE_UNDERFLOW asd
+
+; this should report a warning:
+label_at_the_end:  ; Issue #19 <labelAtTheEnd>
 `,
 };
+//window.RAMMachine.machine.loadAssemblyAndReset(window.RAMMachine.EXAMPLE_PROGRAMS_ASSEMBLY.PARSER_ERROR_TEST)
 
 export const EXAMPLE_PROGRAMS: { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBLY]: Program } = compileExamplePrograms();
 
@@ -282,7 +300,7 @@ function compileExamplePrograms(): { [K in keyof typeof EXAMPLE_PROGRAMS_ASSEMBL
     console.log(`Compiling example programs... (${i + 1}/${total}) ${key}`);
     if (key === "PARSER_ERROR_TEST") {
       const { program, compilerMessages } = Program.fromAssembly(sourceCode);
-      assertEq(compilerMessages.length, 9); // TODO: should be 10; 'label at the end' issue is not detected yet
+      assertEq(compilerMessages.length, 19);
       // console.log(compilerMessages);
       programs[key] = program;
     } else {

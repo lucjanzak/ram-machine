@@ -16,6 +16,7 @@ export type ParserError = { message: string } & (
   | { id: "unrecognizedMnemonic"; mnemonic: string }
   | { id: "invalidLabel"; label: string }
   | { id: "redefinedLabel"; originalLine: number; label: string }
+  | { id: "labelAtTheEnd"; label: string }
 );
 export type PreprocessorError = { message: string } & (
   | { id: "setInvalidKey"; key: string }
@@ -68,6 +69,9 @@ export namespace ParserError {
       originalLine,
       label,
     };
+  }
+  export function labelAtTheEnd(label: string): ParserError {
+    return { id: "labelAtTheEnd", message: formatString(p.labelAtTheEnd, label), label };
   }
 }
 
